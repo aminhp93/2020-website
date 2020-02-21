@@ -1,26 +1,69 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { Tabs, Input } from 'antd';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Capital from './containers/Capital/Capital';
+import Financial from './containers/Financial/Financial';
+import News from './containers/News/News';
+import Price from './containers/Price/Price';
+import Profile from './containers/Profile/Profile';
+import Stakeholder from './containers/Stakeholder/Stakeholder';
+import Technical from './containers/Technical/Technical';
+import Transaction from './containers/Transaction/Transaction';
+
+const { TabPane } = Tabs;
+
+
+class App extends React.Component {
+
+  callback = (key) => {
+    console.log(key);
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <div className="Header">Header</div>
+        <div className="Container">
+          <div className="Navigation">
+            Navigation
+            <Input placeholder='Ma chung khoan' />
+          </div>
+          <div className="Content">
+            <div>Content</div>
+            <div>
+              <Tabs defaultActiveKey="1" onChange={this.callback}>
+                <TabPane tab="Transaction" key="1">
+                  <Transaction />
+                </TabPane>
+                <TabPane tab="Profile" key="2">
+                  <Profile />
+                </TabPane>
+                <TabPane tab="Stakeholder" key="3">
+                  <Stakeholder />
+                </TabPane>
+                <TabPane tab="Capital" key="4">
+                  <Capital />
+                </TabPane>
+                <TabPane tab="News" key="5">
+                  <News />
+                </TabPane>
+                <TabPane tab="Price" key="6">
+                  <Price />
+                </TabPane>
+                <TabPane tab="Financial" key="7">
+                  <Financial />
+                </TabPane>
+                <TabPane tab="Technical" key="8">
+                  <Technical />
+                </TabPane>
+              </Tabs>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default App;
