@@ -1,0 +1,25 @@
+.App {
+  text-align: center;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+
+.App-header {
+  background: green
+}
+
+.App-container {
+  display: flex;
+  height: 100%;
+}
+
+.App-navigation {
+  background: lightblue;
+  width: 100px;
+}
+
+.App-content {
+  background: gray;
+  flex: 1;
+}

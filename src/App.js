@@ -1,5 +1,6 @@
 import React from 'react';
-import './App.css';
+import './css/App.css';
+import './css/Profile.css';
 import { Tabs, Input } from 'antd';
 
 import EquityAndDividends from './containers/EquityAndDividends/EquityAndDividends';
@@ -23,16 +24,16 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <div className="Header">Header</div>
-        <div className="Container">
-          <div className="Navigation">
+        <div className="App-header">Header</div>
+        <div className="App-container">
+          <div className="App-navigation">
             Navigation
             <Input placeholder='Ma chung khoan' />
           </div>
-          <div className="Content">
+          <div className="App-content">
             <div>Content</div>
             <div>
-              <Tabs defaultActiveKey="1" onChange={this.callback}>
+              <Tabs defaultActiveKey="2" onChange={this.callback}>
                 <TabPane tab="Transaction" key="1">
                   <Transaction />
                 </TabPane>

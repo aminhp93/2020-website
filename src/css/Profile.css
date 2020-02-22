@@ -1,0 +1,36 @@
+.Profile {
+    display: flex;
+}
+
+.Profile-left-container {
+    width: 70%;
+    margin-right: 20px;
+}
+
+.Profile-right-container {
+    flex: 1;
+}
+
+.Profile-introduction-detail {
+    display: flex;
+}
+
+.Profile-introduction-detail-basic,
+.Profile-introduction-detail-public {
+    width: 50%;
+    margin: 0 20px;
+}
+
+.Profile-statistic {
+    margin: 20px 0;
+}
+
+.Profile-statistic-container {
+    display: flex;
+}
+
+.Profile-statistic-left-container,
+.Profile-statistic-right-container {
+    width: 50%;
+    margin: 0 20px;
+}

@@ -17,27 +17,11 @@ code {
     monospace;
 }
 
-.App {
+.row {
   display: flex;
-  height: 100%;
-  flex-direction: column;
+  justify-content: space-between;
 }
 
-.Header {
-  background: green
-}
-
-.Container {
-  display: flex;
-  height: 100%;
-}
-
-.Navigation {
-  background: lightblue;
-  width: 100px;
-}
-
-.Content {
-  background: gray;
-  flex: 1;
+.bg-white {
+  background: white;
 }
