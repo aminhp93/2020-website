@@ -1,11 +1,11 @@
 import React from 'react';
 import axios from 'axios';
 
-export default class Price extends React.Component {
+export default class EquityAndDividends extends React.Component {
     componentDidMount() {
         axios({
             method: 'get',
-            url: 'https://svr1.fireant.vn/api/Data/Companies/HistoricalQuotes?symbol=FPT&startDate=2020-1-22&endDate=2020-2-22'
+            url: 'https://svr1.fireant.vn/api/Data/Companies/EquityAndDividends?symbol=FPT&count=5'
         })
             .then(response => {
                 console.log(response.data)
@@ -14,6 +14,6 @@ export default class Price extends React.Component {
     }
 
     render() {
-        return <div>Price</div>
+        return <div>EquityAndDividends</div>
     }
 }

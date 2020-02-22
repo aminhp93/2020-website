@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import { Tabs, Input } from 'antd';
 
-import Capital from './containers/Capital/Capital';
+import EquityAndDividends from './containers/EquityAndDividends/EquityAndDividends';
 import Financial from './containers/Financial/Financial';
 import News from './containers/News/News';
 import Price from './containers/Price/Price';
@@ -42,8 +42,8 @@ class App extends React.Component {
                 <TabPane tab="Stakeholder" key="3">
                   <Stakeholder />
                 </TabPane>
-                <TabPane tab="Capital" key="4">
-                  <Capital />
+                <TabPane tab="EquityAndDividends" key="4">
+                  <EquityAndDividends />
                 </TabPane>
                 <TabPane tab="News" key="5">
                   <News />
