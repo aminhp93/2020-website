@@ -50,3 +50,8 @@ export function getCompanyNewsUrl(startIndex) {
 export function getNewsContentUrl(id) {
     return `${hostName}/api/Data/News/NewsContent?id=${id}`
 }
+
+export function getHistoricalQuotesUrl(startDate, endDate) {
+    return `${hostName}/api/Data/Companies/HistoricalQuotes?symbol=FPT&startDate=${startDate || '2020-1-22'}&endDate=${endDate || '2020-2-22'}`
+}
+
