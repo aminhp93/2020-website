@@ -32,12 +32,12 @@ export function getMajorHolderTransactionsUrl() {
 }
 
 export function getMajorHolderTransactionsRangeUrl() {
-    return `${hostName}https://svr1.fireant.vn/api/Data/Companies/MajorHolderTransactionsRange?symbol=FPT&startDate=2019-10-21&endDate=2037-1-1`
+    return `${hostName}/api/Data/Companies/MajorHolderTransactionsRange?symbol=FPT&startDate=2019-10-21&endDate=2037-1-1`
 }
 
-// export function getCompanyInfoUrl() {
-//     return `${ hostName } /api/Data / Companies / CompanyInfo ? symbol = FPT`
-// }
+export function getEquityAndDividendsUrl() {
+    return `${hostName}/api/Data/Companies/EquityAndDividends?symbol=FPT&count=5`
+}
 
 // export function getCompanyInfoUrl() {
 //     return `${ hostName } /api/Data / Companies / CompanyInfo ? symbol = FPT`

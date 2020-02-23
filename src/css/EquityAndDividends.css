@@ -1,0 +1,13 @@
+.EquityAndDividends-top-container,
+.EquityAndDividends-bottom-container {
+    display: flex;
+}
+
+.EquityAndDividends-top-container {
+    margin-bottom: 20px;
+}
+
+.EquityAndDividends-chart1,
+.EquityAndDividends-chart3 {
+    margin-right: 20px;
+}
