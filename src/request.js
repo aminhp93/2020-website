@@ -55,3 +55,15 @@ export function getHistoricalQuotesUrl(startDate, endDate) {
     return `${hostName}/api/Data/Companies/HistoricalQuotes?symbol=FPT&startDate=${startDate || '2020-1-22'}&endDate=${endDate || '2020-2-22'}`
 }
 
+export function getYearlyFinancialInfoUrl() {
+    return `${hostName}/api/Data/Finance/YearlyFinancialInfo?symbol=FPT&fromYear=2016&toYear=2019`
+}
+
+export function getQuarterlyFinancialInfoUrl() {
+    return `${hostName}/api/Data/Finance/QuarterlyFinancialInfo?symbol=FPT&fromYear=2016&fromQuarter=1&toYear=2019&toQuarter=4`
+}
+
+export function getLastestFinancialReportsUrl() {
+    return `${hostName}/api/Data/Finance/LastestFinancialReports?symbol=FPT&type=2&year=2020&quarter=0&count=5`
+}
+
