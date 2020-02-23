@@ -39,6 +39,14 @@ export function getEquityAndDividendsUrl() {
     return `${hostName}/api/Data/Companies/EquityAndDividends?symbol=FPT&count=5`
 }
 
-// export function getCompanyInfoUrl() {
-//     return `${ hostName } /api/Data / Companies / CompanyInfo ? symbol = FPT`
-// }
+export function getCompanyNewsCountUrl() {
+    return `${hostName}/api/Data/News/CompanyNewsCount?symbol=FPT`
+}
+
+export function getCompanyNewsUrl(startIndex) {
+    return `${hostName}/api/Data/News/CompanyNews?symbol=FPT&startIndex=${startIndex || 0}&count=10`
+}
+
+export function getNewsContentUrl(id) {
+    return `${hostName}/api/Data/News/NewsContent?id=${id}`
+}

@@ -36,7 +36,7 @@ class App extends React.Component {
           <div className="App-content">
             <div>Content</div>
             <div>
-              <Tabs defaultActiveKey="4">
+              <Tabs defaultActiveKey="5">
                 <TabPane tab="Transaction" key="1">
                   <Transaction />
                 </TabPane>
