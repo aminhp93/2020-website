@@ -23,22 +23,22 @@ export function getCompanyTransactionsUrl() {
     return `${hostName}/api/Data/Companies/CompanyTransactions?symbol=FPT`
 }
 
+export function getMajorHoldersUrl() {
+    return `${hostName}/api/Data/Companies/MajorHolders?symbol=FPT`
+}
+
+export function getMajorHolderTransactionsUrl() {
+    return `${hostName}/api/Data/Companies/MajorHolderTransactions?symbol=FPT&startIndex=0&count=1000`
+}
+
+export function getMajorHolderTransactionsRangeUrl() {
+    return `${hostName}https://svr1.fireant.vn/api/Data/Companies/MajorHolderTransactionsRange?symbol=FPT&startDate=2019-10-21&endDate=2037-1-1`
+}
+
 // export function getCompanyInfoUrl() {
-//     return `${hostName}/api/Data/Companies/CompanyInfo?symbol=FPT`
+//     return `${ hostName } /api/Data / Companies / CompanyInfo ? symbol = FPT`
 // }
 
 // export function getCompanyInfoUrl() {
-//     return `${hostName}/api/Data/Companies/CompanyInfo?symbol=FPT`
-// }
-
-// export function getCompanyInfoUrl() {
-//     return `${hostName}/api/Data/Companies/CompanyInfo?symbol=FPT`
-// }
-
-// export function getCompanyInfoUrl() {
-//     return `${hostName}/api/Data/Companies/CompanyInfo?symbol=FPT`
-// }
-
-// export function getCompanyInfoUrl() {
-//     return `${hostName}/api/Data/Companies/CompanyInfo?symbol=FPT`
+//     return `${ hostName } /api/Data / Companies / CompanyInfo ? symbol = FPT`
 // }

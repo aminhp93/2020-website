@@ -1,6 +1,13 @@
 import React from 'react';
 import './css/App.css';
+import './css/EquityAndDividends.css';
+import './css/Financial.css';
+import './css/News.css';
+import './css/Price.css';
 import './css/Profile.css';
+import './css/Stakeholder.css';
+import './css/Technical.css';
+import './css/Transaction.css';
 import { Tabs, Input } from 'antd';
 
 import EquityAndDividends from './containers/EquityAndDividends/EquityAndDividends';
@@ -17,10 +24,6 @@ const { TabPane } = Tabs;
 
 class App extends React.Component {
 
-  callback = (key) => {
-    console.log(key);
-  }
-
   render() {
     return (
       <div className="App">
@@ -33,7 +36,7 @@ class App extends React.Component {
           <div className="App-content">
             <div>Content</div>
             <div>
-              <Tabs defaultActiveKey="2" onChange={this.callback}>
+              <Tabs defaultActiveKey="3">
                 <TabPane tab="Transaction" key="1">
                   <Transaction />
                 </TabPane>
