@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { Tabs, Table } from 'antd';
 import {
-    PieChart, Pie, Sector, Cell,
+    PieChart, Pie,
 } from 'recharts';
 import {
     getMajorHoldersUrl,

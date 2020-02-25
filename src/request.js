@@ -1,6 +1,6 @@
 
 const hostName1 = 'https://svr1.fireant.vn';
-const hostName3 = 'https://svr3.fireant.vn';
+// const hostName3 = 'https://svr3.fireant.vn';
 const hostName = hostName1;
 
 export function getCompanyInfoUrl() {

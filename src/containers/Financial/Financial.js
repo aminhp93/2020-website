@@ -60,9 +60,9 @@ export default class Financial extends React.Component {
 
     render() {
         const {
-            YearlyFinancialInfoArray,
-            QuarterlyFinancialInfoArray,
-            LastestFinancialReportsArray,
+            // YearlyFinancialInfoArray,
+            // QuarterlyFinancialInfoArray,
+            // LastestFinancialReportsArray,
         } = this.state;
         return (
             <div className="Financial">
@@ -78,7 +78,7 @@ export default class Financial extends React.Component {
                     <div className="Financial-profit">
                         <div>
                             LỢI NHUẬN (TỶ)
-    
+
                         </div>
                         <div>
                             LỢI NHUẬN (TỶ)

@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import {
-    BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts';
 import {
     getEquityAndDividendsUrl,

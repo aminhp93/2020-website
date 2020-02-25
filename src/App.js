@@ -1,4 +1,8 @@
 import React from 'react';
+
+import { Tabs, Input, Button } from 'antd';
+import { connect } from 'react-redux';
+
 import './css/App.css';
 import './css/EquityAndDividends.css';
 import './css/Financial.css';
@@ -8,7 +12,6 @@ import './css/Profile.css';
 import './css/Stakeholder.css';
 import './css/Technical.css';
 import './css/Transaction.css';
-import { Tabs, Input } from 'antd';
 
 import EquityAndDividends from './containers/EquityAndDividends/EquityAndDividends';
 import Financial from './containers/Financial/Financial';
@@ -19,10 +22,29 @@ import Stakeholder from './containers/Stakeholder/Stakeholder';
 import Technical from './containers/Technical/Technical';
 import Transaction from './containers/Transaction/Transaction';
 
+import {
+  setSymbol,
+} from './actions/stock';
+
 const { TabPane } = Tabs;
 
 
 class App extends React.Component {
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     SymbolInput: ''   
+  //   }
+  // }
+
+  changeSymbol = () => {
+
+  }
+
+  handleSearch = () => {
+    const value = this.inputRef && this.inputRef.state && this.inputRef.state.value;
+    value && this.props.setSymbol(value);
+  }
 
   render() {
     return (
@@ -31,7 +53,8 @@ class App extends React.Component {
         <div className="App-container">
           <div className="App-navigation">
             Navigation
-            <Input placeholder='Ma chung khoan' />
+            <Input placeholder='Ma chung khoan' onChange={this.changeSymbol} ref={input => this.inputRef = input} />
+            <Button onClick={this.handleSearch}>Search</Button>
           </div>
           <div className="App-content">
             <div>Content</div>
@@ -70,4 +93,14 @@ class App extends React.Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  console.log(state);
+  return {}
+
+}
+
+const mapDispatchToProps = {
+  setSymbol
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

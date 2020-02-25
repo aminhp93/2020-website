@@ -1,6 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import { Table } from 'antd';
+import { connect } from 'react-redux';
+
 import {
     getCompanyInfoUrl,
     getLastestFinancialInfoUrl,
@@ -62,7 +64,7 @@ const companyTransactionsColumns = [
     },
 ]
 
-export default class Profile extends React.Component {
+class Profile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -75,6 +77,17 @@ export default class Profile extends React.Component {
     }
 
     componentDidMount() {
+
+    }
+
+    componentWillReceiveProps(nextProps) {
+        console.log(this.props, nextProps)
+        if (this.props.Symbol !== nextProps.Symbol) {
+            this.crawlData();
+        }
+    }
+
+    crawlData = () => {
         axios({
             method: 'get',
             url: getCompanyInfoUrl()
@@ -305,10 +318,6 @@ export default class Profile extends React.Component {
     render() {
         const {
             CompanyInfoObj,
-            LastestFinancialInfoObj,
-            CompanyTransactionsArray,
-            SubCompaniesArray,
-            CompanyOfficersArray
         } = this.state;
         const Overview = CompanyInfoObj.Overview || '';
 
@@ -378,3 +387,15 @@ export default class Profile extends React.Component {
         </div>
     }
 }
+
+const mapStateToProps = state => {
+    console.log(state);
+    return {
+        Symbol: state.stock.Symbol
+    }
+}
+
+const mapDispatchToProps = {
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);
