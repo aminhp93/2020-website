@@ -1,7 +1,9 @@
 import React from 'react';
 import axios from 'axios';
-import { List, Avatar, Pagination, Modal } from 'antd';
+import { connect } from 'react-redux';
 import ReactHtmlParser from 'react-html-parser';
+
+import { List, Avatar, Pagination, Modal } from 'antd';
 
 import {
     getCompanyNewsUrl,
@@ -10,7 +12,7 @@ import {
 } from '../../request';
 
 
-export default class News extends React.Component {
+class News extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -22,9 +24,21 @@ export default class News extends React.Component {
     }
 
     componentDidMount() {
+        this.crawlData(this.props.Symbol);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        console.log('componentWillReceiveProps News', this.props, nextProps)
+        if (this.props.Symbol !== nextProps.Symbol) {
+            this.crawlData(nextProps.Symbol);
+        }
+    }
+
+    crawlData = (symbol) => {
+        if (!symbol) return;
         axios({
             method: 'get',
-            url: getCompanyNewsCountUrl(),
+            url: getCompanyNewsCountUrl(symbol),
         })
             .then(response => {
                 if (response.data) {
@@ -37,7 +51,7 @@ export default class News extends React.Component {
 
         axios({
             method: 'get',
-            url: getCompanyNewsUrl(),
+            url: getCompanyNewsUrl(symbol),
         })
             .then(response => {
                 if (response.data) {
@@ -133,3 +147,15 @@ export default class News extends React.Component {
         )
     }
 }
+
+const mapStateToProps = state => {
+    console.log(state);
+    return {
+        Symbol: state.stock.Symbol
+    }
+}
+
+const mapDispatchToProps = {
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(News);

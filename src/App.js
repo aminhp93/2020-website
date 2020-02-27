@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Tabs, Input, Button } from 'antd';
+import { Tabs, Input, Button, Select, Spin } from 'antd';
 import { connect } from 'react-redux';
 
 import './css/App.css';
@@ -21,40 +21,91 @@ import Profile from './containers/Profile/Profile';
 import Stakeholder from './containers/Stakeholder/Stakeholder';
 import Technical from './containers/Technical/Technical';
 import Transaction from './containers/Transaction/Transaction';
+import debounce from 'lodash/debounce';
 
 import {
   setSymbol,
 } from './actions/stock';
 
 const { TabPane } = Tabs;
+const { Option } = Select;
 
+const SAMPLE_STOCK_LIST = [
+  {
+    Symbol: 'VND'
+  },
+  {
+    Symbol: 'AAV'
+  },
+  {
+    Symbol: 'VPB'
+  }
+]
 
 class App extends React.Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     SymbolInput: ''   
-  //   }
-  // }
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: [],
+      value: [],
+      fetching: false,
+    }
 
-  changeSymbol = () => {
+    this.lastFetchId = 0;
+    this.fetchUser = debounce(this.fetchUser, 800);
 
   }
 
-  handleSearch = () => {
-    const value = this.inputRef && this.inputRef.state && this.inputRef.state.value;
-    value && this.props.setSymbol(value);
-  }
+  handleChange = value => {
+    this.setState({
+      value,
+      data: [],
+      fetching: false,
+    }, () => {
+      value && value.length && this.props.setSymbol(value[0]['key']);
+    });
+  };
+
+
+  fetchUser = value => {
+    console.log('fetching user', value);
+    this.lastFetchId += 1;
+    const fetchId = this.lastFetchId;
+    this.setState({ data: [], fetching: true });
+    fetch('https://randomuser.me/api/?results=5')
+      .then(response => response.json())
+      .then(body => {
+        if (fetchId !== this.lastFetchId) {
+          // for fetch callback order
+          return;
+        }
+        this.setState({ data: SAMPLE_STOCK_LIST, fetching: false });
+      });
+  };
 
   render() {
+    const { fetching, data, value } = this.state;
+
     return (
       <div className="App">
         <div className="App-header">Header</div>
         <div className="App-container">
           <div className="App-navigation">
-            Navigation
-            <Input placeholder='Ma chung khoan' onChange={this.changeSymbol} ref={input => this.inputRef = input} />
-            <Button onClick={this.handleSearch}>Search</Button>
+            <Select
+              mode="multiple"
+              labelInValue
+              value={value}
+              placeholder="Select stock"
+              notFoundContent={fetching ? <Spin size="small" /> : null}
+              filterOption={false}
+              onSearch={this.fetchUser}
+              onChange={this.handleChange}
+              style={{ width: '100%' }}
+            >
+              {data.map(d => (
+                <Option key={d.Symbol}>{d.Symbol}</Option>
+              ))}
+            </Select>
           </div>
           <div className="App-content">
             <div>Content</div>

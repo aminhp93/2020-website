@@ -1,7 +1,8 @@
 import React from 'react';
 import axios from 'axios';
-import { Table } from 'antd';
 import { connect } from 'react-redux';
+
+import { Table } from 'antd';
 
 import {
     getCompanyInfoUrl,
@@ -77,20 +78,21 @@ class Profile extends React.Component {
     }
 
     componentDidMount() {
-
+        this.crawlData(this.props.Symbol);
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log(this.props, nextProps)
+        console.log('componentWillReceiveProps Profile', this.props, nextProps)
         if (this.props.Symbol !== nextProps.Symbol) {
-            this.crawlData();
+            this.crawlData(nextProps.Symbol);
         }
     }
 
-    crawlData = () => {
+    crawlData = (symbol) => {
+        if (!symbol) return
         axios({
             method: 'get',
-            url: getCompanyInfoUrl()
+            url: getCompanyInfoUrl(symbol)
         })
             .then(response => {
                 if (response.data) {
@@ -103,7 +105,7 @@ class Profile extends React.Component {
 
         axios({
             method: 'get',
-            url: getLastestFinancialInfoUrl()
+            url: getLastestFinancialInfoUrl(symbol)
         })
             .then(response => {
                 if (response.data) {
@@ -116,7 +118,7 @@ class Profile extends React.Component {
 
         axios({
             method: 'get',
-            url: getSubCompaniesUrl(),
+            url: getSubCompaniesUrl(symbol),
         })
             .then(response => {
                 if (response.data) {
@@ -159,7 +161,7 @@ class Profile extends React.Component {
         const {
             CompanyInfoObj,
         } = this.state;
-        const Symbol = CompanyInfoObj.Symbol || '';
+        const SymbolStock = CompanyInfoObj.Symbol || '';
         const ICBCode = CompanyInfoObj.ICBCode || '';
         const EstablishmentDate = CompanyInfoObj.EstablishmentDate || '';
         const CharterCapital = CompanyInfoObj.CharterCapital || '';
@@ -169,7 +171,7 @@ class Profile extends React.Component {
             <div>
                 <div className="row">
                     <div>Ma SIC</div>
-                    <div>{Symbol}</div>
+                    <div>{SymbolStock}</div>
                 </div>
                 <div className="row">
                     <div>Mã ngành ICB</div>

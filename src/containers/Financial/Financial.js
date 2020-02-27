@@ -1,12 +1,14 @@
 import React from 'react';
 import axios from 'axios';
+import { connect } from 'react-redux';
+
 import {
     getYearlyFinancialInfoUrl,
     getQuarterlyFinancialInfoUrl,
     getLastestFinancialReportsUrl,
 } from '../../request';
 
-export default class Financial extends React.Component {
+class Financial extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -17,9 +19,21 @@ export default class Financial extends React.Component {
     }
 
     componentDidMount() {
+        this.crawlData(this.props.Symbol);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        console.log('componentWillReceiveProps Profile', this.props, nextProps)
+        if (this.props.Symbol !== nextProps.Symbol) {
+            this.crawlData(nextProps.Symbol);
+        }
+    }
+
+    crawlData = (symbol) => {
+        if (!symbol) return;
         axios({
             method: 'get',
-            url: getYearlyFinancialInfoUrl()
+            url: getYearlyFinancialInfoUrl(symbol)
         })
             .then(response => {
                 if (response.data) {
@@ -32,7 +46,7 @@ export default class Financial extends React.Component {
 
         axios({
             method: 'get',
-            url: getQuarterlyFinancialInfoUrl()
+            url: getQuarterlyFinancialInfoUrl(symbol)
         })
             .then(response => {
                 if (response.data) {
@@ -46,7 +60,7 @@ export default class Financial extends React.Component {
 
         axios({
             method: 'get',
-            url: getLastestFinancialReportsUrl()
+            url: getLastestFinancialReportsUrl(symbol)
         })
             .then(response => {
                 if (response.data) {
@@ -59,11 +73,6 @@ export default class Financial extends React.Component {
     }
 
     render() {
-        const {
-            // YearlyFinancialInfoArray,
-            // QuarterlyFinancialInfoArray,
-            // LastestFinancialReportsArray,
-        } = this.state;
         return (
             <div className="Financial">
                 <div className="Financial-left-container">
@@ -98,3 +107,15 @@ export default class Financial extends React.Component {
         )
     }
 }
+
+const mapStateToProps = state => {
+    console.log(state);
+    return {
+        Symbol: state.stock.Symbol
+    }
+}
+
+const mapDispatchToProps = {
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Financial);

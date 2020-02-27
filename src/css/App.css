@@ -16,7 +16,7 @@
 
 .App-navigation {
   background: lightblue;
-  width: 100px;
+  min-width: 110px;
 }
 
 .App-content {

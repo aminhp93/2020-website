@@ -1,16 +1,17 @@
 import React from 'react';
 import axios from 'axios';
+import { connect } from 'react-redux';
+
 import { Tabs, Table } from 'antd';
 import {
     PieChart, Pie,
 } from 'recharts';
+
 import {
     getMajorHoldersUrl,
     getMajorHolderTransactionsUrl,
     getMajorHolderTransactionsRangeUrl,
 } from '../../request';
-
-
 
 const { TabPane } = Tabs;
 
@@ -59,7 +60,7 @@ const data02 = [
     { name: 'D2', value: 50 },
 ];
 
-export default class Stakeholder extends React.Component {
+class Stakeholder extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -68,9 +69,21 @@ export default class Stakeholder extends React.Component {
     }
 
     componentDidMount() {
+        this.crawlData(this.props.Symbol);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        console.log('componentWillReceiveProps Stakeholder', this.props, nextProps)
+        if (this.props.Symbol !== nextProps.Symbol) {
+            this.crawlData(nextProps.Symbol);
+        }
+    }
+
+    crawlData = (symbol) => {
+        if (!symbol) return;
         axios({
             method: 'get',
-            url: getMajorHoldersUrl()
+            url: getMajorHoldersUrl(symbol)
         })
             .then(response => {
                 if (response.data) {
@@ -83,7 +96,7 @@ export default class Stakeholder extends React.Component {
 
         axios({
             method: 'get',
-            url: getMajorHolderTransactionsUrl(),
+            url: getMajorHolderTransactionsUrl(symbol),
         })
             .then(response => {
                 if (response.data) {
@@ -96,7 +109,7 @@ export default class Stakeholder extends React.Component {
 
         axios({
             method: 'get',
-            url: getMajorHolderTransactionsRangeUrl()
+            url: getMajorHolderTransactionsRangeUrl(symbol)
         })
             .then(response => {
                 if (response.data) {
@@ -152,3 +165,15 @@ export default class Stakeholder extends React.Component {
         )
     }
 }
+
+const mapStateToProps = state => {
+    console.log(state);
+    return {
+        Symbol: state.stock.Symbol
+    }
+}
+
+const mapDispatchToProps = {
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Stakeholder);

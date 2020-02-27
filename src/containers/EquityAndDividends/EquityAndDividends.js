@@ -1,14 +1,17 @@
 import React from 'react';
 import axios from 'axios';
+import { connect } from 'react-redux';
+
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts';
+
 import {
     getEquityAndDividendsUrl,
 } from '../../request';
 
 
-export default class EquityAndDividends extends React.Component {
+class EquityAndDividends extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -17,9 +20,21 @@ export default class EquityAndDividends extends React.Component {
     }
 
     componentDidMount() {
+        this.crawlData(this.props.Symbol);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        console.log('componentWillReceiveProps EquityAndDividends', this.props, nextProps)
+        if (this.props.Symbol !== nextProps.Symbol) {
+            this.crawlData(nextProps.Symbol);
+        }
+    }
+
+    crawlData = (symbol) => {
+        if (!symbol) return;
         axios({
             method: 'get',
-            url: getEquityAndDividendsUrl(),
+            url: getEquityAndDividendsUrl(symbol),
         })
             .then(response => {
                 if (response.data) {
@@ -81,3 +96,15 @@ export default class EquityAndDividends extends React.Component {
         )
     }
 }
+
+const mapStateToProps = state => {
+    console.log(state);
+    return {
+        Symbol: state.stock.Symbol
+    }
+}
+
+const mapDispatchToProps = {
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(EquityAndDividends);
