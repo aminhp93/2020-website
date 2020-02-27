@@ -88,7 +88,7 @@ class App extends React.Component {
 
     return (
       <div className="App">
-        <div className="App-header">Header</div>
+        <div className="App-header">Header - Current Symbol {this.props.Symbol}</div>
         <div className="App-container">
           <div className="App-navigation">
             <Select

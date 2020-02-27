@@ -175,7 +175,7 @@ class Price extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('componentWillReceiveProps Profile', this.props, nextProps)
+        console.log('componentWillReceiveProps Price', this.props, nextProps)
         if (this.props.Symbol !== nextProps.Symbol) {
             this.crawlData(nextProps.Symbol);
         }
