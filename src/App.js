@@ -26,6 +26,7 @@ import debounce from 'lodash/debounce';
 import {
   setSymbol,
 } from './actions/stock';
+import Axios from 'axios';
 
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -54,6 +55,19 @@ class App extends React.Component {
     this.lastFetchId = 0;
     this.fetchUser = debounce(this.fetchUser, 800);
 
+  }
+
+  componentDidMount() {
+    Axios({
+      method: 'get',
+      url: 'http://18.207.193.124/'
+    })
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   handleChange = value => {
@@ -146,7 +160,9 @@ class App extends React.Component {
 
 const mapStateToProps = state => {
   console.log(state);
-  return {}
+  return {
+    Symbol: state.stock.Symbol
+  }
 
 }
 

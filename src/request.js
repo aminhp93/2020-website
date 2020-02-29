@@ -1,6 +1,8 @@
+export const host_2020_webapp = 'http://3.88.254.14/'
+export const host_2020_server = 'http://18.207.193.124'
 
 const hostName1 = 'https://svr1.fireant.vn';
-// const hostName3 = 'https://svr3.fireant.vn';
+export const hostName3 = 'https://svr3.fireant.vn';
 const hostName = hostName1;
 
 export function getCompanyInfoUrl(symbol) {
