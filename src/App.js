@@ -58,16 +58,17 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    Axios({
-      method: 'get',
-      url: 'http://18.207.193.124/'
-    })
-      .then(response => {
-        console.log(response)
-      })
-      .catch(error => {
-        console.log(error)
-      })
+    this.props.setSymbol('FPT')
+    // Axios({
+    //   method: 'get',
+    //   url: 'http://18.207.193.124/'
+    // })
+    //   .then(response => {
+    //     console.log(response)
+    //   })
+    //   .catch(error => {
+    //     console.log(error)
+    //   })
   }
 
   handleChange = value => {
