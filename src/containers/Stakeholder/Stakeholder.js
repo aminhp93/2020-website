@@ -127,6 +127,7 @@ class Stakeholder extends React.Component {
         } = this.state;
         const MajorIndividualHoldersArray = MajorHoldersArray.filter(i => !i.IsOrganization)
         const MajorOrganizationHoldersArray = MajorHoldersArray.filter(i => i.IsOrganization)
+        // return <div>Stack</div>
         return (
             <div className="Stakeholder">
                 <div className="Stakeholder-top-container">
@@ -150,7 +151,7 @@ class Stakeholder extends React.Component {
                         <div>
                             Co cau co dong
                         </div>
-                        <div>
+                        <div className="Stakeholder-piechart">
                             <PieChart width={400} height={400}>
                                 <Pie data={data01} dataKey="value" cx={200} cy={200} outerRadius={60} fill="#8884d8" />
                                 <Pie data={data02} dataKey="value" cx={200} cy={200} innerRadius={70} outerRadius={90} fill="#82ca9d" label />

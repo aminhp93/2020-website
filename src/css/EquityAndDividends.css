@@ -1,6 +1,7 @@
 .EquityAndDividends-top-container,
 .EquityAndDividends-bottom-container {
     display: flex;
+    width: 0;
 }
 
 .EquityAndDividends-top-container {

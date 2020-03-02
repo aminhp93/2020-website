@@ -1,9 +1,10 @@
 import React from 'react';
 
-import { Tabs, Input, Button, Select, Spin } from 'antd';
+import { Tabs, Select, Spin } from 'antd';
 import { connect } from 'react-redux';
 
 import './css/App.css';
+import './css/ChartTV.css';
 import './css/EquityAndDividends.css';
 import './css/Financial.css';
 import './css/News.css';
@@ -26,7 +27,6 @@ import debounce from 'lodash/debounce';
 import {
   setSymbol,
 } from './actions/stock';
-import Axios from 'axios';
 
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -124,7 +124,7 @@ class App extends React.Component {
           </div>
           <div className="App-content">
             <div>Content</div>
-            <div>
+            <div className="App-content-detail">
               <Tabs defaultActiveKey="7">
                 <TabPane tab="Transaction" key="1">
                   <Transaction />

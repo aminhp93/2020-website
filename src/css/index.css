@@ -25,3 +25,7 @@ code {
 .bg-white {
   background: white;
 }
+
+#root {
+  height: 100%;
+}
