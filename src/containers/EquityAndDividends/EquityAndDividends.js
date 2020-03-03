@@ -49,21 +49,24 @@ class EquityAndDividends extends React.Component {
     renderChart = (index) => {
         const { EquityAndDividends } = this.state;
         return (
-            <BarChart
-                width={500}
-                height={300}
-                data={EquityAndDividends}
-                margin={{
-                    top: 50, right: 30, left: 20, bottom: 5,
-                }}
-            >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="Year" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey={index} fill="lightblue" />
-            </BarChart>
+            <div className="test">
+                <BarChart
+                    width={500}
+                    height={300}
+                    data={EquityAndDividends}
+                    margin={{
+                        top: 50, right: 30, left: 20, bottom: 5,
+                    }}
+                >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="Year" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey={index} fill="lightblue" />
+                </BarChart>
+            </div>
+
         )
     }
 
@@ -86,7 +89,6 @@ class EquityAndDividends extends React.Component {
                         {this.renderChart('StockHolderEquity')}
                     </div>
                     <div className="bg-white">
-
                         <div>TÀI SẢN (TỶ)</div>
                         {this.renderChart('TotalAssets')}
 
