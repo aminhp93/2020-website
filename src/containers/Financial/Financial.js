@@ -14,10 +14,6 @@ import {
 } from '../../request';
 import { BILLION_UNIT } from '../../utils/unit';
 import { LATEST_FINANCIAL_REPORTS } from '../../utils/all'
-import { AgGridReact } from 'ag-grid-react';
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-balham.css';
-
 
 const data = [
     {
