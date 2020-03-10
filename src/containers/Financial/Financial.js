@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { Table, Button, Tabs, Radio } from 'antd';
 import {
-    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell,
 } from 'recharts';
 
 import {
@@ -14,6 +14,34 @@ import {
 } from '../../request';
 import { BILLION_UNIT } from '../../utils/unit';
 import { LATEST_FINANCIAL_REPORTS } from '../../utils/all'
+import { AgGridReact } from 'ag-grid-react';
+import 'ag-grid-community/dist/styles/ag-grid.css';
+import 'ag-grid-community/dist/styles/ag-theme-balham.css';
+
+
+const data = [
+    {
+        name: 'Page A', uv: 4000, pv: 2400, amt: 2400,
+    },
+    {
+        name: 'Page B', uv: 3000, pv: 1398, amt: 2210,
+    },
+    {
+        name: 'Page C', uv: 2000, pv: 9800, amt: 2290,
+    },
+    {
+        name: 'Page D', uv: 2780, pv: 3908, amt: 2000,
+    },
+    {
+        name: 'Page E', uv: 1890, pv: 4800, amt: 2181,
+    },
+    {
+        name: 'Page F', uv: 2390, pv: 3800, amt: 2500,
+    },
+    {
+        name: 'Page G', uv: 3490, pv: 4300, amt: 2100,
+    },
+];
 
 const { TabPane } = Tabs;
 
@@ -222,9 +250,30 @@ class Financial extends React.Component {
         }]
 
         if (this.state.period === 'yearly') {
+            result.push({
+                title: 'Chart',
+                render: () => {
+                    return (
+                        <div className="test">
+                            <BarChart width={10} height={10} data={data}>
+                                <Bar dataKey="uv" fill="#8884d8" />
+                            </BarChart>
+                        </div>
+
+
+                    )
+                }
+            })
             yearsArray.map(year => (
                 result.push({
                     title: year,
+                    sorter: (a, b) => {
+                        if (a.Values && a.Values.length && b.Values && b.Values.length) {
+                            const data1 = a.Values.filter(item => item.Year === year)
+                            const data2 = b.Values.filter(item => item.Year === year)
+                            return data1[0].Value - data2[0].Value
+                        }
+                    },
                     render: (params) => {
                         if (params.Values && params.Values.length) {
                             const data = params.Values.filter(item => item.Year === year)
@@ -323,7 +372,7 @@ class Financial extends React.Component {
         const { LastestFinancialReportsArray } = this.state;
         const columns = this.getColumn(LastestFinancialReportsArray);
         return (
-            <Table dataSource={LastestFinancialReportsArray} columns={columns} pagination={false} />
+            <Table dataSource={LastestFinancialReportsArray} columns={columns} pagination={false} size="large" />
         )
     }
 

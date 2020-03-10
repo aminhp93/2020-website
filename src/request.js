@@ -1,9 +1,9 @@
 export const host_2020_webapp = 'http://3.88.254.14/'
 export const host_2020_server = 'http://18.207.193.124'
-
-const hostName1 = 'https://svr1.fireant.vn';
+export const localhost = 'http://localhost:8000'
+export const hostName1 = 'https://svr1.fireant.vn';
 export const hostName3 = 'https://svr3.fireant.vn';
-const hostName = hostName1;
+const hostName = host_2020_server;
 
 export function getCompanyInfoUrl(symbol) {
     return `${hostName}/api/Data/Companies/CompanyInfo?symbol=${symbol}`

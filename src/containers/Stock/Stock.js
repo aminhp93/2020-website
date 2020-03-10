@@ -62,16 +62,16 @@ class Stock extends React.Component {
 
     componentDidMount() {
         this.props.setSymbol('FPT')
-        // Axios({
-        //   method: 'get',
-        //   url: 'http://18.207.193.124/'
-        // })
-        //   .then(response => {
-        //     console.log(response)
-        //   })
-        //   .catch(error => {
-        //     console.log(error)
-        //   })
+        Axios({
+            method: 'get',
+            url: 'http://localhost:8000/api/Data/Companies/CompanyInfo/?symbol=FPT'
+        })
+            .then(response => {
+                console.log(response)
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
 
     handleChange = value => {
@@ -128,7 +128,7 @@ class Stock extends React.Component {
                     <div className="App-content">
                         <div>Content</div>
                         <div>
-                            <Tabs defaultActiveKey="7">
+                            <Tabs defaultActiveKey="2">
                                 <TabPane tab="Transaction" key="1">
                                     <Transaction />
                                 </TabPane>
