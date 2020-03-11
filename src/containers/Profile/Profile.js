@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 
-import { Table } from 'antd';
+import { Table, Button } from 'antd';
 
 import {
     getCompanyInfoUrl,
@@ -10,6 +10,7 @@ import {
     getSubCompaniesUrl,
     getCompanyOfficersUrl,
     getCompanyTransactionsUrl,
+    getCompanyInfoUpdateUrl,
 } from '../../request';
 
 const subCompaniesColumns = [
@@ -156,6 +157,27 @@ class Profile extends React.Component {
             })
             .catch(error => console.log(error))
     }
+
+    handleUpdateCompanyInfo = () => {
+        // console.log(162, this.props.symbol)
+        // const symbol = this.props.symbol;
+        let symbol = 'FPT'
+        // if (!symbol) return;
+        axios({
+            method: 'put',
+            url: getCompanyInfoUpdateUrl(symbol)
+        })
+            .then(response => {
+                console.log(response)
+                if (response.data) {
+                    // this.setState({
+                    //     CompanyInfoObj: response.data
+                    // })
+                }
+            })
+            .catch(error => console.log(error))
+    }
+    // RENDER PART
 
     renderDetailBasic = () => {
         const {
@@ -383,6 +405,9 @@ class Profile extends React.Component {
                     <div>
                         {this.renderTransactions()}
                     </div>
+                </div>
+                <div>
+                    <Button onClick={() => this.handleUpdateCompanyInfo()}>Update CompanyInfo</Button>
                 </div>
             </div>
 

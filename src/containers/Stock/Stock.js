@@ -62,16 +62,16 @@ class Stock extends React.Component {
 
     componentDidMount() {
         this.props.setSymbol('FPT')
-        Axios({
-            method: 'get',
-            url: 'http://localhost:8000/api/Data/Companies/CompanyInfo/?symbol=FPT'
-        })
-            .then(response => {
-                console.log(response)
-            })
-            .catch(error => {
-                console.log(error)
-            })
+        // Axios({
+        //     method: 'get',
+        //     url: 'http://localhost:8000/api/Data/Companies/CompanyInfo/?symbol=FPT'
+        // })
+        //     .then(response => {
+        //         console.log(response)
+        //     })
+        //     .catch(error => {
+        //         console.log(error)
+        //     })
     }
 
     handleChange = value => {
