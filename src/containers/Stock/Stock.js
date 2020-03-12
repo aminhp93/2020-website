@@ -24,6 +24,7 @@ import Profile from '../Profile/Profile';
 import Stakeholder from '../Stakeholder/Stakeholder';
 import Technical from '../Technical/Technical';
 import Transaction from '../Transaction/Transaction';
+import Analysis from '../Analysis/Analysis';
 import debounce from 'lodash/debounce';
 
 import {
@@ -124,38 +125,49 @@ class Stock extends React.Component {
                                 <Option key={d.Symbol}>{d.Symbol}</Option>
                             ))}
                         </Select>
-                    </div>
-                    <div className="App-content">
-                        <div>Content</div>
                         <div>
-                            <Tabs defaultActiveKey="2">
-                                <TabPane tab="Transaction" key="1">
-                                    <Transaction />
+                            <Tabs defaultActiveKey="1" tabPosition="left">
+                                <TabPane tab="OverallMarket" key="1">
+                                    <div className="App-content">
+                                        <div>Content</div>
+                                        <div>
+                                            <Tabs defaultActiveKey="2">
+                                                <TabPane tab="Transaction" key="1">
+                                                    <Transaction />
+                                                </TabPane>
+                                                <TabPane tab="Profile" key="2">
+                                                    <Profile />
+                                                </TabPane>
+                                                <TabPane tab="Stakeholder" key="3">
+                                                    <Stakeholder />
+                                                </TabPane>
+                                                <TabPane tab="EquityAndDividends" key="4">
+                                                    <EquityAndDividends />
+                                                </TabPane>
+                                                <TabPane tab="News" key="5">
+                                                    <News />
+                                                </TabPane>
+                                                <TabPane tab="Price" key="6">
+                                                    <Price />
+                                                </TabPane>
+                                                <TabPane tab="Financial" key="7">
+                                                    <Financial />
+                                                </TabPane>
+                                                <TabPane tab="Technical" key="8">
+                                                    <Technical />
+                                                </TabPane>
+                                            </Tabs>
+                                        </div>
+                                    </div>
                                 </TabPane>
-                                <TabPane tab="Profile" key="2">
-                                    <Profile />
+                                <TabPane tab="Analysis" key="2">
+                                    <Analysis />
                                 </TabPane>
-                                <TabPane tab="Stakeholder" key="3">
-                                    <Stakeholder />
-                                </TabPane>
-                                <TabPane tab="EquityAndDividends" key="4">
-                                    <EquityAndDividends />
-                                </TabPane>
-                                <TabPane tab="News" key="5">
-                                    <News />
-                                </TabPane>
-                                <TabPane tab="Price" key="6">
-                                    <Price />
-                                </TabPane>
-                                <TabPane tab="Financial" key="7">
-                                    <Financial />
-                                </TabPane>
-                                <TabPane tab="Technical" key="8">
-                                    <Technical />
-                                </TabPane>
+
                             </Tabs>
                         </div>
                     </div>
+
                 </div>
             </div>
         );
