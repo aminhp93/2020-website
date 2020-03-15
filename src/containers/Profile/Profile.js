@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
-
+import moment from 'moment';
 import { Table, Button } from 'antd';
 
 import {
@@ -13,6 +13,9 @@ import {
     getCompanyInfoUpdateUrl,
 } from '../../request';
 
+import { BILLION_UNIT } from '../../utils/unit';
+import { formatNumber } from '../../utils/all';
+
 const subCompaniesColumns = [
     {
         title: 'Cong ty con',
@@ -21,13 +24,15 @@ const subCompaniesColumns = [
     },
     {
         title: 'Vốn điều lệ	',
-        dataIndex: 'CharterCapital',
-        key: 'CharterCapital',
+        render: (params) => {
+            return `${formatNumber(((params.CharterCapital || 0) / BILLION_UNIT).toFixed(0))} ty`
+        }
     },
     {
         title: 'Tỷ lệ nắm giữ',
-        dataIndex: 'Ownership',
-        key: 'Ownership',
+        render: (params) => {
+            return `${(params.Ownership * 100).toFixed(0)}%`
+        }
     },
 ]
 
@@ -43,13 +48,12 @@ const officersColumns = [
 const companyTransactionsColumns = [
     {
         title: 'Ngày',
-        dataIndex: 'ExecutionDate',
-        key: 'ExecutionDate',
+        render: params => {
+            return moment(params.ExecutionDate || '').format('DD/MM/YYYY');
+        }
     },
     {
         title: 'Giao dịch',
-        // dataIndex: 'Type',
-        // key: 'Type',
         render: params => {
             return params.Type === 0 ? 'Mua' : 'Ban'
         }
@@ -132,7 +136,7 @@ class Profile extends React.Component {
 
         axios({
             method: 'get',
-            url: getCompanyOfficersUrl(),
+            url: getCompanyOfficersUrl(symbol),
         })
             .then(response => {
                 if (response.data) {
@@ -146,7 +150,7 @@ class Profile extends React.Component {
 
         axios({
             method: 'get',
-            url: getCompanyTransactionsUrl()
+            url: getCompanyTransactionsUrl(symbol)
         })
             .then(response => {
                 if (response.data) {
@@ -185,8 +189,8 @@ class Profile extends React.Component {
         } = this.state;
         const SymbolStock = CompanyInfoObj.Symbol || '';
         const ICBCode = CompanyInfoObj.ICBCode || '';
-        const EstablishmentDate = CompanyInfoObj.EstablishmentDate || '';
-        const CharterCapital = CompanyInfoObj.CharterCapital || '';
+        const EstablishmentDate = moment(CompanyInfoObj.EstablishmentDate || '').format('DD/MM/YYYY');
+        const CharterCapital = formatNumber(((CompanyInfoObj.CharterCapital || 0) / BILLION_UNIT).toFixed(0));
         const Employees = CompanyInfoObj.Employees || '';
         const Branches = CompanyInfoObj.Branches || '';
         return (
@@ -205,7 +209,7 @@ class Profile extends React.Component {
                 </div>
                 <div className="row">
                     <div>Vốn điều lệ</div>
-                    <div>{CharterCapital}</div>
+                    <div>{CharterCapital} ty</div>
                 </div>
                 <div className="row">
                     <div>Số lượng nhân sự</div>
@@ -223,11 +227,11 @@ class Profile extends React.Component {
         const {
             CompanyInfoObj,
         } = this.state;
-        const DateOfListing = CompanyInfoObj.DateOfListing || '';
+        const DateOfListing = moment(CompanyInfoObj.DateOfListing || '').format('DD/MM/YYYY');
         const Exchange = CompanyInfoObj.Exchange || '';
-        const InitialListingPrice = CompanyInfoObj.InitialListingPrice || '';
-        const DateOfIssue = CompanyInfoObj.DateOfIssue || '';
-        const ListingVolume = CompanyInfoObj.ListingVolume || '';
+        const InitialListingPrice = formatNumber(CompanyInfoObj.InitialListingPrice || 0);
+        const DateOfIssue = moment(CompanyInfoObj.DateOfIssue || '').format('DD/MM/YYYY');
+        const ListingVolume = formatNumber(CompanyInfoObj.ListingVolume || 0);
         return (
             <div>
                 <div className="row">
@@ -262,15 +266,15 @@ class Profile extends React.Component {
         const {
             LastestFinancialInfoObj,
         } = this.state;
-        const MarketCapitalization = LastestFinancialInfoObj.MarketCapitalization || '';
-        const SharesOutstanding = LastestFinancialInfoObj.SharesOutstanding || '';
-        const EPS = LastestFinancialInfoObj.EPS || '';
-        const PE = LastestFinancialInfoObj.PE || '';
+        const MarketCapitalization = formatNumber(((LastestFinancialInfoObj.MarketCapitalization || 0) / BILLION_UNIT).toFixed(0));
+        const SharesOutstanding = formatNumber(LastestFinancialInfoObj.SharesOutstanding || 0);
+        const EPS = formatNumber((LastestFinancialInfoObj.EPS || 0).toFixed(0));
+        const PE = formatNumber((LastestFinancialInfoObj.PE || 0).toFixed(0));
         return (
             <div className="Profile-statistic-left-container">
                 <div className="row">
                     <div>Thị giá vốn</div>
-                    <div>{MarketCapitalization}</div>
+                    <div>{MarketCapitalization} ty</div>
                 </div>
                 <div className="row">
                     <div>Số SLCP lưu hành</div>
@@ -292,27 +296,27 @@ class Profile extends React.Component {
         const {
             LastestFinancialInfoObj,
         } = this.state;
-        const NetSales = LastestFinancialInfoObj.NetSales || '';
-        const ProfitAfterIncomeTaxes = LastestFinancialInfoObj.ProfitAfterIncomeTaxes || '';
-        const TotalAssets = LastestFinancialInfoObj.TotalAssets || '';
-        const ROE = LastestFinancialInfoObj.ROE || '';
+        const NetSales = formatNumber(((LastestFinancialInfoObj.NetSales || 0) / BILLION_UNIT).toFixed(0));
+        const ProfitAfterIncomeTaxes = formatNumber(((LastestFinancialInfoObj.ProfitAfterIncomeTaxes || 0) / BILLION_UNIT).toFixed(0));
+        const TotalAssets = formatNumber(((LastestFinancialInfoObj.TotalAssets || 0) / BILLION_UNIT).toFixed(0));
+        const ROE = ((LastestFinancialInfoObj.ROE || 0) * 100).toFixed(2);
         return (
             <div className="Profile-statistic-right-container">
                 <div className="row">
                     <div>Doanh thu (4 quý)</div>
-                    <div>{NetSales}</div>
+                    <div>{NetSales} ty</div>
                 </div>
                 <div className="row">
                     <div>Lợi nhuận (4 quý)</div>
-                    <div>{ProfitAfterIncomeTaxes}</div>
+                    <div>{ProfitAfterIncomeTaxes} ty</div>
                 </div>
                 <div className="row">
                     <div>Tài sản (Quý gần nhất)</div>
-                    <div>{TotalAssets}</div>
+                    <div>{TotalAssets} ty</div>
                 </div>
                 <div className="row">
                     <div>ROE (4 quý)</div>
-                    <div>{ROE}</div>
+                    <div>{ROE}%</div>
                 </div>
             </div>
         )
@@ -328,7 +332,7 @@ class Profile extends React.Component {
     renderOfficers = () => {
         const { CompanyOfficersArray } = this.state;
         return (
-            <Table dataSource={CompanyOfficersArray} columns={officersColumns} pagination={false} />
+            <Table dataSource={CompanyOfficersArray} columns={officersColumns} pagination={false} showHeader={false} />
         )
     }
 
@@ -348,7 +352,7 @@ class Profile extends React.Component {
         return <div className="Profile">
             <div className="Profile-left-container">
                 <div className="Profile-introduction bg-white">
-                    <div className="Profile-introduction-title">
+                    <div className="Profile-introduction-title header">
                         Gioi thieu
                     </div>
                     <div className="Profile-introduction-container">
@@ -357,13 +361,13 @@ class Profile extends React.Component {
                         </div>
                         <div className="Profile-introduction-detail">
                             <div className="Profile-introduction-detail-basic">
-                                <div>
+                                <div className="Profile-introduction-detail-basic-header">
                                     Thong tin co ban
                                 </div>
                                 {this.renderDetailBasic()}
                             </div>
                             <div className="Profile-introduction-detail-public">
-                                <div>
+                                <div className="Profile-introduction-detail-public-header">
                                     Thong tin niem yet
                                 </div>
                                 {this.renderDetailPublic()}
@@ -372,7 +376,7 @@ class Profile extends React.Component {
                     </div>
                 </div>
                 <div className="Profile-statistic bg-white">
-                    <div>
+                    <div className="header">
                         Thong ke co ban
                     </div>
                     <div className="Profile-statistic-container">
@@ -381,7 +385,7 @@ class Profile extends React.Component {
                     </div>
                 </div>
                 <div className="Profile-subcompanies bg-white">
-                    <div>
+                    <div className="header">
                         Cong ty con va lien ket
                     </div>
                     <div>
@@ -391,7 +395,7 @@ class Profile extends React.Component {
             </div>
             <div className="Profile-right-container">
                 <div className="Profile-officers bg-white">
-                    <div>
+                    <div className="header">
                         Ban lanh dao
                     </div>
                     <div>
@@ -399,7 +403,7 @@ class Profile extends React.Component {
                     </div>
                 </div>
                 <div className="Profile-transactions bg-white">
-                    <div>
+                    <div className="header">
                         Giao dich
                     </div>
                     <div>

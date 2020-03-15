@@ -177,12 +177,77 @@ export default class Transaction extends React.Component {
         )
     }
 
+    renderOrderStatistic = () => {
+        const dataDatMua = [
+            {
+                title: '',
+                detail: [440, 48.15]
+            },
+            {
+                title: '',
+                detail: [440, 48.15]
+            },
+            {
+                title: '',
+                detail: [440, 48.15]
+            }
+        ]
+        const dataDatBan = [
+            {
+                title: '',
+                detail: [440, 48.15]
+            },
+            {
+                title: '',
+                detail: [440, 48.15]
+            },
+            {
+                title: '',
+                detail: [440, 48.15]
+            }
+        ]
+        return (
+            <React.Fragment>
+
+
+                <List
+                    header={<div>ĐẶT MUA</div>}
+                    footer={<div>Footer</div>}
+                    bordered
+                    dataSource={dataDatMua}
+                    renderItem={item => (
+                        <List.Item>
+                            <div className="row">
+                                <div>{item.title}</div>
+                                <div>{item.detail[0]} - {item.detail[1]}</div>
+                            </div>
+                        </List.Item>
+                    )}
+                />
+                <List
+                    header={<div>ĐẶT BÁN</div>}
+                    footer={<div>Footer</div>}
+                    bordered
+                    dataSource={dataDatBan}
+                    renderItem={item => (
+                        <List.Item>
+                            <div className="row">
+                                <div>{item.title}</div>
+                                <div>{item.detail[0]} - {item.detail[1]}</div>
+                            </div>
+                        </List.Item>
+                    )}
+                />
+            </React.Fragment>
+        )
+    }
+
     render() {
         return <div className="Transaction">
             <div className="Transaction-left-container">
                 <div className="Transaction-chartTV">
-                    {/* <ChartTV /> */}
-                    chartTV
+                    <ChartTV />
+                    {/* chartTV */}
                 </div>
                 <div className="Transaction-summary">
                     <div className="row">
@@ -198,27 +263,20 @@ export default class Transaction extends React.Component {
             </div>
             <div className="Transaction-right-container">
                 <div className="Trasaction-order-statistic">
-                    <List
-                        header={<div>Header</div>}
-                        footer={<div>Footer</div>}
-                        bordered
-                        dataSource={data}
-                        renderItem={item => (
-                            <List.Item>
-                                <Typography.Text mark>[ITEM]</Typography.Text> {item}
-                            </List.Item>
-                        )}
-                    />
+                    {this.renderOrderStatistic()}
                 </div>
                 <div className="Trasaction-order-deal-statistic">
                     <Tabs defaultActiveKey="1">
-                        <TabPane tab="Tab 1" key="1">
+                        <TabPane tab="Chi tiet" key="1">
                             Content of Tab Pane 1
                         </TabPane>
-                        <TabPane tab="Tab 2" key="2">
+                        <TabPane tab="Muc gia" key="2">
                             Content of Tab Pane 2
                         </TabPane>
-                        <TabPane tab="Tab 3" key="3">
+                        <TabPane tab="Toc do" key="3">
+                            Content of Tab Pane 3
+                        </TabPane>
+                        <TabPane tab="Cung cap" key="4">
                             Content of Tab Pane 3
                         </TabPane>
                     </Tabs>

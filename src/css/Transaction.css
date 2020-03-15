@@ -2,9 +2,17 @@
     display: flex;
 }
 
+.Transaction-left-container {
+    width: 700px;
+}
+
+.Transaction-right-container {
+    flex: 1;
+}
+
 .Transaction-chartTV {
-    height: 400px;
-    width: 600px;
+    /* height: 400px; */
+    width: 700px;
 }
 
 .Transaction-summary {
@@ -18,4 +26,14 @@
 
 .Transaction-summary .row > div {
     width: 50%;
+}
+
+.Trasaction-order-statistic {
+    display: flex;
+    /* flex-direction: column; */
+    justify-content: space-between;
+}
+
+.Trasaction-order-statistic > div {
+    width: 100%;
 }

@@ -36,3 +36,10 @@
     width: 50%;
     margin: 0 20px;
 }
+
+.Profile-introduction-detail-basic-header,
+.Profile-introduction-detail-public-header {
+    align-items: flex-start;
+    display: flex;
+    background-color: gray;
+}
