@@ -1,0 +1,21 @@
+.Transaction {
+    display: flex;
+}
+
+.Transaction-chartTV {
+    height: 400px;
+    width: 600px;
+}
+
+.Transaction-summary {
+    display: flex;
+    flex-direction: column;
+}
+
+.Transaction-summary .row {
+    width: 100%;
+}
+
+.Transaction-summary .row > div {
+    width: 50%;
+}

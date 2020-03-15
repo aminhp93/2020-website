@@ -1,8 +1,10 @@
 .chartTV {
-    height: 600px;
-    width: 1000px;
-  }
+  /* height: 100px;
+  width: 600px; */
+}
   
-  .chartTV > iframe {
-    height: 100% !important;
-  }
+.chartTV > iframe {
+  /* height: 100% !important; */
+  height: 100px !important;
+
+}
