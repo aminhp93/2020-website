@@ -131,7 +131,7 @@ class Stock extends React.Component {
                                     <div className="App-content">
                                         <div>Content</div>
                                         <div>
-                                            <Tabs defaultActiveKey="1">
+                                            <Tabs defaultActiveKey="7">
                                                 <TabPane tab="Transaction" key="1">
                                                     <Transaction />
                                                 </TabPane>

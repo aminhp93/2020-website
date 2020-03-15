@@ -1,8 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
-
-import { Table, Button, Tabs, Radio } from 'antd';
+import { cloneDeep } from 'lodash';
+import { Table, Button, Tabs, Radio, List } from 'antd';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell,
 } from 'recharts';
@@ -11,64 +11,13 @@ import {
     getYearlyFinancialInfoUrl,
     getQuarterlyFinancialInfoUrl,
     getLastestFinancialReportsUrl,
+    getLastestFinancialInfoUrl,
 } from '../../request';
 import { BILLION_UNIT } from '../../utils/unit';
-import { LATEST_FINANCIAL_REPORTS } from '../../utils/all'
-
-const data = [
-    {
-        name: 'Page A', uv: 4000, pv: 2400, amt: 2400,
-    },
-    {
-        name: 'Page B', uv: 3000, pv: 1398, amt: 2210,
-    },
-    {
-        name: 'Page C', uv: 2000, pv: 9800, amt: 2290,
-    },
-    {
-        name: 'Page D', uv: 2780, pv: 3908, amt: 2000,
-    },
-    {
-        name: 'Page E', uv: 1890, pv: 4800, amt: 2181,
-    },
-    {
-        name: 'Page F', uv: 2390, pv: 3800, amt: 2500,
-    },
-    {
-        name: 'Page G', uv: 3490, pv: 4300, amt: 2100,
-    },
-];
+import { LATEST_FINANCIAL_REPORTS, formatNumber } from '../../utils/all'
 
 const { TabPane } = Tabs;
 
-const columns = [
-    {
-        title: 'Quarter',
-        render: (params) => {
-            return 'Quy ' + params.Quarter
-        }
-    },
-    {
-        title: '2016',
-        dataIndex: '2016',
-        key: '2016',
-    },
-    {
-        title: '2017',
-        dataIndex: '2017',
-        key: '2017',
-    },
-    {
-        title: '2018',
-        dataIndex: '2018',
-        key: '2018',
-    },
-    {
-        title: '2019',
-        dataIndex: '2019',
-        key: '2019',
-    },
-];
 
 class Financial extends React.Component {
     constructor(props) {
@@ -79,7 +28,8 @@ class Financial extends React.Component {
             LastestFinancialReportsArray: [],
             isFinancialReports: false,
             period: 'yearly',
-            lastestFinancialReportsType: LATEST_FINANCIAL_REPORTS.TYPE_2
+            lastestFinancialReportsType: LATEST_FINANCIAL_REPORTS.TYPE_2,
+            LastestFinancialInfoObj: {},
         }
     }
 
@@ -94,33 +44,51 @@ class Financial extends React.Component {
         }
     }
 
-    crawlData = (symbol) => {
+    crawlData = async (symbol) => {
         if (!symbol) return;
-        axios({
+        let YearlyFinancialInfoArray = null;
+        let QuarterlyFinancialInfoArray = null
+        let LastestFinancialInfoObj = null
+        await axios({
             method: 'get',
             url: getYearlyFinancialInfoUrl(symbol)
         })
             .then(response => {
                 if (response.data) {
-                    this.setState({
-                        YearlyFinancialInfoArray: response.data
-                    })
+                    YearlyFinancialInfoArray = response.data
                 }
             })
             .catch(error => console.log(error))
 
-        axios({
+        await axios({
             method: 'get',
             url: getQuarterlyFinancialInfoUrl(symbol)
         })
             .then(response => {
                 if (response.data) {
-                    this.setState({
-                        QuarterlyFinancialInfoArray: response.data
-                    })
+                    QuarterlyFinancialInfoArray = response.data
                 }
             })
             .catch(error => console.log(error))
+
+        await axios({
+            method: 'get',
+            url: getLastestFinancialInfoUrl(symbol)
+        })
+            .then(response => {
+                if (response.data) {
+                    LastestFinancialInfoObj = response.data
+                }
+            })
+            .catch(error => console.log(error))
+        if (YearlyFinancialInfoArray && QuarterlyFinancialInfoArray && LastestFinancialInfoObj) {
+            this.setState({
+                YearlyFinancialInfoArray,
+                QuarterlyFinancialInfoArray,
+                LastestFinancialInfoObj
+            })
+        }
+
     }
 
     getLastestFinancialReports = (type) => {
@@ -159,7 +127,7 @@ class Financial extends React.Component {
             .catch(error => console.log(error))
     }
 
-    mapDataRevenueTable = (data, data2) => {
+    mapDataRevenueTable = (data, data2, isProfit) => {
         if (!data || !data2) return []
         let result = [];
         let keys = [2016, 2017, 2018, 2019]
@@ -172,19 +140,25 @@ class Financial extends React.Component {
                     itemObj['Quarter'] = j
                     for (let k = 0; k < keys.length; k++) {
                         if (item.Year === keys[k]) {
-                            itemObj[keys[k]] = (item.NetSales_MRQ / BILLION_UNIT).toFixed(2)
+                            if (isProfit) {
+                                itemObj[keys[k]] = (item.ProfitAfterTax_MRQ / BILLION_UNIT).toFixed(2)
+                            } else {
+                                itemObj[keys[k]] = (item.NetSales_MRQ / BILLION_UNIT).toFixed(2)
+                            }
+
                         }
                     }
                 }
             }
             result.push(itemObj)
         }
+        const indexTotal = isProfit ? 'ProfitAfterTax' : 'Sales'
         result.push({
             'Quarter': 'total',
-            '2016': data2.filter(item => item.Year === 2016).length && (data2.filter(item => item.Year === 2016)[0]['Sales'] / BILLION_UNIT).toFixed(2),
-            '2017': data2.filter(item => item.Year === 2017).length && (data2.filter(item => item.Year === 2017)[0]['Sales'] / BILLION_UNIT).toFixed(2),
-            '2018': data2.filter(item => item.Year === 2018).length && (data2.filter(item => item.Year === 2018)[0]['Sales'] / BILLION_UNIT).toFixed(2),
-            '2019': data2.filter(item => item.Year === 2019).length && (data2.filter(item => item.Year === 2019)[0]['Sales'] / BILLION_UNIT).toFixed(2),
+            '2016': data2.filter(item => item.Year === 2016).length && (data2.filter(item => item.Year === 2016)[0][indexTotal] / BILLION_UNIT).toFixed(2),
+            '2017': data2.filter(item => item.Year === 2017).length && (data2.filter(item => item.Year === 2017)[0][indexTotal] / BILLION_UNIT).toFixed(2),
+            '2018': data2.filter(item => item.Year === 2018).length && (data2.filter(item => item.Year === 2018)[0][indexTotal] / BILLION_UNIT).toFixed(2),
+            '2019': data2.filter(item => item.Year === 2019).length && (data2.filter(item => item.Year === 2019)[0][indexTotal] / BILLION_UNIT).toFixed(2),
         })
         return result
     }
@@ -200,6 +174,8 @@ class Financial extends React.Component {
     handleCloseFinancialReports = () => {
         this.setState({
             isFinancialReports: false
+        }, () => {
+            this.crawlData(this.props.Symbol);
         })
     }
 
@@ -302,65 +278,106 @@ class Financial extends React.Component {
         });
     };
 
-
-
     // RENDER PART
 
-    renderRevenueTable = () => {
+    renderRevenueTable = (isProfit) => {
+        const columns = [
+            {
+                title: 'Quarter',
+                render: (params) => {
+                    return 'Quy ' + params.Quarter
+                }
+            },
+            {
+                title: '2016',
+                render: (params) => {
+                    return formatNumber((Number(params['2016']) || 0).toFixed(0))
+                }
+            },
+            {
+                title: '2017',
+                render: (params) => {
+                    return formatNumber((Number(params['2017']) || 0).toFixed(0))
+                }
+            },
+            {
+                title: '2018',
+                render: (params) => {
+                    return formatNumber((Number(params['2018']) || 0).toFixed(0))
+                }
+            },
+            {
+                title: '2019',
+                render: (params) => {
+                    return formatNumber((Number(params['2019']) || 0).toFixed(0))
+                }
+            },
+        ];
+
         const { QuarterlyFinancialInfoArray, YearlyFinancialInfoArray } = this.state;
-        const mappeddata = this.mapDataRevenueTable(QuarterlyFinancialInfoArray, YearlyFinancialInfoArray);
+        const mappeddata = this.mapDataRevenueTable(QuarterlyFinancialInfoArray, YearlyFinancialInfoArray, isProfit);
         return <Table dataSource={mappeddata} columns={columns} pagination={false} />
     }
 
-    renderRevenueQuarterChart = (index) => {
+    renderRevenueQuarterChart = (isProfit) => {
+        const index = isProfit ? 'ProfitAfterTax_MRQ' : 'NetSales_MRQ'
         const { QuarterlyFinancialInfoArray } = this.state;
-        const data = QuarterlyFinancialInfoArray.map(item => {
-            item.NetSales_MRQ = (item.NetSales_MRQ / BILLION_UNIT).toFixed(2)
+        const data = cloneDeep(QuarterlyFinancialInfoArray).map(item => {
+            item[index] = (item[index] / BILLION_UNIT).toFixed(2)
+            item.Name = `Q${item.Quarter} ${item.Year}`
             return item
         }).sort((a, b) => {
             return a.Year !== b.Year ? a.Year - b.Year : a.Quarter - b.Quarter
         }).reverse().slice(0, 5).reverse()
+
         return (
-            <BarChart
-                width={500}
-                height={300}
-                data={data}
-                margin={{
-                    top: 50, right: 30, left: 20, bottom: 5,
-                }}
-            >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="Year" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey={'NetSales_MRQ'} fill="lightblue" />
-            </BarChart>
+            <div className="Financial-revenue-quarter-chart-container">
+                <BarChart
+                    width={400}
+                    height={300}
+                    data={data}
+                    margin={{
+                        // top: 50, right: 30, left: 20, bottom: 5,
+                    }}
+                >
+                    {/* <CartesianGrid strokeDasharray="3 3" /> */}
+                    <XAxis dataKey="Name" tick={{ fontSize: 10 }} />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey={index} fill="lightblue" barSize={30} />
+                </BarChart>
+            </div>
+
         )
     }
 
-    renderRevenueYearChart = () => {
+    renderRevenueYearChart = (isProfit) => {
+        const index = isProfit ? 'ProfitAfterTax' : 'Sales'
         const { YearlyFinancialInfoArray } = this.state;
-        const data = YearlyFinancialInfoArray.map(item => {
-            // item.Sales = (item.Sales / 10000).toFixed(2)
+        const data = cloneDeep(YearlyFinancialInfoArray).map(item => {
+            item[index] = (Number(item[index]) / BILLION_UNIT).toFixed(0)
             return item
         }).sort((a, b) => a.Year - b.Year)
         return (
-            <BarChart
-                width={500}
-                height={300}
-                data={data}
-                margin={{
-                    top: 50, right: 30, left: 20, bottom: 5,
-                }}
-            >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="Year" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey={'Sales'} fill="lightblue" />
-            </BarChart>
+            <div className="Financial-revenue-year-chart-container">
+
+                <BarChart
+                    width={400}
+                    height={300}
+                    data={data}
+                    margin={{
+                        // top: 50, right: 30, left: 20, bottom: 5,
+                    }}
+                >
+                    {/* <CartesianGrid strokeDasharray="3 3" /> */}
+                    <XAxis dataKey="Year" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey={index} fill="lightblue" barSize={30} />
+                </BarChart>
+            </div>
         )
     }
 
@@ -368,7 +385,203 @@ class Financial extends React.Component {
         const { LastestFinancialReportsArray } = this.state;
         const columns = this.getColumn(LastestFinancialReportsArray);
         return (
-            <Table dataSource={LastestFinancialReportsArray} columns={columns} pagination={false} size="large" />
+            <Table dataSource={LastestFinancialReportsArray} columns={columns} pagination={false} size="small" />
+        )
+    }
+
+    renderEvaluation = () => {
+        const { LastestFinancialInfoObj } = this.state;
+        const dataEvaluation = [
+            {
+                'title': 'P/E',
+                'detail': (LastestFinancialInfoObj.PE || 0).toFixed(2)
+            },
+            {
+                'title': 'P/S',
+                'detail': (LastestFinancialInfoObj.PS || 0).toFixed(2)
+            },
+            {
+                'title': 'P/B',
+                'detail': (LastestFinancialInfoObj.PB || 0).toFixed(2)
+            },
+            {
+                'title': 'EPS',
+                'detail': (LastestFinancialInfoObj.EPS || 0).toFixed(2)
+            }
+        ]
+        return (
+            <div>
+                <List
+                    header={<div>ĐỊNH GIÁ</div>}
+                    footer={<div>Footer</div>}
+                    bordered
+                    dataSource={dataEvaluation}
+                    renderItem={item => (
+                        <List.Item>
+                            <div className="row">
+                                <div>{item.title}</div>
+                                <div>{item.detail}</div>
+                            </div>
+                        </List.Item>
+                    )}
+                />
+            </div>
+        )
+    }
+
+    renderFinancialPower = () => {
+        const { LastestFinancialInfoObj } = this.state;
+
+        const dataFinancialPower = [
+            {
+                'title': 'Thanh toán nhanh',
+                'detail': (LastestFinancialInfoObj.QuickRatio || 0).toFixed(2)
+            },
+            {
+                'title': 'Thanh toán hiện hành',
+                'detail': (LastestFinancialInfoObj.CurrentRatio || 0).toFixed(2)
+            },
+            {
+                'title': 'Tổng nợ/Vốn CSH',
+                'detail': (LastestFinancialInfoObj.TotalDebtOverEquity || 0).toFixed(2)
+            },
+            {
+                'title': 'Tổng nợ/Tổng tài sản',
+                'detail': (LastestFinancialInfoObj.TotalDebtOverAssets || 0).toFixed(2)
+            }
+        ]
+        return (
+            <div>
+                <List
+                    header={<div>SỨC MẠNH TÀI CHÍNH</div>}
+                    footer={<div>Footer</div>}
+                    bordered
+                    dataSource={dataFinancialPower}
+                    renderItem={item => (
+                        <List.Item>
+                            <div className="row">
+                                <div>{item.title}</div>
+                                <div>{item.detail}</div>
+                            </div>
+                        </List.Item>
+                    )}
+                />
+            </div>
+        )
+    }
+
+    renderRunningAbility = () => {
+        const { LastestFinancialInfoObj } = this.state;
+
+        const dataRunningAbility = [
+            {
+                'title': 'Vòng quay tổng tài sản',
+                'detail': (LastestFinancialInfoObj.TotalAssetsTurnover || 0).toFixed(2)
+            },
+            {
+                'title': 'Vòng quay hàng tồn kho',
+                'detail': (LastestFinancialInfoObj.InventoryTurnover || 0).toFixed(2)
+            },
+            {
+                'title': 'Vòng quay các khoản phải thu',
+                'detail': (LastestFinancialInfoObj.ReceivablesTurnover || 0).toFixed(2)
+            }
+        ]
+        return (
+            <div>
+                <List
+                    header={<div>KHẢ NĂNG HOẠT ĐỘNG</div>}
+                    footer={<div>Footer</div>}
+                    bordered
+                    dataSource={dataRunningAbility}
+                    renderItem={item => (
+                        <List.Item>
+                            <div className="row">
+                                <div>{item.title}</div>
+                                <div>{item.detail}</div>
+                            </div>
+                        </List.Item>
+                    )}
+                />
+            </div>
+        )
+    }
+
+    renderMakeProfitAbility = () => {
+        const { LastestFinancialInfoObj } = this.state;
+
+        const dataMakeProfitAbility = [
+            {
+                'title': 'Tỷ lệ lãi gộp',
+                'detail': `${((LastestFinancialInfoObj.GrossMargin || 0) * 100).toFixed(2)}%`
+            },
+            {
+                'title': 'Tỷ lệ lãi từ hoạt động KD',
+                'detail': `${((LastestFinancialInfoObj.OperatingMargin || 0) * 100).toFixed(2)}%`
+            },
+            {
+                'title': 'Tỷ lệ EBIT',
+                'detail': `${((LastestFinancialInfoObj.EBITMargin || 0) * 100).toFixed(2)}%`
+            },
+            {
+                'title': 'Tỷ lệ lãi ròng',
+                'detail': `${((LastestFinancialInfoObj.NetProfitMargin || 0) * 100).toFixed(2)}%`
+            }
+        ]
+        return (
+            <div>
+                <List
+                    header={<div>KHẢ NĂNG SINH LỢI</div>}
+                    footer={<div>Footer</div>}
+                    bordered
+                    dataSource={dataMakeProfitAbility}
+                    renderItem={item => (
+                        <List.Item>
+                            <div className="row">
+                                <div>{item.title}</div>
+                                <div>{item.detail}</div>
+                            </div>
+                        </List.Item>
+                    )}
+                />
+            </div>
+        )
+    }
+
+    renderManagement = () => {
+        const { LastestFinancialInfoObj } = this.state;
+
+        const dataManagement = [
+            {
+                'title': 'ROA',
+                'detail': `${((LastestFinancialInfoObj.ROA || 0) * 100).toFixed(2)}%`
+            },
+            {
+                'title': 'ROE',
+                'detail': `${((LastestFinancialInfoObj.ROE || 0) * 100).toFixed(2)}%`
+            },
+            {
+                'title': 'ROIC',
+                'detail': `${((LastestFinancialInfoObj.ROIC || 0) * 100).toFixed(2)}%`
+            }
+        ]
+        return (
+            <div>
+                <List
+                    header={<div>KHẢ NĂNG SINH LỢI</div>}
+                    footer={<div>Footer</div>}
+                    bordered
+                    dataSource={dataManagement}
+                    renderItem={item => (
+                        <List.Item>
+                            <div className="row">
+                                <div>{item.title}</div>
+                                <div>{item.detail}</div>
+                            </div>
+                        </List.Item>
+                    )}
+                />
+            </div>
         )
     }
 
@@ -376,17 +589,20 @@ class Financial extends React.Component {
         const { period, isFinancialReports } = this.state;
         if (isFinancialReports) {
             return (
-                <div className="Financial">
+                <div className="Financial bg-white">
                     <div>
-                        <Button onClick={this.handleCloseFinancialReports}>Chi tieu tai chinh</Button>
-                    </div>
-                    <div>
-                        <Radio.Group value={period} onChange={this.handlePeriod}>
-                            <Radio.Button value="quarterly">Hang quy</Radio.Button>
-                            <Radio.Button value="yearly">Hang nam</Radio.Button>
-                        </Radio.Group>
-                    </div>
-                    <div>
+                        <div className="header">
+                            Bao cao tai chinh
+                        </div>
+                        <div>
+                            <Button onClick={this.handleCloseFinancialReports}>Chi tieu tai chinh</Button>
+                        </div>
+                        <div>
+                            <Radio.Group value={period} onChange={this.handlePeriod}>
+                                <Radio.Button value="quarterly">Hang quy</Radio.Button>
+                                <Radio.Button value="yearly">Hang nam</Radio.Button>
+                            </Radio.Group>
+                        </div>
                         <Tabs defaultActiveKey="1" onChange={this.handleChangeLastestFinancialReportsType}>
                             <TabPane tab={LATEST_FINANCIAL_REPORTS.TYPE_2} key={LATEST_FINANCIAL_REPORTS.TYPE_2}>
                                 {this.renderLastestFinancialReports()}
@@ -408,9 +624,9 @@ class Financial extends React.Component {
         return (
             <div className="Financial">
                 <div className="Financial-left-container">
-                    <div className="Financial-revenue">
+                    <div className="Financial-revenue bg-white">
                         <div>
-                            <div>
+                            <div className="header">
                                 DOANH THU (TỶ)
                             </div>
                             <div>
@@ -423,26 +639,31 @@ class Financial extends React.Component {
                                 {this.renderRevenueQuarterChart()}
                                 {this.renderRevenueYearChart()}
                             </div>
-
                         </div>
                     </div>
-                    <div className="Financial-profit">
-                        <div>
+                    <div className="Financial-profit bg-white">
+                        <div className="header">
                             LỢI NHUẬN (TỶ)
-
                         </div>
                         <div>
-                            LỢI NHUẬN (TỶ)
-
+                            {this.renderRevenueTable(true)}
+                            <div className="Financial-revenue-chart">
+                                {this.renderRevenueQuarterChart(true)}
+                                {this.renderRevenueYearChart(true)}
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div className="Financial-right-container">
-                    <div>
+                <div className="Financial-right-container bg-white">
+                    <div className="header">
                         CHỈ TIÊU TÀI CHÍNH
                     </div>
-                    <div>
-
+                    <div className="Financial-criteria">
+                        {this.renderEvaluation()}
+                        {this.renderFinancialPower()}
+                        {this.renderRunningAbility()}
+                        {this.renderMakeProfitAbility()}
+                        {this.renderManagement()}
                     </div>
                 </div>
             </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, Typography, Tabs } from 'antd';
+import { List, Tabs } from 'antd';
 
 import ChartTV from '../ChartTV/ChartTV';
 
