@@ -3,7 +3,7 @@ export const host_2020_server = 'http://18.207.193.124'
 export const localhost = 'http://localhost:8000'
 export const hostName1 = 'https://svr1.fireant.vn';
 export const hostName3 = 'https://svr3.fireant.vn';
-const hostName = hostName1;
+const hostName = localhost;
 
 export function getCompanyInfoUrl(symbol) {
     return `${hostName}/api/Data/Companies/CompanyInfo${hostName === hostName1 ? '' : '/'}?symbol=${symbol}`
@@ -15,6 +15,10 @@ export function getCompanyInfoUpdateUrl(symbol) {
 
 export function getLastestFinancialInfoUrl(symbol) {
     return `${hostName}/api/Data/Finance/LastestFinancialInfo${hostName === hostName1 ? '' : '/'}?symbol=${symbol}`
+}
+
+export function getLastestFinancialInfoUpdateUrl(symbol) {
+    return `${hostName}/api/Data/Finance/LastestFinancialInfo/update${hostName === hostName1 ? '' : '/'}?symbol=${symbol}`
 }
 
 export function getSubCompaniesUrl(symbol) {

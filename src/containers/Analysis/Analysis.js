@@ -35,6 +35,12 @@ const data = [
             'Suc khoe tai chinh trong tuong lai: ket qua kinh doanh, hieu qua kinh doanh, kha nang sinh loi dai han',
             'Danh gia 3 nam, 5 nam, 10 nam',
         ]
+    },
+    {
+        'title': "Note",
+        'detail': [
+            'Bang financial info thuong update trong vong 3 thang --> danh gia tinh hinh doanh nghiep chung'
+        ]
     }
 ];
 

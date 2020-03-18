@@ -3,6 +3,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Table, Button } from 'antd';
+import { cloneDeep } from 'lodash';
 
 import {
     getCompanyInfoUrl,
@@ -162,11 +163,8 @@ class Profile extends React.Component {
             .catch(error => console.log(error))
     }
 
-    handleUpdateCompanyInfo = () => {
-        // console.log(162, this.props.symbol)
-        // const symbol = this.props.symbol;
-        let symbol = 'FPT'
-        // if (!symbol) return;
+    updateCompanyInfo = (symbol, resolve) => {
+        if (!symbol) return;
         axios({
             method: 'put',
             url: getCompanyInfoUpdateUrl(symbol)
@@ -174,13 +172,72 @@ class Profile extends React.Component {
             .then(response => {
                 console.log(response)
                 if (response.data) {
-                    // this.setState({
-                    //     CompanyInfoObj: response.data
-                    // })
+                    resolve && resolve(response.data)
                 }
             })
             .catch(error => console.log(error))
     }
+
+    updateCompanyInfoPartial = (start, count) => {
+        let listPromises = [];
+        const arr = cloneDeep(this.props.AllStocks);
+        arr.splice(start, count)
+        arr.map(item => {
+            item.Symbol && listPromises.push(
+                new Promise(resolve => {
+                    this.updateCompanyInfo(item.Symbol, resolve);
+                })
+            );
+        });
+
+        return Promise.all(listPromises)
+            .then(response => {
+                console.log(response)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+    updateCompanyInfoAll = async () => {
+        await this.updateCompanyInfoPartial(0, 500);
+        await this.updateCompanyInfoPartial(500, 500);
+        await this.updateCompanyInfoPartial(1000, 1000);
+    }
+
+    updateLastestFinancialInfo = () => {
+
+    }
+
+    updateLastestFinancialInfoAll = () => {
+
+    }
+
+    updateSubCompanies = () => {
+
+    }
+
+    updateSubCompaniesAll = () => {
+
+    }
+
+    updateCompanyOfficers = () => {
+
+    }
+
+    updateCompanyOfficersAll = () => {
+
+    }
+
+    updateCompanyTransactions = () => {
+
+    }
+
+    updateCompanyTransactionsAll = () => {
+
+    }
+
+
     // RENDER PART
 
     renderDetailBasic = () => {
@@ -268,8 +325,8 @@ class Profile extends React.Component {
         } = this.state;
         const MarketCapitalization = formatNumber(((LastestFinancialInfoObj.MarketCapitalization || 0) / BILLION_UNIT).toFixed(0));
         const SharesOutstanding = formatNumber(LastestFinancialInfoObj.SharesOutstanding || 0);
-        const EPS = formatNumber((LastestFinancialInfoObj.EPS || 0).toFixed(0));
-        const PE = formatNumber((LastestFinancialInfoObj.PE || 0).toFixed(0));
+        const EPS = formatNumber((Number(LastestFinancialInfoObj.EPS) || 0).toFixed(0));
+        const PE = formatNumber((Number(LastestFinancialInfoObj.PE) || 0).toFixed(0));
         return (
             <div className="Profile-statistic-left-container">
                 <div className="row">
@@ -354,6 +411,16 @@ class Profile extends React.Component {
                 <div className="Profile-introduction bg-white">
                     <div className="Profile-introduction-title header">
                         Gioi thieu
+                        <Button onClick={this.updateCompanyInfo}>updateCompanyInfo</Button>
+                        <Button onClick={this.updateCompanyInfoAll}>Update All</Button>
+                        <Button onClick={this.updateLastestFinancialInfo}>updateLastestFinancialInfo</Button>
+                        <Button onClick={this.updateLastestFinancialInfoAll}>Update All</Button>
+                        <Button onClick={this.updateSubCompanies}>updateSubCompanies</Button>
+                        <Button onClick={this.updateSubCompaniesAll}>Update All</Button>
+                        <Button onClick={this.updateCompanyOfficers}>updateCompanyOfficers</Button>
+                        <Button onClick={this.updateCompanyOfficersAll}>Update All</Button>
+                        <Button onClick={this.updateCompanyTransactions}>updateCompanyTransactions</Button>
+                        <Button onClick={this.updateCompanyTransactionsAll}>Update All</Button>
                     </div>
                     <div className="Profile-introduction-container">
                         <div className="Profile-introduction-content">
@@ -410,9 +477,6 @@ class Profile extends React.Component {
                         {this.renderTransactions()}
                     </div>
                 </div>
-                <div>
-                    <Button onClick={() => this.handleUpdateCompanyInfo()}>Update CompanyInfo</Button>
-                </div>
             </div>
 
         </div>
@@ -422,7 +486,8 @@ class Profile extends React.Component {
 const mapStateToProps = state => {
     console.log(state);
     return {
-        Symbol: state.stock.Symbol
+        Symbol: state.stock.Symbol,
+        AllStocks: state.stock.AllStocks,
     }
 }
 

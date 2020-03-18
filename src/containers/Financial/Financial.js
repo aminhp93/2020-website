@@ -12,6 +12,7 @@ import {
     getQuarterlyFinancialInfoUrl,
     getLastestFinancialReportsUrl,
     getLastestFinancialInfoUrl,
+    getLastestFinancialInfoUpdateUrl,
 } from '../../request';
 import { BILLION_UNIT } from '../../utils/unit';
 import { LATEST_FINANCIAL_REPORTS, formatNumber } from '../../utils/all'
@@ -81,13 +82,13 @@ class Financial extends React.Component {
                 }
             })
             .catch(error => console.log(error))
-        if (YearlyFinancialInfoArray && QuarterlyFinancialInfoArray && LastestFinancialInfoObj) {
-            this.setState({
-                YearlyFinancialInfoArray,
-                QuarterlyFinancialInfoArray,
-                LastestFinancialInfoObj
-            })
-        }
+        // if (YearlyFinancialInfoArray && QuarterlyFinancialInfoArray && LastestFinancialInfoObj) {
+        this.setState({
+            // YearlyFinancialInfoArray,
+            // QuarterlyFinancialInfoArray,
+            LastestFinancialInfoObj
+        })
+        // }
 
     }
 
@@ -278,6 +279,51 @@ class Financial extends React.Component {
         });
     };
 
+    updateLatestFinancialInfo = (symbol, resolve) => {
+        if (!symbol) return
+        axios({
+            method: 'put',
+            url: getLastestFinancialInfoUpdateUrl(symbol)
+        })
+            .then(response => {
+                console.log(response)
+                if (response.data) {
+                    resolve && resolve(response.data)
+                }
+            })
+            .catch(error => {
+                console.log(error)
+                resolve && resolve(error)
+            })
+    }
+
+    updateLatestFinancialInfoPartial = (start, count) => {
+        let listPromises = [];
+        const arr = cloneDeep(this.props.AllStocks);
+        arr.splice(start, count)
+        arr.map(item => {
+            item.Symbol && listPromises.push(
+                new Promise(resolve => {
+                    this.updateLatestFinancialInfo(item.Symbol, resolve);
+                })
+            );
+        });
+
+        return Promise.all(listPromises)
+            .then(response => {
+                console.log(response)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+    updateLatestFinancialInfoAll = async () => {
+        await this.updateLatestFinancialInfoPartial(0, 500);
+        await this.updateLatestFinancialInfoPartial(500, 500);
+        await this.updateLatestFinancialInfoPartial(1000, 1000);
+    }
+
     // RENDER PART
 
     renderRevenueTable = (isProfit) => {
@@ -394,19 +440,19 @@ class Financial extends React.Component {
         const dataEvaluation = [
             {
                 'title': 'P/E',
-                'detail': (LastestFinancialInfoObj.PE || 0).toFixed(2)
+                'detail': (Number(LastestFinancialInfoObj.PE) || 0).toFixed(2)
             },
             {
                 'title': 'P/S',
-                'detail': (LastestFinancialInfoObj.PS || 0).toFixed(2)
+                'detail': (Number(LastestFinancialInfoObj.PS) || 0).toFixed(2)
             },
             {
                 'title': 'P/B',
-                'detail': (LastestFinancialInfoObj.PB || 0).toFixed(2)
+                'detail': (Number(LastestFinancialInfoObj.PB) || 0).toFixed(2)
             },
             {
                 'title': 'EPS',
-                'detail': (LastestFinancialInfoObj.EPS || 0).toFixed(2)
+                'detail': (Number(LastestFinancialInfoObj.EPS) || 0).toFixed(2)
             }
         ]
         return (
@@ -435,19 +481,19 @@ class Financial extends React.Component {
         const dataFinancialPower = [
             {
                 'title': 'Thanh toán nhanh',
-                'detail': (LastestFinancialInfoObj.QuickRatio || 0).toFixed(2)
+                'detail': (Number(LastestFinancialInfoObj.QuickRatio) || 0).toFixed(2)
             },
             {
                 'title': 'Thanh toán hiện hành',
-                'detail': (LastestFinancialInfoObj.CurrentRatio || 0).toFixed(2)
+                'detail': (Number(LastestFinancialInfoObj.CurrentRatio) || 0).toFixed(2)
             },
             {
                 'title': 'Tổng nợ/Vốn CSH',
-                'detail': (LastestFinancialInfoObj.TotalDebtOverEquity || 0).toFixed(2)
+                'detail': (Number(LastestFinancialInfoObj.TotalDebtOverEquity) || 0).toFixed(2)
             },
             {
                 'title': 'Tổng nợ/Tổng tài sản',
-                'detail': (LastestFinancialInfoObj.TotalDebtOverAssets || 0).toFixed(2)
+                'detail': (Number(LastestFinancialInfoObj.TotalDebtOverAssets) || 0).toFixed(2)
             }
         ]
         return (
@@ -476,15 +522,15 @@ class Financial extends React.Component {
         const dataRunningAbility = [
             {
                 'title': 'Vòng quay tổng tài sản',
-                'detail': (LastestFinancialInfoObj.TotalAssetsTurnover || 0).toFixed(2)
+                'detail': (Number(LastestFinancialInfoObj.TotalAssetsTurnover) || 0).toFixed(2)
             },
             {
                 'title': 'Vòng quay hàng tồn kho',
-                'detail': (LastestFinancialInfoObj.InventoryTurnover || 0).toFixed(2)
+                'detail': (Number(LastestFinancialInfoObj.InventoryTurnover) || 0).toFixed(2)
             },
             {
                 'title': 'Vòng quay các khoản phải thu',
-                'detail': (LastestFinancialInfoObj.ReceivablesTurnover || 0).toFixed(2)
+                'detail': (Number(LastestFinancialInfoObj.ReceivablesTurnover) || 0).toFixed(2)
             }
         ]
         return (
@@ -513,19 +559,19 @@ class Financial extends React.Component {
         const dataMakeProfitAbility = [
             {
                 'title': 'Tỷ lệ lãi gộp',
-                'detail': `${((LastestFinancialInfoObj.GrossMargin || 0) * 100).toFixed(2)}%`
+                'detail': `${((Number(LastestFinancialInfoObj.GrossMargin) || 0) * 100).toFixed(2)}%`
             },
             {
                 'title': 'Tỷ lệ lãi từ hoạt động KD',
-                'detail': `${((LastestFinancialInfoObj.OperatingMargin || 0) * 100).toFixed(2)}%`
+                'detail': `${((Number(LastestFinancialInfoObj.OperatingMargin) || 0) * 100).toFixed(2)}%`
             },
             {
                 'title': 'Tỷ lệ EBIT',
-                'detail': `${((LastestFinancialInfoObj.EBITMargin || 0) * 100).toFixed(2)}%`
+                'detail': `${((Number(LastestFinancialInfoObj.EBITMargin) || 0) * 100).toFixed(2)}%`
             },
             {
                 'title': 'Tỷ lệ lãi ròng',
-                'detail': `${((LastestFinancialInfoObj.NetProfitMargin || 0) * 100).toFixed(2)}%`
+                'detail': `${((Number(LastestFinancialInfoObj.NetProfitMargin) || 0) * 100).toFixed(2)}%`
             }
         ]
         return (
@@ -554,15 +600,15 @@ class Financial extends React.Component {
         const dataManagement = [
             {
                 'title': 'ROA',
-                'detail': `${((LastestFinancialInfoObj.ROA || 0) * 100).toFixed(2)}%`
+                'detail': `${((Number(LastestFinancialInfoObj.ROA) || 0) * 100).toFixed(2)}%`
             },
             {
                 'title': 'ROE',
-                'detail': `${((LastestFinancialInfoObj.ROE || 0) * 100).toFixed(2)}%`
+                'detail': `${((Number(LastestFinancialInfoObj.ROE) || 0) * 100).toFixed(2)}%`
             },
             {
                 'title': 'ROIC',
-                'detail': `${((LastestFinancialInfoObj.ROIC || 0) * 100).toFixed(2)}%`
+                'detail': `${((Number(LastestFinancialInfoObj.ROIC) || 0) * 100).toFixed(2)}%`
             }
         ]
         return (
@@ -657,6 +703,8 @@ class Financial extends React.Component {
                 <div className="Financial-right-container bg-white">
                     <div className="header">
                         CHỈ TIÊU TÀI CHÍNH
+                        <Button onClick={() => this.updateLatestFinancialInfo(this.props.Symbol)}>update</Button>
+                        <Button onClick={this.updateLatestFinancialInfoAll}>update all </Button>
                     </div>
                     <div className="Financial-criteria">
                         {this.renderEvaluation()}
@@ -674,7 +722,8 @@ class Financial extends React.Component {
 const mapStateToProps = state => {
     console.log(state);
     return {
-        Symbol: state.stock.Symbol
+        Symbol: state.stock.Symbol,
+        AllStocks: state.stock.AllStocks,
     }
 }
 

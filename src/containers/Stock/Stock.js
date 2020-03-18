@@ -29,23 +29,12 @@ import debounce from 'lodash/debounce';
 
 import {
     setSymbol,
+    setAllStocks,
 } from '../../actions/stock';
 import Axios from 'axios';
 
 const { TabPane } = Tabs;
 const { Option } = Select;
-
-const SAMPLE_STOCK_LIST = [
-    {
-        Symbol: 'VND'
-    },
-    {
-        Symbol: 'AAV'
-    },
-    {
-        Symbol: 'VPB'
-    }
-]
 
 class Stock extends React.Component {
     constructor(props) {
@@ -63,9 +52,22 @@ class Stock extends React.Component {
 
     componentDidMount() {
         this.props.setSymbol('FPT')
+        Axios({
+            method: 'get',
+            url: 'http://localhost:8000/api/Data/Markets/TradingStatistic/'
+        })
+            .then(response => {
+                console.log(response)
+                if (response.data) {
+                    this.props.setAllStocks(response.data)
+                }
+            })
+            .catch(error => {
+                console.log(error)
+            })
         // Axios({
-        //     method: 'get',
-        //     url: 'http://localhost:8000/api/Data/Companies/CompanyInfo/?symbol=FPT'
+        //     method: 'put',
+        //     url: 'http://localhost:8000/api/Data/Markets/TradingStatistic/'
         // })
         //     .then(response => {
         //         console.log(response)
@@ -87,19 +89,18 @@ class Stock extends React.Component {
 
 
     fetchUser = value => {
-        console.log('fetching user', value);
-        this.lastFetchId += 1;
-        const fetchId = this.lastFetchId;
-        this.setState({ data: [], fetching: true });
-        fetch('https://randomuser.me/api/?results=5')
-            .then(response => response.json())
-            .then(body => {
-                if (fetchId !== this.lastFetchId) {
-                    // for fetch callback order
-                    return;
-                }
-                this.setState({ data: SAMPLE_STOCK_LIST, fetching: false });
-            });
+        this.setState({
+            data: [],
+            fetching: true
+        }, () => {
+            const filteredStocks = this.props.AllStocks.filter(item => {
+                return (item.Symbol || '').toLowerCase().includes((value || '').toLowerCase())
+            })
+            this.setState({
+                data: filteredStocks,
+                fetching: false
+            })
+        });
     };
 
     render() {
@@ -131,7 +132,7 @@ class Stock extends React.Component {
                                     <div className="App-content">
                                         <div>Content</div>
                                         <div>
-                                            <Tabs defaultActiveKey="7">
+                                            <Tabs defaultActiveKey="2">
                                                 <TabPane tab="Transaction" key="1">
                                                     <Transaction />
                                                 </TabPane>
@@ -177,13 +178,15 @@ class Stock extends React.Component {
 const mapStateToProps = state => {
     console.log(state);
     return {
-        Symbol: state.stock.Symbol
+        Symbol: state.stock.Symbol,
+        AllStocks: state.stock.AllStocks,
     }
 
 }
 
 const mapDispatchToProps = {
-    setSymbol
+    setSymbol,
+    setAllStocks
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Stock);
