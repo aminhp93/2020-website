@@ -25,6 +25,10 @@ export function getSubCompaniesUrl(symbol) {
     return `${hostName}/api/Data/Companies/SubCompanies${hostName === hostName1 ? '' : '/'}?symbol=${symbol}`
 }
 
+export function getSubCompaniesUpdateUrl(symbol) {
+    return `${hostName}/api/Data/Companies/SubCompanies/update${hostName === hostName1 ? '' : '/'}?symbol=${symbol}`
+}
+
 export function getCompanyOfficersUrl(symbol) {
     return `${hostName}/api/Data/Companies/CompanyOfficers${hostName === hostName1 ? '' : '/'}?symbol=${symbol}`
 }

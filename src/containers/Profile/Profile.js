@@ -12,6 +12,7 @@ import {
     getCompanyOfficersUrl,
     getCompanyTransactionsUrl,
     getCompanyInfoUpdateUrl,
+    getSubCompaniesUpdateUrl,
 } from '../../request';
 
 import { BILLION_UNIT } from '../../utils/unit';
@@ -213,12 +214,46 @@ class Profile extends React.Component {
 
     }
 
-    updateSubCompanies = () => {
-
+    updateSubCompanies = (symbol, resolve) => {
+        if (!symbol) return;
+        axios({
+            method: 'put',
+            url: getSubCompaniesUpdateUrl(symbol)
+        })
+            .then(response => {
+                console.log(response)
+                if (response.data) {
+                    resolve && resolve(response.data)
+                }
+            })
+            .catch(error => console.log(error))
     }
 
-    updateSubCompaniesAll = () => {
+    updateSubCompaniesPartial = (start, count) => {
+        let listPromises = [];
+        const arr = cloneDeep(this.props.AllStocks);
+        arr.splice(start, count)
+        arr.map(item => {
+            item.Symbol && listPromises.push(
+                new Promise(resolve => {
+                    this.updateSubCompanies(item.Symbol, resolve);
+                })
+            );
+        });
 
+        return Promise.all(listPromises)
+            .then(response => {
+                console.log(response)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+    updateSubCompaniesAll = async () => {
+        await this.updateSubCompaniesPartial(0, 500);
+        await this.updateSubCompaniesPartial(500, 500);
+        await this.updateSubCompaniesPartial(1000, 1000);
     }
 
     updateCompanyOfficers = () => {
@@ -404,6 +439,7 @@ class Profile extends React.Component {
         const {
             CompanyInfoObj,
         } = this.state;
+        const { Symbol: symbol } = this.props;
         const Overview = CompanyInfoObj.Overview || '';
 
         return <div className="Profile">
@@ -411,15 +447,15 @@ class Profile extends React.Component {
                 <div className="Profile-introduction bg-white">
                     <div className="Profile-introduction-title header">
                         Gioi thieu
-                        <Button onClick={this.updateCompanyInfo}>updateCompanyInfo</Button>
+                        <Button onClick={() => this.updateCompanyInfo(symbol)}>updateCompanyInfo</Button>
                         <Button onClick={this.updateCompanyInfoAll}>Update All</Button>
-                        <Button onClick={this.updateLastestFinancialInfo}>updateLastestFinancialInfo</Button>
+                        <Button onClick={() => this.updateLastestFinancialInfo(symbol)}>updateLastestFinancialInfo</Button>
                         <Button onClick={this.updateLastestFinancialInfoAll}>Update All</Button>
-                        <Button onClick={this.updateSubCompanies}>updateSubCompanies</Button>
+                        <Button onClick={() => this.updateSubCompanies(symbol)}>updateSubCompanies</Button>
                         <Button onClick={this.updateSubCompaniesAll}>Update All</Button>
-                        <Button onClick={this.updateCompanyOfficers}>updateCompanyOfficers</Button>
+                        <Button onClick={() => this.updateCompanyOfficers(symbol)}>updateCompanyOfficers</Button>
                         <Button onClick={this.updateCompanyOfficersAll}>Update All</Button>
-                        <Button onClick={this.updateCompanyTransactions}>updateCompanyTransactions</Button>
+                        <Button onClick={() => this.updateCompanyTransactions(symbol)}>updateCompanyTransactions</Button>
                         <Button onClick={this.updateCompanyTransactionsAll}>Update All</Button>
                     </div>
                     <div className="Profile-introduction-container">
