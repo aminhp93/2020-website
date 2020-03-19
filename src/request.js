@@ -33,8 +33,16 @@ export function getCompanyOfficersUrl(symbol) {
     return `${hostName}/api/Data/Companies/CompanyOfficers${hostName === hostName1 ? '' : '/'}?symbol=${symbol}`
 }
 
+export function getCompanyOfficersUpdateUrl(symbol) {
+    return `${hostName}/api/Data/Companies/CompanyOfficers/update${hostName === hostName1 ? '' : '/'}?symbol=${symbol}`
+}
+
 export function getCompanyTransactionsUrl(symbol) {
     return `${hostName}/api/Data/Companies/CompanyTransactions${hostName === hostName1 ? '' : '/'}?symbol=${symbol}`
+}
+
+export function getCompanyTransactionsUpdateUrl(symbol) {
+    return `${hostName}/api/Data/Companies/CompanyTransactions/update${hostName === hostName1 ? '' : '/'}?symbol=${symbol}`
 }
 
 export function getMajorHoldersUrl(symbol) {

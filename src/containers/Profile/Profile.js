@@ -13,6 +13,8 @@ import {
     getCompanyTransactionsUrl,
     getCompanyInfoUpdateUrl,
     getSubCompaniesUpdateUrl,
+    getCompanyOfficersUpdateUrl,
+    getCompanyTransactionsUpdateUrl,
 } from '../../request';
 
 import { BILLION_UNIT } from '../../utils/unit';
@@ -256,22 +258,89 @@ class Profile extends React.Component {
         await this.updateSubCompaniesPartial(1000, 1000);
     }
 
-    updateCompanyOfficers = () => {
-
+    updateCompanyOfficers = (symbol, resolve) => {
+        if (!symbol) return;
+        axios({
+            method: 'put',
+            url: getCompanyOfficersUpdateUrl(symbol)
+        })
+            .then(response => {
+                console.log(response)
+                if (response.data) {
+                    resolve && resolve(response.data)
+                }
+            })
+            .catch(error => console.log(error))
     }
 
-    updateCompanyOfficersAll = () => {
+    updateCompanyOfficersPartial = (start, count) => {
+        let listPromises = [];
+        const arr = cloneDeep(this.props.AllStocks);
+        arr.splice(start, count)
+        arr.map(item => {
+            item.Symbol && listPromises.push(
+                new Promise(resolve => {
+                    this.updateCompanyOfficers(item.Symbol, resolve);
+                })
+            );
+        });
 
+        return Promise.all(listPromises)
+            .then(response => {
+                console.log(response)
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
 
-    updateCompanyTransactions = () => {
-
+    updateCompanyOfficersAll = async () => {
+        await this.updateCompanyOfficersPartial(0, 500);
+        await this.updateCompanyOfficersPartial(500, 500);
+        await this.updateCompanyOfficersPartial(1000, 1000);
     }
 
-    updateCompanyTransactionsAll = () => {
-
+    updateCompanyTransactions = (symbol, resolve) => {
+        if (!symbol) return;
+        axios({
+            method: 'put',
+            url: getCompanyTransactionsUpdateUrl(symbol)
+        })
+            .then(response => {
+                console.log(response)
+                if (response.data) {
+                    resolve && resolve(response.data)
+                }
+            })
+            .catch(error => console.log(error))
     }
 
+    updateCompanyTransactionsPartial = (start, count) => {
+        let listPromises = [];
+        const arr = cloneDeep(this.props.AllStocks);
+        arr.splice(start, count)
+        arr.map(item => {
+            item.Symbol && listPromises.push(
+                new Promise(resolve => {
+                    this.updateCompanyOfficers(item.Symbol, resolve);
+                })
+            );
+        });
+
+        return Promise.all(listPromises)
+            .then(response => {
+                console.log(response)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+    updateCompanyTransactionsAll = async () => {
+        await this.updateCompanyTransactionsPartial(0, 500);
+        await this.updateCompanyTransactionsPartial(500, 500);
+        await this.updateCompanyTransactionsPartial(1000, 1000);
+    }
 
     // RENDER PART
 
@@ -447,16 +516,26 @@ class Profile extends React.Component {
                 <div className="Profile-introduction bg-white">
                     <div className="Profile-introduction-title header">
                         Gioi thieu
-                        <Button onClick={() => this.updateCompanyInfo(symbol)}>updateCompanyInfo</Button>
-                        <Button onClick={this.updateCompanyInfoAll}>Update All</Button>
-                        <Button onClick={() => this.updateLastestFinancialInfo(symbol)}>updateLastestFinancialInfo</Button>
-                        <Button onClick={this.updateLastestFinancialInfoAll}>Update All</Button>
-                        <Button onClick={() => this.updateSubCompanies(symbol)}>updateSubCompanies</Button>
-                        <Button onClick={this.updateSubCompaniesAll}>Update All</Button>
-                        <Button onClick={() => this.updateCompanyOfficers(symbol)}>updateCompanyOfficers</Button>
-                        <Button onClick={this.updateCompanyOfficersAll}>Update All</Button>
-                        <Button onClick={() => this.updateCompanyTransactions(symbol)}>updateCompanyTransactions</Button>
-                        <Button onClick={this.updateCompanyTransactionsAll}>Update All</Button>
+                        <div>
+                            <Button onClick={() => this.updateCompanyInfo(symbol)}>CompanyInfo</Button>
+                            <Button onClick={this.updateCompanyInfoAll}>Update All</Button>
+                        </div>
+                        <div>
+                            <Button onClick={() => this.updateLastestFinancialInfo(symbol)}>LastestFinancialInfo</Button>
+                            <Button onClick={this.updateLastestFinancialInfoAll}>Update All</Button>
+                        </div>
+                        <div>
+                            <Button onClick={() => this.updateSubCompanies(symbol)}>SubCompanies</Button>
+                            <Button onClick={this.updateSubCompaniesAll}>Update All</Button>
+                        </div>
+                        <div>
+                            <Button onClick={() => this.updateCompanyOfficers(symbol)}>CompanyOfficers</Button>
+                            <Button onClick={this.updateCompanyOfficersAll}>Update All</Button>
+                        </div>
+                        <div>
+                            <Button onClick={() => this.updateCompanyTransactions(symbol)}>CompanyTransactions</Button>
+                            <Button onClick={this.updateCompanyTransactionsAll}>Update All</Button>
+                        </div>
                     </div>
                     <div className="Profile-introduction-container">
                         <div className="Profile-introduction-content">
