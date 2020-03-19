@@ -322,7 +322,7 @@ class Profile extends React.Component {
         arr.map(item => {
             item.Symbol && listPromises.push(
                 new Promise(resolve => {
-                    this.updateCompanyOfficers(item.Symbol, resolve);
+                    this.updateCompanyTransactions(item.Symbol, resolve);
                 })
             );
         });
