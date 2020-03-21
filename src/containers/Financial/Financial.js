@@ -9,6 +9,7 @@ import {
 
 import {
     getYearlyFinancialInfoUrl,
+    getYearlyFinancialInfoUpdateUrl,
     getQuarterlyFinancialInfoUrl,
     getLastestFinancialReportsUrl,
     getLastestFinancialInfoUrl,
@@ -84,7 +85,7 @@ class Financial extends React.Component {
             .catch(error => console.log(error))
         // if (YearlyFinancialInfoArray && QuarterlyFinancialInfoArray && LastestFinancialInfoObj) {
         this.setState({
-            // YearlyFinancialInfoArray,
+            YearlyFinancialInfoArray,
             // QuarterlyFinancialInfoArray,
             LastestFinancialInfoObj
         })
@@ -322,6 +323,51 @@ class Financial extends React.Component {
         await this.updateLatestFinancialInfoPartial(0, 500);
         await this.updateLatestFinancialInfoPartial(500, 500);
         await this.updateLatestFinancialInfoPartial(1000, 1000);
+    }
+
+    updateYearlyFinancialInfo = (symbol, resolve) => {
+        if (!symbol) return
+        axios({
+            method: 'put',
+            url: getYearlyFinancialInfoUpdateUrl(symbol)
+        })
+            .then(response => {
+                console.log(response)
+                if (response.data) {
+                    resolve && resolve(response.data)
+                }
+            })
+            .catch(error => {
+                console.log(error)
+                resolve && resolve(error)
+            })
+    }
+
+    updateYearlyFinancialInfoPartial = (start, count) => {
+        let listPromises = [];
+        const arr = cloneDeep(this.props.AllStocks);
+        arr.splice(start, count)
+        arr.map(item => {
+            item.Symbol && listPromises.push(
+                new Promise(resolve => {
+                    this.updateYearlyFinancialInfo(item.Symbol, resolve);
+                })
+            );
+        });
+
+        return Promise.all(listPromises)
+            .then(response => {
+                console.log(response)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+    updateYearlyFinancialInfoAll = async () => {
+        await this.updateYearlyFinancialInfoPartial(0, 500);
+        await this.updateYearlyFinancialInfoPartial(500, 500);
+        await this.updateYearlyFinancialInfoPartial(1000, 1000);
     }
 
     // RENDER PART
@@ -677,6 +723,8 @@ class Financial extends React.Component {
                             </div>
                             <div>
                                 <Button onClick={this.handleOpenFinancialReports}>Bao cao tai chinh</Button>
+                                <Button onClick={() => this.updateYearlyFinancialInfo(this.props.Symbol)}>Update</Button>
+                                <Button onClick={this.updateYearlyFinancialInfoAll}>Update all</Button>
                             </div>
                         </div>
                         <div>

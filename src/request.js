@@ -81,6 +81,10 @@ export function getYearlyFinancialInfoUrl(symbol) {
     return `${hostName}/api/Data/Finance/YearlyFinancialInfo${hostName === hostName1 ? '' : '/'}?symbol=${symbol}&fromYear=2016&toYear=2019`
 }
 
+export function getYearlyFinancialInfoUpdateUrl(symbol) {
+    return `${hostName}/api/Data/Finance/YearlyFinancialInfo/update${hostName === hostName1 ? '' : '/'}?symbol=${symbol}`
+}
+
 export function getQuarterlyFinancialInfoUrl(symbol) {
     return `${hostName}/api/Data/Finance/QuarterlyFinancialInfo${hostName === hostName1 ? '' : '/'}?symbol=${symbol}&fromYear=2016&fromQuarter=1&toYear=2019&toQuarter=4`
 }
