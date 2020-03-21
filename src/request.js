@@ -89,6 +89,10 @@ export function getQuarterlyFinancialInfoUrl(symbol) {
     return `${hostName}/api/Data/Finance/QuarterlyFinancialInfo${hostName === hostName1 ? '' : '/'}?symbol=${symbol}&fromYear=2016&fromQuarter=1&toYear=2019&toQuarter=4`
 }
 
+export function getQuarterlyFinancialInfoUpdateUrl(symbol) {
+    return `${hostName}/api/Data/Finance/QuarterlyFinancialInfo/update${hostName === hostName1 ? '' : '/'}?symbol=${symbol}&fromYear=2016&fromQuarter=1&toYear=2019&toQuarter=4`
+}
+
 export function getLastestFinancialReportsUrl(symbol, type = 1, year = 2020, quarter = 0, count = 5) {
     return `${hostName}/api/Data/Finance/LastestFinancialReports${hostName === hostName1 ? '' : '/'}?symbol=${symbol}&type=${type}&year=${year}&quarter=${quarter}&count=${count}`
 }
