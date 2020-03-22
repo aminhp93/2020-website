@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { List, Typography } from 'antd';
+import { List } from 'antd';
 
 import {
-    setSymbol,
+    // setSymbol,
 } from '../../actions/stock';
 
 const data = [

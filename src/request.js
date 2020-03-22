@@ -97,6 +97,14 @@ export function getLastestFinancialReportsUrl(symbol, type = 1, year = 2020, qua
     return `${hostName}/api/Data/Finance/LastestFinancialReports${hostName === hostName1 ? '' : '/'}?symbol=${symbol}&type=${type}&year=${year}&quarter=${quarter}&count=${count}`
 }
 
+export function getLastestFinancialReportsNameUpdateUrl(symbol, type = 1, year = 2020, quarter = 0, count = 5) {
+    return `${hostName}/api/Data/Finance/LastestFinancialReportsName/update${hostName === hostName1 ? '' : '/'}?symbol=${symbol}&type=${type}&year=${year}&quarter=${quarter}&count=${count}`
+}
+
+export function getLastestFinancialReportsValueUpdateUrl(symbol, type = 1, year = 2020, quarter = 0, count = 5) {
+    return `${hostName}/api/Data/Finance/LastestFinancialReportsValue/update${hostName === hostName1 ? '' : '/'}?symbol=${symbol}&type=${type}&year=${year}&quarter=${quarter}&count=${count}`
+}
+
 export function getDataHistoryUrl(symbol, resolution, fromDate, toDate) {
     return (
         "https://dchart-api.vndirect.com.vn/dchart/history?symbol=" +

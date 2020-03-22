@@ -5,13 +5,6 @@ import ChartTV from '../ChartTV/ChartTV';
 
 const { TabPane } = Tabs;
 
-const data = [
-    'Racing car sprays burning fuel into crowd.',
-    'Japanese princess to wed commoner.',
-    'Australian walks 100km after outback crash.',
-    'Man charged over missing wedding girl.',
-    'Los Angeles battles huge wildfires.',
-];
 export default class Transaction extends React.Component {
     renderSummaryTransaction = () => {
         const dataSummaryTransaction = [

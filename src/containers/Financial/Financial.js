@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { cloneDeep } from 'lodash';
 import { Table, Button, Tabs, Radio, List } from 'antd';
 import {
-    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell,
+    BarChart, Bar, XAxis, YAxis, Tooltip, Legend,
 } from 'recharts';
 
 import {
@@ -15,6 +15,8 @@ import {
     getLastestFinancialReportsUrl,
     getLastestFinancialInfoUrl,
     getLastestFinancialInfoUpdateUrl,
+    getLastestFinancialReportsNameUpdateUrl,
+    getLastestFinancialReportsValueUpdateUrl
 } from '../../request';
 import { BILLION_UNIT } from '../../utils/unit';
 import { LATEST_FINANCIAL_REPORTS, formatNumber } from '../../utils/all'
@@ -416,6 +418,74 @@ class Financial extends React.Component {
         await this.updateQuarterlyFinancialInfoPartial(1000, 1000);
     }
 
+    updateLastestFinancialReportsName = (type) => {
+        if (!this.props.Symbol) return
+        axios({
+            method: 'put',
+            url: getLastestFinancialReportsNameUpdateUrl(this.props.Symbol, type)
+        })
+            .then(response => {
+                console.log(response)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+    updateLastestFinancialReportsNameAll = () => {
+        this.updateLastestFinancialReportsName(1)
+        this.updateLastestFinancialReportsName(2)
+        this.updateLastestFinancialReportsName(3)
+        this.updateLastestFinancialReportsName(4)
+    }
+
+    updateLastestFinancialReportsValue = (symbol, resolve) => {
+        if (!symbol) return
+        axios({
+            method: 'put',
+            url: getLastestFinancialReportsValueUpdateUrl(symbol)
+        })
+            .then(response => {
+                console.log(response)
+                if (response.data) {
+                    resolve && resolve(response.data)
+                }
+            })
+            .catch(error => {
+                console.log(error)
+                resolve && resolve(error)
+            })
+    }
+
+    updateLastestFinancialReportsValuePartial = (start, count) => {
+        let listPromises = [];
+        const arr = cloneDeep(this.props.AllStocks);
+        arr.splice(start, count)
+        arr.map(item => {
+            item.Symbol && listPromises.push(
+                new Promise(resolve => {
+                    this.updateLastestFinancialReportsValue(item.Symbol, resolve);
+                })
+            );
+        });
+
+        return Promise.all(listPromises)
+            .then(response => {
+                console.log(response)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+    updateLastestFinancialReportsValueAll = async () => {
+        await this.updateLastestFinancialReportsValuePartial(0, 500);
+        await this.updateLastestFinancialReportsValuePartial(500, 500);
+        await this.updateLastestFinancialReportsValuePartial(1000, 1000);
+    }
+
+
+
     // RENDER PART
 
     renderRevenueTable = (isProfit) => {
@@ -734,6 +804,13 @@ class Financial extends React.Component {
                         </div>
                         <div>
                             <Button onClick={this.handleCloseFinancialReports}>Chi tieu tai chinh</Button>
+                            <div>
+                                <Button onClick={this.updateLastestFinancialReportsNameAll}>LastestFinancialReportsName</Button>
+                            </div>
+                            <div>
+                                <Button onClick={() => this.updateLastestFinancialReportsValue(this.props.Symbol)}>LastestFinancialReportsValue</Button>
+                                <Button onClick={this.updateLastestFinancialReportsValueAll}>Update all</Button>
+                            </div>
                         </div>
                         <div>
                             <Radio.Group value={period} onChange={this.handlePeriod}>
