@@ -194,7 +194,6 @@ class Financial extends React.Component {
     }
 
     getColumn = (data) => {
-        console.log(data);
         const yearsArray = [2015, 2016, 2017, 2018, 2019]
         const quarterArray = [
             {
@@ -443,7 +442,52 @@ class Financial extends React.Component {
         if (!symbol) return
         axios({
             method: 'put',
-            url: getLastestFinancialReportsValueUpdateUrl(symbol)
+            url: getLastestFinancialReportsValueUpdateUrl(symbol, 1)
+        })
+            .then(response => {
+                console.log(response)
+                if (response.data) {
+                    resolve && resolve(response.data)
+                }
+            })
+            .catch(error => {
+                console.log(error)
+                resolve && resolve(error)
+            })
+
+        axios({
+            method: 'put',
+            url: getLastestFinancialReportsValueUpdateUrl(symbol, 2)
+        })
+            .then(response => {
+                console.log(response)
+                if (response.data) {
+                    resolve && resolve(response.data)
+                }
+            })
+            .catch(error => {
+                console.log(error)
+                resolve && resolve(error)
+            })
+
+        axios({
+            method: 'put',
+            url: getLastestFinancialReportsValueUpdateUrl(symbol, 3)
+        })
+            .then(response => {
+                console.log(response)
+                if (response.data) {
+                    resolve && resolve(response.data)
+                }
+            })
+            .catch(error => {
+                console.log(error)
+                resolve && resolve(error)
+            })
+
+        axios({
+            method: 'put',
+            url: getLastestFinancialReportsValueUpdateUrl(symbol, 4)
         })
             .then(response => {
                 console.log(response)
@@ -589,7 +633,7 @@ class Financial extends React.Component {
         )
     }
 
-    renderLastestFinancialReports = (type) => {
+    renderLastestFinancialReports = () => {
         const { LastestFinancialReportsArray } = this.state;
         const columns = this.getColumn(LastestFinancialReportsArray);
         return (
@@ -818,20 +862,23 @@ class Financial extends React.Component {
                                 <Radio.Button value="yearly">Hang nam</Radio.Button>
                             </Radio.Group>
                         </div>
-                        <Tabs defaultActiveKey="1" onChange={this.handleChangeLastestFinancialReportsType}>
-                            <TabPane tab={LATEST_FINANCIAL_REPORTS.TYPE_2} key={LATEST_FINANCIAL_REPORTS.TYPE_2}>
-                                {this.renderLastestFinancialReports()}
-                            </TabPane>
-                            <TabPane tab={LATEST_FINANCIAL_REPORTS.TYPE_1} key={LATEST_FINANCIAL_REPORTS.TYPE_1}>
-                                {this.renderLastestFinancialReports()}
-                            </TabPane>
-                            <TabPane tab={LATEST_FINANCIAL_REPORTS.TYPE_3} key={LATEST_FINANCIAL_REPORTS.TYPE_3}>
-                                {this.renderLastestFinancialReports()}
-                            </TabPane>
-                            <TabPane tab={LATEST_FINANCIAL_REPORTS.TYPE_4} key={LATEST_FINANCIAL_REPORTS.TYPE_4}>
-                                {this.renderLastestFinancialReports()}
-                            </TabPane>
-                        </Tabs>
+                        <div className="Financial-reports">
+                            <Tabs defaultActiveKey="1" onChange={this.handleChangeLastestFinancialReportsType}>
+                                <TabPane tab={LATEST_FINANCIAL_REPORTS.TYPE_2} key={LATEST_FINANCIAL_REPORTS.TYPE_2}>
+                                    {this.renderLastestFinancialReports()}
+                                </TabPane>
+                                <TabPane tab={LATEST_FINANCIAL_REPORTS.TYPE_1} key={LATEST_FINANCIAL_REPORTS.TYPE_1}>
+                                    {this.renderLastestFinancialReports()}
+                                </TabPane>
+                                <TabPane tab={LATEST_FINANCIAL_REPORTS.TYPE_3} key={LATEST_FINANCIAL_REPORTS.TYPE_3}>
+                                    {this.renderLastestFinancialReports()}
+                                </TabPane>
+                                <TabPane tab={LATEST_FINANCIAL_REPORTS.TYPE_4} key={LATEST_FINANCIAL_REPORTS.TYPE_4}>
+                                    {this.renderLastestFinancialReports()}
+                                </TabPane>
+                            </Tabs>
+                        </div>
+
                     </div>
                 </div>
             )
