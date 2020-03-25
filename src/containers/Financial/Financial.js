@@ -23,6 +23,26 @@ import { LATEST_FINANCIAL_REPORTS, formatNumber } from '../../utils/all'
 
 const { TabPane } = Tabs;
 
+let xxx = []
+
+const TYPE_DEFAULT = []
+const TYPE_NGAN_HANG = ["ACB", "BAB", "BID", "CTG", "EIB", "EVF", "HDB", "KLB", "LPB", "MBB", "NVB", "SHB", "STB", "TCB", "TPB", "VBB", "VCB", "VIB", "VPB"]
+const TYPE_BAO_HIEM = ["ABI", "BIC", "BLI", "BMI", "BVH", "MIG", "PGI", "PTI", "VNR"]
+const TYPE_CHUNG_KHOAN = ["AGR", "APG", "APS", "ART", "BMS", "BSI", "BVS", "CSI", "CTS", "DSC", "EVS", "FTS", "HAC", "HBS", "HCM", "HFT", "IVS", "MBS", "ORS", "PHS", "PSI", "SBS", "SHS", "SSI", "TCI", "TVB", "TVS", "VCI", "VDS", "VIG", "VIX", "VND", "WSS"]
+const TYPE_QUY = ["E1VFVN30", "FUCVREIT", "FUCTVGF1"]
+
+
+
+// 0: "4. Giá vốn hàng bán"
+// 1: "ABC"
+// 2: "Lãi/Lỗ thuần từ hoạt động dịch vụ"
+// 3: "ACB"
+// 4: "- Phí nhượng tái bảo hiểm"
+// 5: "ABI"
+// 6: "b. Chênh lệch tăng đánh giá lại các TSTC thông qua lãi/lỗ"
+// 7: "AGR"
+// 8: "2. Lãi trái phiếu được nhận "
+// 9: "E1VFVN30"
 
 class Financial extends React.Component {
     constructor(props) {
@@ -417,11 +437,10 @@ class Financial extends React.Component {
         await this.updateQuarterlyFinancialInfoPartial(1000, 1000);
     }
 
-    updateLastestFinancialReportsName = (type) => {
-        if (!this.props.Symbol) return
+    updateLastestFinancialReportsName = (symbol, type) => {
         axios({
             method: 'put',
-            url: getLastestFinancialReportsNameUpdateUrl(this.props.Symbol, type)
+            url: getLastestFinancialReportsNameUpdateUrl(symbol, type)
         })
             .then(response => {
                 console.log(response)
@@ -432,10 +451,18 @@ class Financial extends React.Component {
     }
 
     updateLastestFinancialReportsNameAll = () => {
-        this.updateLastestFinancialReportsName(1)
-        this.updateLastestFinancialReportsName(2)
-        this.updateLastestFinancialReportsName(3)
-        this.updateLastestFinancialReportsName(4)
+        const listSymbols = [
+            'ACB',
+            'ABI',
+            'AGR',
+            'E1VFVN30',
+            'FPT'
+        ]
+        listSymbols.map(item => {
+            [1, 2, 3, 4].map(index => {
+                this.updateLastestFinancialReportsName(item, index)
+            })
+        })
     }
 
     updateLastestFinancialReportsValue = (symbol, resolve) => {
@@ -470,20 +497,20 @@ class Financial extends React.Component {
                 resolve && resolve(error)
             })
 
-        axios({
-            method: 'put',
-            url: getLastestFinancialReportsValueUpdateUrl(symbol, 3)
-        })
-            .then(response => {
-                console.log(response)
-                if (response.data) {
-                    resolve && resolve(response.data)
-                }
-            })
-            .catch(error => {
-                console.log(error)
-                resolve && resolve(error)
-            })
+        // axios({
+        //     method: 'put',
+        //     url: getLastestFinancialReportsValueUpdateUrl(symbol, 3)
+        // })
+        //     .then(response => {
+        //         console.log(response)
+        //         if (response.data) {
+        //             resolve && resolve(response.data)
+        //         }
+        //     })
+        //     .catch(error => {
+        //         console.log(error)
+        //         resolve && resolve(error)
+        //     })
 
         axios({
             method: 'put',
@@ -504,8 +531,8 @@ class Financial extends React.Component {
     updateLastestFinancialReportsValuePartial = (start, count) => {
         let listPromises = [];
         const arr = cloneDeep(this.props.AllStocks);
-        arr.splice(start, count)
-        arr.map(item => {
+        const arr1 = arr.slice(start, count)
+        arr1.map(item => {
             item.Symbol && listPromises.push(
                 new Promise(resolve => {
                     this.updateLastestFinancialReportsValue(item.Symbol, resolve);
@@ -523,11 +550,79 @@ class Financial extends React.Component {
     }
 
     updateLastestFinancialReportsValueAll = async () => {
-        await this.updateLastestFinancialReportsValuePartial(0, 500);
-        await this.updateLastestFinancialReportsValuePartial(500, 500);
-        await this.updateLastestFinancialReportsValuePartial(1000, 1000);
+        await this.updateLastestFinancialReportsValuePartial(0, 100);
+        await this.updateLastestFinancialReportsValuePartial(100, 200);
+        await this.updateLastestFinancialReportsValuePartial(200, 300);
+        await this.updateLastestFinancialReportsValuePartial(300, 400);
+        await this.updateLastestFinancialReportsValuePartial(400, 500);
+        await this.updateLastestFinancialReportsValuePartial(500, 600);
+        await this.updateLastestFinancialReportsValuePartial(600, 700);
+        await this.updateLastestFinancialReportsValuePartial(700, 800);
+        await this.updateLastestFinancialReportsValuePartial(800, 900);
+        await this.updateLastestFinancialReportsValuePartial(900, 1000);
+        await this.updateLastestFinancialReportsValuePartial(1000, 1100);
+        await this.updateLastestFinancialReportsValuePartial(1100, 1200);
+        await this.updateLastestFinancialReportsValuePartial(1200, 1300);
+        await this.updateLastestFinancialReportsValuePartial(1300, 1400);
+        await this.updateLastestFinancialReportsValuePartial(1400, 1500);
+        await this.updateLastestFinancialReportsValuePartial(1500, 1600);
+        await this.updateLastestFinancialReportsValuePartial(1600, 1700);
+        await this.updateLastestFinancialReportsValuePartial(1700, 1800);
     }
 
+    test = (symbol, resolve) => {
+        const hostName = 'https://svr1.fireant.vn';
+        const url = `${hostName}/api/Data/Finance/LastestFinancialReports?symbol=${symbol}&type=2&year=2020&quarter=0&count=5`
+        axios({
+            method: 'get',
+            url
+        })
+            .then(response => {
+                if (response.data && response.data.length) {
+                    if ((response.data[3] || {}).Name === '2. Lãi trái phiếu được nhận ') {
+                        xxx.push(symbol)
+                    }
+                    console.log(xxx)
+                }
+                resolve && resolve(response.data)
+
+            })
+            .catch(error => {
+                console.log(error)
+                resolve && resolve(error)
+            })
+    }
+
+    testPartial = (start, count) => {
+        let listPromises = [];
+        const arr = cloneDeep(this.props.AllStocks);
+        const arr1 = arr.slice(start, count)
+        arr1.map(item => {
+            item.Symbol && listPromises.push(
+                new Promise(resolve => {
+                    this.test(item.Symbol, resolve);
+                })
+            );
+        });
+
+        return Promise.all(listPromises)
+            .then(response => {
+                console.log(response)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+    testAll = async () => {
+        await this.testPartial(0, 300);
+        await this.testPartial(300, 600);
+        await this.testPartial(600, 900);
+        await this.testPartial(900, 1200);
+        await this.testPartial(1200, 1500);
+        await this.testPartial(1500, 1800);
+        console.log(583, xxx)
+    }
 
 
     // RENDER PART
@@ -839,6 +934,7 @@ class Financial extends React.Component {
 
     render() {
         const { period, isFinancialReports } = this.state;
+        // return <div onClick={this.testAll}>test</div>
         if (isFinancialReports) {
             return (
                 <div className="Financial bg-white">
