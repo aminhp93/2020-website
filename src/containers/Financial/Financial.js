@@ -65,6 +65,9 @@ class Financial extends React.Component {
     componentDidUpdate(preProps) {
         if (this.props.Symbol !== preProps.Symbol) {
             if (this.state.isFinancialReports) {
+                this.setState({
+                    LastestFinancialReportsArray: []
+                })
                 this.getLastestFinancialReports()
             } else {
                 this.crawlData();
@@ -121,7 +124,6 @@ class Financial extends React.Component {
     }
 
     getLastestFinancialReports = () => {
-        debugger
         const { Symbol: symbol } = this.props;
         const { lastestFinancialReportsType } = this.state;
         let type_index = 1
@@ -212,7 +214,8 @@ class Financial extends React.Component {
 
     handleChangeLastestFinancialReportsType = (index) => {
         this.setState({
-            lastestFinancialReportsType: index
+            lastestFinancialReportsType: index,
+            LastestFinancialReportsArray: []
         }, () => {
             this.getLastestFinancialReports()
         })
