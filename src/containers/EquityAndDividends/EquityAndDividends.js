@@ -23,14 +23,15 @@ class EquityAndDividends extends React.Component {
         this.crawlData(this.props.Symbol);
     }
 
-    componentWillReceiveProps(nextProps) {
-        console.log('componentWillReceiveProps EquityAndDividends', this.props, nextProps)
-        if (this.props.Symbol !== nextProps.Symbol) {
-            this.crawlData(nextProps.Symbol);
+    componentDidUpdate(preProps) {
+        console.log('componentDidUpdate EquityAndDividends', this.props, preProps)
+        if (this.props.Symbol !== preProps.Symbol) {
+            this.crawlData();
         }
     }
 
-    crawlData = (symbol) => {
+    crawlData = () => {
+        const { Symbol: symbol } = this.props;
         if (!symbol) return;
         axios({
             method: 'get',

@@ -59,17 +59,21 @@ class Financial extends React.Component {
     }
 
     componentDidMount() {
-        this.crawlData(this.props.Symbol);
+        this.crawlData();
     }
 
-    componentWillReceiveProps(nextProps) {
-        console.log('componentWillReceiveProps Financial', this.props, nextProps)
-        if (this.props.Symbol !== nextProps.Symbol) {
-            this.crawlData(nextProps.Symbol);
+    componentDidUpdate(preProps) {
+        if (this.props.Symbol !== preProps.Symbol) {
+            if (this.state.isFinancialReports) {
+                this.getLastestFinancialReports()
+            } else {
+                this.crawlData();
+            }
         }
     }
 
-    crawlData = async (symbol) => {
+    crawlData = async () => {
+        const { Symbol: symbol } = this.props;
         if (!symbol) return;
         let YearlyFinancialInfoArray = null;
         let QuarterlyFinancialInfoArray = null
@@ -116,11 +120,13 @@ class Financial extends React.Component {
 
     }
 
-    getLastestFinancialReports = (type) => {
+    getLastestFinancialReports = () => {
+        debugger
         const { Symbol: symbol } = this.props;
+        const { lastestFinancialReportsType } = this.state;
         let type_index = 1
         if (!symbol) return;
-        switch (type) {
+        switch (lastestFinancialReportsType) {
             case LATEST_FINANCIAL_REPORTS.TYPE_1:
                 type_index = 1
                 break;
@@ -200,7 +206,7 @@ class Financial extends React.Component {
         this.setState({
             isFinancialReports: false
         }, () => {
-            this.crawlData(this.props.Symbol);
+            this.crawlData();
         })
     }
 
@@ -208,7 +214,7 @@ class Financial extends React.Component {
         this.setState({
             lastestFinancialReportsType: index
         }, () => {
-            this.getLastestFinancialReports(index)
+            this.getLastestFinancialReports()
         })
 
     }

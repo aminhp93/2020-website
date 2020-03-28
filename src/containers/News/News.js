@@ -24,17 +24,18 @@ class News extends React.Component {
     }
 
     componentDidMount() {
-        this.crawlData(this.props.Symbol);
+        this.crawlData();
     }
 
-    componentWillReceiveProps(nextProps) {
-        console.log('componentWillReceiveProps News', this.props, nextProps)
-        if (this.props.Symbol !== nextProps.Symbol) {
-            this.crawlData(nextProps.Symbol);
+    componentDidUpdate(preProps) {
+        console.log('componentDidUpdate News', this.props, preProps)
+        if (this.props.Symbol !== preProps.Symbol) {
+            this.crawlData();
         }
     }
 
-    crawlData = (symbol) => {
+    crawlData = () => {
+        const { Symbol: symbol } = this.props;
         if (!symbol) return;
         axios({
             method: 'get',
