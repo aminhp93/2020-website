@@ -77,6 +77,10 @@ export function getHistoricalQuotesUrl(symbol, startDate, endDate) {
     return `${hostName}/api/Data/Companies/HistoricalQuotes${hostName === hostName1 ? '' : '/'}?symbol=${symbol}&startDate=${startDate || '2020-1-22'}&endDate=${endDate || '2020-2-22'}`
 }
 
+export function getHistoricalQuotesUpdateUrl(symbol, startDate, endDate) {
+    return `${hostName}/api/Data/Companies/HistoricalQuotes/update${hostName === hostName1 ? '' : '/'}?symbol=${symbol}&startDate=${startDate || '2020-1-22'}&endDate=${endDate || '2020-2-22'}`
+}
+
 export function getYearlyFinancialInfoUrl(symbol) {
     return `${hostName}/api/Data/Finance/YearlyFinancialInfo${hostName === hostName1 ? '' : '/'}?symbol=${symbol}&fromYear=2016&toYear=2019`
 }

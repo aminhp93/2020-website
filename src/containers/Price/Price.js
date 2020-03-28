@@ -1,11 +1,13 @@
 import React from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
-
-import { DatePicker, Tabs, Table } from 'antd';
+import { cloneDeep } from 'lodash';
+import moment from 'moment';
+import { DatePicker, Tabs, Table, Button } from 'antd';
 
 import {
-    getHistoricalQuotesUrl
+    getHistoricalQuotesUrl,
+    getHistoricalQuotesUpdateUrl,
 } from '../../request';
 
 const { RangePicker } = DatePicker;
@@ -166,7 +168,9 @@ class Price extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            HistoricalQuotesArray: []
+            HistoricalQuotesArray: [],
+            startDate: '',
+            endDate: ''
         }
     }
 
@@ -182,11 +186,12 @@ class Price extends React.Component {
     }
 
     crawlData = () => {
+        const { startDate, endDate } = this.state;
         const { Symbol: symbol } = this.props;
         if (!symbol) return;
         axios({
             method: 'get',
-            url: getHistoricalQuotesUrl(symbol),
+            url: getHistoricalQuotesUrl(symbol, startDate, endDate),
         })
             .then(response => {
                 if (response.data) {
@@ -200,6 +205,75 @@ class Price extends React.Component {
 
     onChange = (date, dateString) => {
         console.log(date, dateString);
+        if (dateString && dateString.length === 2) {
+            this.setState({
+                startDate: dateString[0],
+                endDate: dateString[1]
+            })
+        }
+    }
+
+    udpateHistoricalQuotes = (symbol, resolve) => {
+        const { startDate, endDate } = this.state;
+        console.log(216, startDate, endDate)
+        if (!symbol) return;
+        axios({
+            method: 'put',
+            url: getHistoricalQuotesUpdateUrl(symbol, startDate, endDate)
+        })
+            .then(response => {
+                console.log(response)
+                if (response.data) {
+                    resolve && resolve(response.data)
+                }
+            })
+            .catch(error => {
+                console.log(error);
+                resolve && resolve(error)
+            })
+    }
+
+    udpateHistoricalQuotesPartial = (start, count) => {
+        let listPromises = [];
+        const arr = cloneDeep(this.props.AllStocks);
+        const arr1 = arr.slice(start, count)
+        arr1.map(item => {
+            item.Symbol && listPromises.push(
+                new Promise(resolve => {
+                    this.udpateHistoricalQuotes(item.Symbol, resolve);
+                })
+            );
+        });
+
+        return Promise.all(listPromises)
+            .then(response => {
+                console.log(response)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+    udpateHistoricalQuotesAll = async () => {
+        const lastUpdatedDate = await this.getLastUpdatedDate();
+        const todayDate = moment();
+        if (lastUpdatedDate === todayDate) return;
+        const startDate = moment(lastUpdatedDate).add(1, 'days');
+        const endDate = todayDate;
+
+
+        // await this.udpateHistoricalQuotesPartial(0, 1, startDate, endDate);
+        // await this.udpateHistoricalQuotesPartial(0, 500);
+        // await this.udpateHistoricalQuotesPartial(500, 1000);
+        // await this.udpateHistoricalQuotesPartial(1000, 2000);
+        await this.updateLastUpdatedDate();
+    }
+
+    udpateHistoricalQuotesDaily = async () => {
+        await
+            await this.udpateHistoricalQuotesPartial(0, 500);
+        await this.udpateHistoricalQuotesPartial(500, 1000);
+        await this.udpateHistoricalQuotesPartial(1000, 2000);
     }
 
     render() {
@@ -208,6 +282,10 @@ class Price extends React.Component {
             <div>
                 <div>
                     <RangePicker onChange={this.onChange} />
+                    <Button onClick={this.crawlData}>Xem</Button>
+                    <Button onClick={() => this.udpateHistoricalQuotes(this.props.Symbol)}>Update</Button>
+                    <Button onClick={this.udpateHistoricalQuotesAll}>Update all</Button>
+                    <Button onClick={this.udpateHistoricalQuotesDaily}>Update daily all</Button>
                 </div>
                 <div>
                     <Tabs defaultActiveKey="1">
@@ -232,7 +310,8 @@ class Price extends React.Component {
 const mapStateToProps = state => {
     console.log(state);
     return {
-        Symbol: state.stock.Symbol
+        Symbol: state.stock.Symbol,
+        AllStocks: state.stock.AllStocks,
     }
 }
 
