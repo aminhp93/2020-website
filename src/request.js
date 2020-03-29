@@ -137,3 +137,7 @@ export function getConfigGetCreateUrl(id) {
 export function getConfigRetrieveUpdateDeleteUrl(id) {
     return `${hostName}/api/config/${id}/`
 }
+
+export function getAnalysisUrl(date) {
+    return `${hostName}/api/Analysis/?Date=${date}`
+}

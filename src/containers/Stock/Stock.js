@@ -127,7 +127,7 @@ class Stock extends React.Component {
                             ))}
                         </Select>
                         <div>
-                            <Tabs defaultActiveKey="1" tabPosition="left">
+                            <Tabs defaultActiveKey="2" tabPosition="left">
                                 <TabPane tab="OverallMarket" key="1">
                                     <div className="App-content">
                                         <div>Content</div>
