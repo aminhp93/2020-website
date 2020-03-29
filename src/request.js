@@ -74,11 +74,11 @@ export function getNewsContentUrl(id) {
 }
 
 export function getHistoricalQuotesUrl(symbol, startDate, endDate) {
-    return `${hostName}/api/Data/Companies/HistoricalQuotes${hostName === hostName1 ? '' : '/'}?symbol=${symbol}&startDate=${startDate || '2020-1-22'}&endDate=${endDate || '2020-2-22'}`
+    return `${hostName}/api/Data/Companies/HistoricalQuotes${hostName === hostName1 ? '' : '/'}?symbol=${symbol}&startDate=${startDate}&endDate=${endDate}`
 }
 
 export function getHistoricalQuotesUpdateUrl(symbol, startDate, endDate) {
-    return `${hostName}/api/Data/Companies/HistoricalQuotes/update${hostName === hostName1 ? '' : '/'}?symbol=${symbol}&startDate=${startDate || '2020-1-22'}&endDate=${endDate || '2020-2-22'}`
+    return `${hostName}/api/Data/Companies/HistoricalQuotes/update${hostName === hostName1 ? '' : '/'}?symbol=${symbol}&startDate=${startDate}&endDate=${endDate}`
 }
 
 export function getYearlyFinancialInfoUrl(symbol) {
@@ -128,4 +128,12 @@ export function getAllLayoutsUrl() {
 
 export function getSaveLayoutChartUrl(id) {
     return `https://chart-api.vndirect.com.vn/1.1/charts?client=vnds_trading_view&user=vnds-0001813109&chart=${id}`;
+}
+
+export function getConfigGetCreateUrl(id) {
+    return `${hostName}/api/config/${id ? `?key=${id}` : ''}`
+}
+
+export function getConfigRetrieveUpdateDeleteUrl(id) {
+    return `${hostName}/api/config/${id}/`
 }

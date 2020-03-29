@@ -35,3 +35,11 @@ code {
   align-items: flex-start;
   font-size: 20px;
 }
+
+.red {
+  color: red;
+}
+
+.green {
+  color: green
+}

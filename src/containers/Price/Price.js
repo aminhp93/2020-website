@@ -8,6 +8,8 @@ import { DatePicker, Tabs, Table, Button } from 'antd';
 import {
     getHistoricalQuotesUrl,
     getHistoricalQuotesUpdateUrl,
+    getConfigGetCreateUrl,
+    getConfigRetrieveUpdateDeleteUrl
 } from '../../request';
 
 const { RangePicker } = DatePicker;
@@ -16,52 +18,71 @@ const { TabPane } = Tabs;
 const HistoricalQuotesPastPriceColumns = [
     {
         title: 'NGÀY',
-        dataIndex: 'Date',
-        key: 'Date',
+        render: params => {
+            return moment(params.Date).format('YYYY-MM-DD')
+        }
     },
     {
         title: 'THAY ĐỔI',
         render: params => {
-            return ((params.PriceClose - params.PriceBasic) / 1000).toFixed(2)
+            const content = ((params.PriceClose - params.PriceBasic) / 1000).toFixed(2)
+            let className = '';
+            if (content > 0) {
+                className = 'green';
+            } else if (content < 0) {
+                className = 'red';
+            }
+            return <div className={className}>{content}</div>
         }
     },
     {
         title: '%',
         render: params => {
-            return ((params.PriceClose - params.PriceBasic) / (params.PriceBasic)).toFixed(2)
+            const content = ((params.PriceClose - params.PriceBasic) / (params.PriceBasic)).toFixed(2)
+            let className = '';
+            if (content > 0) {
+                className = 'green';
+            } else if (content < 0) {
+                className = 'red';
+            }
+            return <div className={className}>{content}</div>
         }
     },
     {
         title: 'MỞ CỬA',
-        dataIndex: 'PriceOpen',
-        key: 'PriceOpen',
+        render: params => {
+            return (params.PriceOpen / 1000).toFixed(2)
+        }
     },
     {
         title: 'CAO NHẤT',
-        dataIndex: 'PriceHigh',
-        key: 'PriceHigh',
+        render: params => {
+            return (params.PriceHigh / 1000).toFixed(2)
+        }
     },
     {
         title: 'THẤP NHẤT',
-        dataIndex: 'PriceLow',
-        key: 'PriceLow',
+        render: params => {
+            return (params.PriceLow / 1000).toFixed(2)
+        }
     },
     {
         title: 'ĐÓNG CỬA',
-        dataIndex: 'PriceClose',
-        key: 'PriceClose',
+        render: params => {
+            return (params.PriceClose / 1000).toFixed(2)
+        }
     },
     {
         title: 'TRUNG BÌNH',
-        key: 'PriceAverage',
         render: params => {
-            return (params.PriceAverage).toFixed(0)
+            return (params.PriceAverage / 1000).toFixed(2)
         }
     },
     {
         title: 'ĐÓNG CỬA ĐC',
-        dataIndex: 'AdjClose',
-        key: 'AdjClose',
+        render: params => {
+            return (params.AdjClose / 1000).toFixed(2)
+        }
     },
     {
         title: 'KHỐI LƯỢNG',
@@ -73,8 +94,9 @@ const HistoricalQuotesPastPriceColumns = [
 const HistoricalQuotesForeignTradeColumns = [
     {
         title: 'NGÀY',
-        dataIndex: 'Date',
-        key: 'Date',
+        render: params => {
+            return moment(params.Date).format('YYYY-MM-DD')
+        }
     },
     {
         title: 'ROOM NN',
@@ -123,8 +145,9 @@ const HistoricalQuotesForeignTradeColumns = [
 const HistoricalQuotesSupplyDemandColumns = [
     {
         title: 'NGÀY',
-        dataIndex: 'Date',
-        key: 'Date',
+        render: params => {
+            return moment(params.Date).format('YYYY-MM-DD')
+        }
     },
     {
         title: 'SL ĐẶT MUA',
@@ -169,12 +192,14 @@ class Price extends React.Component {
         super(props);
         this.state = {
             HistoricalQuotesArray: [],
-            startDate: '',
-            endDate: ''
+            startDate: moment().add(-7, 'days').format('YYYY-MM-DD'),
+            endDate: moment().format('YYYY-MM-DD'),
+            lastUpdatedDate: ''
         }
     }
 
     componentDidMount() {
+        this.getLastUpdatedDate()
         this.crawlData();
     }
 
@@ -188,7 +213,7 @@ class Price extends React.Component {
     crawlData = () => {
         const { startDate, endDate } = this.state;
         const { Symbol: symbol } = this.props;
-        if (!symbol) return;
+        if (!symbol || !startDate || !endDate) return;
         axios({
             method: 'get',
             url: getHistoricalQuotesUrl(symbol, startDate, endDate),
@@ -196,7 +221,7 @@ class Price extends React.Component {
             .then(response => {
                 if (response.data) {
                     this.setState({
-                        HistoricalQuotesArray: response.data.reverse()
+                        HistoricalQuotesArray: response.data
                     })
                 }
             })
@@ -213,8 +238,11 @@ class Price extends React.Component {
         }
     }
 
-    udpateHistoricalQuotes = (symbol, resolve) => {
-        const { startDate, endDate } = this.state;
+    udpateHistoricalQuotes = (symbol, resolve, startDate, endDate) => {
+        if (!startDate || !endDate) {
+            startDate = this.state.startDate;
+            endDate = this.state.endDate;
+        }
         console.log(216, startDate, endDate)
         if (!symbol) return;
         axios({
@@ -233,14 +261,14 @@ class Price extends React.Component {
             })
     }
 
-    udpateHistoricalQuotesPartial = (start, count) => {
+    udpateHistoricalQuotesPartial = (start, count, startDate, endDate) => {
         let listPromises = [];
         const arr = cloneDeep(this.props.AllStocks);
         const arr1 = arr.slice(start, count)
         arr1.map(item => {
             item.Symbol && listPromises.push(
                 new Promise(resolve => {
-                    this.udpateHistoricalQuotes(item.Symbol, resolve);
+                    this.udpateHistoricalQuotes(item.Symbol, resolve, startDate, endDate);
                 })
             );
         });
@@ -255,48 +283,89 @@ class Price extends React.Component {
     }
 
     udpateHistoricalQuotesAll = async () => {
-        const lastUpdatedDate = await this.getLastUpdatedDate();
-        const todayDate = moment();
-        if (lastUpdatedDate === todayDate) return;
-        const startDate = moment(lastUpdatedDate).add(1, 'days');
-        const endDate = todayDate;
-
-
-        // await this.udpateHistoricalQuotesPartial(0, 1, startDate, endDate);
-        // await this.udpateHistoricalQuotesPartial(0, 500);
-        // await this.udpateHistoricalQuotesPartial(500, 1000);
-        // await this.udpateHistoricalQuotesPartial(1000, 2000);
-        await this.updateLastUpdatedDate();
-    }
-
-    udpateHistoricalQuotesDaily = async () => {
-        await
-            await this.udpateHistoricalQuotesPartial(0, 500);
+        await this.udpateHistoricalQuotesPartial(0, 500);
         await this.udpateHistoricalQuotesPartial(500, 1000);
         await this.udpateHistoricalQuotesPartial(1000, 2000);
     }
 
+    getLastUpdatedDate = async () => {
+        let result = null;
+        await axios({
+            url: getConfigGetCreateUrl('LAST_UPDATED_HISTORICAL_QUOTES'),
+            method: 'get'
+        })
+            .then(response => {
+                console.log(response)
+                if (response.data) {
+                    result = response.data
+                    this.setState({
+                        lastUpdatedDate: result.value
+                    })
+                }
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        return result
+    }
+
+    updateLastUpdatedDate = (obj) => {
+        axios({
+            url: getConfigRetrieveUpdateDeleteUrl(obj.id),
+            method: 'put',
+            data: {
+                key: obj.key,
+                value: moment().format('YYYY-MM-DD')
+            }
+        })
+            .then(response => {
+                console.log(response)
+                if (response.data) {
+                    this.setState({
+                        lastUpdatedDate: response.data.value
+                    })
+                }
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+    udpateHistoricalQuotesDaily = async () => {
+        const lastUpdatedDate = await this.getLastUpdatedDate();
+        const todayDate = moment().format('YYYY-MM-DD');
+        if (!lastUpdatedDate || !lastUpdatedDate.value) return;
+        if (lastUpdatedDate.value === todayDate) return;
+        const startDate = moment(lastUpdatedDate.value).add(1, 'days').format('YYYY-MM-DD');
+        const endDate = todayDate;
+        await this.udpateHistoricalQuotesPartial(0, 500, startDate, endDate);
+        await this.udpateHistoricalQuotesPartial(500, 1000, startDate, endDate);
+        await this.udpateHistoricalQuotesPartial(1000, 2000, startDate, endDate);
+        await this.updateLastUpdatedDate(lastUpdatedDate);
+    }
+
     render() {
-        const { HistoricalQuotesArray } = this.state;
+        const { HistoricalQuotesArray, lastUpdatedDate, startDate, endDate } = this.state;
         return (
             <div>
                 <div>
-                    <RangePicker onChange={this.onChange} />
+                    <RangePicker defaultValue={[moment(startDate), moment(endDate)]} onChange={this.onChange} />
+                    <div>Last updated {lastUpdatedDate ? lastUpdatedDate : ''}</div>
                     <Button onClick={this.crawlData}>Xem</Button>
-                    <Button onClick={() => this.udpateHistoricalQuotes(this.props.Symbol)}>Update</Button>
-                    <Button onClick={this.udpateHistoricalQuotesAll}>Update all</Button>
+                    {/* <Button onClick={() => this.udpateHistoricalQuotes(this.props.Symbol)}>Update</Button> */}
+                    {/* <Button onClick={this.udpateHistoricalQuotesAll}>Update all</Button> */}
                     <Button onClick={this.udpateHistoricalQuotesDaily}>Update daily all</Button>
                 </div>
                 <div>
                     <Tabs defaultActiveKey="1">
                         <TabPane tab="Giá quá khứ" key="1">
-                            <Table dataSource={HistoricalQuotesArray} columns={HistoricalQuotesPastPriceColumns} />
+                            <Table dataSource={HistoricalQuotesArray} columns={HistoricalQuotesPastPriceColumns} size='small' />
                         </TabPane>
                         <TabPane tab="Giao dịch NĐTNN" key="2">
-                            <Table dataSource={HistoricalQuotesArray} columns={HistoricalQuotesForeignTradeColumns} />
+                            <Table dataSource={HistoricalQuotesArray} columns={HistoricalQuotesForeignTradeColumns} size='small' />
                         </TabPane>
                         <TabPane tab="Cung cầu" key="3">
-                            <Table dataSource={HistoricalQuotesArray} columns={HistoricalQuotesSupplyDemandColumns} />
+                            <Table dataSource={HistoricalQuotesArray} columns={HistoricalQuotesSupplyDemandColumns} size='small' />
                         </TabPane>
                     </Tabs>
                 </div>
