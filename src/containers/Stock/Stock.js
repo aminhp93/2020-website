@@ -43,6 +43,7 @@ class Stock extends React.Component {
             data: [],
             value: [],
             fetching: false,
+            loading: false,
         }
 
         this.lastFetchId = 0;
@@ -52,6 +53,9 @@ class Stock extends React.Component {
 
     componentDidMount() {
         this.props.setSymbol('FPT')
+        this.setState({
+            loading: true
+        })
         Axios({
             method: 'get',
             url: 'http://localhost:8000/api/Data/Markets/TradingStatistic/'
@@ -60,10 +64,16 @@ class Stock extends React.Component {
                 console.log(response)
                 if (response.data) {
                     this.props.setAllStocks(response.data)
+                    this.setState({
+                        loading: false
+                    })
                 }
             })
             .catch(error => {
                 console.log(error)
+                this.setState({
+                    loading: false
+                })
             })
         // Axios({
         //     method: 'put',
@@ -104,8 +114,8 @@ class Stock extends React.Component {
     };
 
     render() {
-        const { fetching, data, value } = this.state;
-
+        const { fetching, data, value, loading } = this.state;
+        if (loading) return <Spin size='large' />
         return (
             <div className="App">
                 <div className="App-header">Header - Current Symbol {this.props.Symbol}</div>
@@ -127,7 +137,7 @@ class Stock extends React.Component {
                             ))}
                         </Select>
                         <div>
-                            <Tabs defaultActiveKey="2" tabPosition="left">
+                            <Tabs defaultActiveKey="1" tabPosition="left">
                                 <TabPane tab="OverallMarket" key="1">
                                     <div className="App-content">
                                         <div>Content</div>

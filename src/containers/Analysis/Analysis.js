@@ -4,7 +4,8 @@ import { List, Table } from 'antd';
 import moment from 'moment';
 
 import {
-    getAnalysisUrl
+    getAnalysisUrl,
+    getConfigGetCreateUrl
 } from '../../request';
 
 import {
@@ -62,13 +63,9 @@ class Analysis extends React.Component {
         this.state = {
             modules: AllCommunityModules,
             columnDefs: [
-
                 {
-                    headerName: 'StockObj',
-                    filter: 'agNumberColumnFilter',
-                    cellRenderer: params => {
-                        return params.data.StockObj && params.data.StockObj.Symbol
-                    }
+                    headerName: 'Stock',
+                    field: 'Stock',
                 },
                 {
                     field: 'PriceClose',
@@ -76,13 +73,18 @@ class Analysis extends React.Component {
                     filter: 'agNumberColumnFilter',
                 },
                 {
-                    field: 'MarketCap',
-                    headerName: 'MarketCap',
+                    field: 'PriceChange',
+                    headerName: 'PriceChange',
                     filter: 'agNumberColumnFilter',
                 },
                 {
                     field: 'Volume',
                     headerName: 'Volume',
+                    filter: 'agNumberColumnFilter',
+                },
+                {
+                    field: 'VolumeChange',
+                    headerName: 'VolumeChange',
                     filter: 'agNumberColumnFilter',
                 },
                 {
@@ -99,80 +101,79 @@ class Analysis extends React.Component {
                 sortable: true,
             },
             rowData: [],
-
-
         }
-
     }
 
     componentDidMount() {
         this.crawData();
     }
 
-    mapData = (data) => {
+    mapArrayToKeyValue = (data) => {
+        let result = {}
         data.map(item => {
-            item.TodayCapital = item.PriceClose * item.Volume
+            result[item.id] = item
         })
-        return data
+        console.log(116, result)
+        return result
     }
 
     crawData = async () => {
+        let allStocks = this.mapArrayToKeyValue(this.props.AllStocks)
         let data1 = [];
         let data2 = []
+        let lastUpdatedDate = '';
         await axios({
-            method: 'get',
-            url: getAnalysisUrl(moment().add(-2, 'days').format('YYYY-MM-DD'))
+            url: getConfigGetCreateUrl('LAST_UPDATED_HISTORICAL_QUOTES'),
+            method: 'get'
         })
             .then(response => {
                 console.log(response)
-                data1 = response.data
+                lastUpdatedDate = response.data.value
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        if (!lastUpdatedDate) return
+        await axios({
+            method: 'get',
+            url: getAnalysisUrl(moment(lastUpdatedDate).format('YYYY-MM-DD'))
+        })
+            .then(response => {
+                console.log(response)
+                data1 = response.data.sort((a, b) => a.Stock - b.Stock)
             })
             .catch(error => {
                 console.log(error)
             })
         await axios({
             method: 'get',
-            url: getAnalysisUrl(moment().add(-3, 'days').format('YYYY-MM-DD'))
+            url: getAnalysisUrl(moment(lastUpdatedDate).add(-3, 'days').format('YYYY-MM-DD'))
         })
             .then(response => {
                 console.log(response)
-                data2 = response.data
+                data2 = response.data.sort((a, b) => a.Stock - b.Stock)
 
             })
             .catch(error => {
                 console.log(error)
             })
-        console.log(data1, data2)
-        let result = [];
+        console.log(data1, data2, allStocks)
         for (let i = 0; i < data1.length; i++) {
-            if ((data1[i].PriceClose > data2[i].PriceClose * 1.01) && (data1[i].PriceClose * data1[i].Volume > 1000000000)) {
-                result.push(data1[i])
-            }
+            data1[i].Stock = allStocks[data1[i].Stock].Symbol
+            data1[i].YesterdayPriceClose = data2[i].PriceClose
+            data1[i].PriceChange = ((data1[i].PriceClose - data2[i].PriceClose) * 100 / data2[i].PriceClose).toFixed(1)
+            data1[i].YesterdayVolumeClose = data2[i].Volume
+            data1[i].VolumeChange = ((data1[i].Volume - data2[i].Volume) * 100 / data2[i].Volume).toFixed(1)
+            data1[i].TodayCapital = (data1[i].PriceClose * data1[i].Volume / 1000000000).toFixed(0)
         }
         this.setState({
-            rowData: this.mapData(result)
+            rowData: data1.filter(item => item.TodayCapital > 5 && item.PriceChange > 1)
         })
     }
 
     onGridReady = params => {
         this.gridApi = params.api;
         this.gridColumnApi = params.columnApi;
-
-        // const httpRequest = new XMLHttpRequest();
-        // const updateData = data => {
-        //     this.setState({ rowData: data });
-        // };
-
-        // httpRequest.open(
-        //     'GET',
-        //     'https://raw.githubusercontent.com/ag-grid/ag-grid/master/grid-packages/ag-grid-docs/src/olympicWinners.json'
-        // );
-        // httpRequest.send();
-        // httpRequest.onreadystatechange = () => {
-        //     if (httpRequest.readyState === 4 && httpRequest.status === 200) {
-        //         updateData(JSON.parse(httpRequest.responseText));
-        //     }
-        // };
     };
 
     render() {
@@ -202,7 +203,7 @@ class Analysis extends React.Component {
                         id="myGrid"
                         style={{
                             height: '500px',
-                            width: '800px',
+                            // width: '800px',
                         }}
                         className="ag-theme-alpine"
                     >
@@ -224,7 +225,8 @@ class Analysis extends React.Component {
 const mapStateToProps = state => {
     console.log(state);
     return {
-        Symbol: state.stock.Symbol
+        Symbol: state.stock.Symbol,
+        AllStocks: state.stock.AllStocks,
     }
 
 }
