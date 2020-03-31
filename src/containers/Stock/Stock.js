@@ -28,6 +28,10 @@ import Analysis from '../Analysis/Analysis';
 import debounce from 'lodash/debounce';
 
 import {
+    getMarketTradingStatistic
+} from '../../request'
+
+import {
     setSymbol,
     setAllStocks,
 } from '../../actions/stock';
@@ -58,7 +62,7 @@ class Stock extends React.Component {
         })
         Axios({
             method: 'get',
-            url: 'http://localhost:8000/api/Data/Markets/TradingStatistic/'
+            url: getMarketTradingStatistic()
         })
             .then(response => {
                 console.log(response)

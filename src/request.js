@@ -5,6 +5,10 @@ export const hostName1 = 'https://svr1.fireant.vn';
 export const hostName3 = 'https://svr3.fireant.vn';
 const hostName = host_2020_server;
 
+export function getMarketTradingStatistic() {
+    return `${hostName}/api/Data/Markets/TradingStatistic/`
+}
+
 export function getCompanyInfoUrl(symbol) {
     return `${hostName}/api/Data/Companies/CompanyInfo${hostName === hostName1 ? '' : '/'}?symbol=${symbol}`
 }
