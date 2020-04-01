@@ -145,3 +145,7 @@ export function getConfigRetrieveUpdateDeleteUrl(id) {
 export function getAnalysisUrl(date) {
     return `${hostName}/api/Analysis/?Date=${date}`
 }
+
+export function getStockFilter() {
+    return `${hostName}/api/Stock/Filter/`
+}

@@ -5,7 +5,9 @@ import moment from 'moment';
 
 import {
     getAnalysisUrl,
-    getConfigGetCreateUrl
+    getConfigGetCreateUrl,
+    getStockFilter,
+    getCompanyInfoUrl
 } from '../../request';
 
 import {
@@ -64,7 +66,7 @@ const data = [
     {
         'title': "Crawdata2",
         'detail': [
-            'Lay nhung CP co dot bien trong '
+            'Lay nhung CP cung nganh'
         ]
     }
 ];
@@ -104,6 +106,11 @@ class Analysis extends React.Component {
                     headerName: 'TodayCapital',
                     filter: 'agNumberColumnFilter',
                 },
+                {
+                    field: 'MarketCap',
+                    headerName: 'MarketCap',
+                    filter: 'agNumberColumnFilter',
+                },
 
             ],
             defaultColDef: {
@@ -116,13 +123,57 @@ class Analysis extends React.Component {
         }
     }
 
+    componentDidUpdate(preProps) {
+        console.log('componentDidUpdate Analysis', this.props, preProps)
+        if (this.props.Symbol !== preProps.Symbol) {
+            this.crawData2();
+        }
+    }
+
     componentDidMount() {
         // this.crawData();
         this.crawData2();
     }
 
-    crawData2 = () => {
+    crawData2 = async () => {
+        let allStocks = this.mapArrayToKeyValue(this.props.AllStocks)
 
+        let CompanyInfoObj = {}
+        await axios({
+            url: getCompanyInfoUrl(this.props.Symbol),
+            method: 'get',
+        })
+            .then(response => {
+                if (response.data) {
+                    CompanyInfoObj = response.data
+                }
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        if (!CompanyInfoObj.ICBCode) return;
+        const data = {
+            ICBCode: CompanyInfoObj.ICBCode
+        }
+        await axios({
+            url: getStockFilter(),
+            method: 'post',
+            data
+        })
+            .then(response => {
+                console.log(response)
+                const data = response.data
+                for (let i = 0; i < data.length; i++) {
+                    data[i].Stock = allStocks[data[i].Stock].Symbol
+                    data[i].TodayCapital = (data[i].PriceClose * data[i].Volume / 1000000000).toFixed(0)
+                }
+                this.setState({
+                    rowData: response.data
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
 
     mapArrayToKeyValue = (data) => {
@@ -175,6 +226,7 @@ class Analysis extends React.Component {
                 console.log(error)
             })
         console.log(data1, data2, allStocks)
+        if (data1.length !== data2.length) return
         for (let i = 0; i < data1.length; i++) {
             data1[i].Stock = allStocks[data1[i].Stock].Symbol
             data1[i].YesterdayPriceClose = data2[i].PriceClose
