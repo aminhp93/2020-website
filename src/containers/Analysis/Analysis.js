@@ -54,6 +54,18 @@ const data = [
         'detail': [
             'Bang financial info thuong update trong vong 3 thang --> danh gia tinh hinh doanh nghiep chung'
         ]
+    },
+    {
+        'title': "Crawdata1",
+        'detail': [
+            'Lay du lieu hang ngay nhung CP TodayCapital > 5 ty, %Change in Price > 1%'
+        ]
+    },
+    {
+        'title': "Crawdata2",
+        'detail': [
+            'Lay nhung CP co dot bien trong '
+        ]
     }
 ];
 
@@ -105,7 +117,12 @@ class Analysis extends React.Component {
     }
 
     componentDidMount() {
-        this.crawData();
+        // this.crawData();
+        this.crawData2();
+    }
+
+    crawData2 = () => {
+
     }
 
     mapArrayToKeyValue = (data) => {
@@ -147,7 +164,7 @@ class Analysis extends React.Component {
             })
         await axios({
             method: 'get',
-            url: getAnalysisUrl(moment(lastUpdatedDate).add(-3, 'days').format('YYYY-MM-DD'))
+            url: getAnalysisUrl(moment(lastUpdatedDate).add(-1, 'days').format('YYYY-MM-DD'))
         })
             .then(response => {
                 console.log(response)
@@ -197,6 +214,7 @@ class Analysis extends React.Component {
                         </List.Item>
                     )}
                 />
+
 
                 <div style={{ width: '100%', height: '100%' }}>
                     <div

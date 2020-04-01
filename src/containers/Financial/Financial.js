@@ -282,7 +282,8 @@ class Financial extends React.Component {
                     render: (params) => {
                         if (params.Values && params.Values.length) {
                             const data = params.Values.filter(item => item.Year === year)
-                            return data.length && (data[0].Value / BILLION_UNIT).toFixed(2)
+                            const returnValue = data.length && (data[0].Value / BILLION_UNIT).toFixed(2)
+                            return returnValue !== '0.00' ? returnValue : ''
                         }
                     }
                 })

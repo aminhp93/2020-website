@@ -11,6 +11,8 @@ import {
     getConfigGetCreateUrl,
     getConfigRetrieveUpdateDeleteUrl
 } from '../../request';
+import { formatNumber } from '../../utils/all';
+
 
 const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
@@ -24,6 +26,7 @@ const HistoricalQuotesPastPriceColumns = [
     },
     {
         title: 'THAY ĐỔI',
+        align: 'right',
         render: params => {
             const content = ((params.PriceClose - params.PriceBasic) / 1000).toFixed(2)
             let className = '';
@@ -37,6 +40,7 @@ const HistoricalQuotesPastPriceColumns = [
     },
     {
         title: '%',
+        align: 'right',
         render: params => {
             const content = ((params.PriceClose - params.PriceBasic) / (params.PriceBasic)).toFixed(2)
             let className = '';
@@ -50,44 +54,52 @@ const HistoricalQuotesPastPriceColumns = [
     },
     {
         title: 'MỞ CỬA',
+        align: 'right',
         render: params => {
             return (params.PriceOpen / 1000).toFixed(2)
         }
     },
     {
         title: 'CAO NHẤT',
+        align: 'right',
         render: params => {
             return (params.PriceHigh / 1000).toFixed(2)
         }
     },
     {
         title: 'THẤP NHẤT',
+        align: 'right',
         render: params => {
             return (params.PriceLow / 1000).toFixed(2)
         }
     },
     {
         title: 'ĐÓNG CỬA',
+        align: 'right',
         render: params => {
             return (params.PriceClose / 1000).toFixed(2)
         }
     },
     {
         title: 'TRUNG BÌNH',
+        align: 'right',
         render: params => {
             return (params.PriceAverage / 1000).toFixed(2)
         }
     },
     {
         title: 'ĐÓNG CỬA ĐC',
+        align: 'right',
         render: params => {
             return (params.AdjClose / 1000).toFixed(2)
         }
     },
     {
         title: 'KHỐI LƯỢNG',
-        dataIndex: 'Volume',
-        key: 'Volume',
+        align: 'right',
+        render: params => {
+            return formatNumber(params.Volume)
+        }
     }
 ]
 
@@ -100,44 +112,51 @@ const HistoricalQuotesForeignTradeColumns = [
     },
     {
         title: 'ROOM NN',
+        align: 'right',
         render: params => {
-            return params.CurrentForeignRoom
+            return formatNumber(params.CurrentForeignRoom)
         }
     },
     {
-        title: 'MUA',
+        title: 'KL MUA',
+        align: 'right',
         render: params => {
-            return params.BuyForeignQuantity
+            return formatNumber(params.BuyForeignQuantity)
         }
     },
     {
-        title: 'BÁN',
+        title: 'KL BÁN',
+        align: 'right',
         render: params => {
-            return params.SellForeignQuantity
-        }
-    },
-    {
-        title: 'MUA-BÁN',
-        render: params => {
-            return params.BuyForeignQuantity - params.SellForeignQuantity
-        }
-    },
-    {
-        title: 'MUA',
-        render: params => {
-            return params.BuyForeignValue
-        }
-    },
-    {
-        title: 'BÁN',
-        render: params => {
-            return params.SellForeignValue
+            return formatNumber(params.SellForeignQuantity)
         }
     },
     {
         title: 'MUA-BÁN',
+        align: 'right',
         render: params => {
-            return params.BuyForeignValue - params.SellForeignValue
+            return formatNumber(params.BuyForeignQuantity - params.SellForeignQuantity)
+        }
+    },
+    {
+        title: 'GT MUA',
+        align: 'right',
+        render: params => {
+            return formatNumber(params.BuyForeignValue)
+        }
+    },
+    {
+        title: 'GT BÁN',
+        align: 'right',
+        render: params => {
+            return formatNumber(params.SellForeignValue)
+        }
+    },
+    {
+        title: 'MUA-BÁN',
+        align: 'right',
+        render: params => {
+            return formatNumber(params.BuyForeignValue - params.SellForeignValue)
         }
     }
 ]
@@ -151,38 +170,44 @@ const HistoricalQuotesSupplyDemandColumns = [
     },
     {
         title: 'SL ĐẶT MUA',
+        align: 'right',
         render: params => {
-            return params.BuyCount
+            return formatNumber(params.BuyCount)
         }
     },
     {
         title: 'KL ĐẶT MUA',
+        align: 'right',
         render: params => {
-            return params.BuyQuantity
+            return formatNumber(params.BuyQuantity)
         }
     },
     {
         title: 'SL ĐẶT BÁN',
+        align: 'right',
         render: params => {
-            return params.SellCount
+            return formatNumber(params.SellCount)
         }
     },
     {
         title: 'KL ĐẶT BÁN',
+        align: 'right',
         render: params => {
-            return params.SellQuantity
+            return formatNumber(params.SellQuantity)
         }
     },
     {
         title: 'KL KHỚP',
+        align: 'right',
         render: params => {
-            return params.Volume
+            return formatNumber(params.Volume)
         }
     },
     {
         title: 'GT KHỚP (1000 VND)',
+        align: 'right',
         render: params => {
-            return params.TotalValue
+            return formatNumber(params.TotalValue)
         }
     }
 ]
