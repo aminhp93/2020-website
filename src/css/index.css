@@ -43,3 +43,15 @@ code {
 .green {
   color: green
 }
+
+.white {
+  color: white;
+}
+
+.purple {
+  color: rgb(248, 33, 248);
+}
+
+.blue {
+  color: rgb(0, 255, 255);
+}

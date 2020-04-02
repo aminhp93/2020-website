@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { List, Table } from 'antd';
 import moment from 'moment';
-
+import { mapColorPriceChange, formatNumber } from '../../utils/all';
 import {
     getAnalysisUrl,
     getConfigGetCreateUrl,
@@ -80,36 +80,75 @@ class Analysis extends React.Component {
                 {
                     headerName: 'Stock',
                     field: 'Stock',
+                    align: 'left',
                 },
                 {
                     field: 'PriceClose',
                     headerName: 'PriceClose',
                     filter: 'agNumberColumnFilter',
+                    align: 'right',
+                    cellRenderer: params => {
+                        const div = document.createElement("div");
+                        div.innerText = formatNumber(params.data.PriceClose)
+                        return div
+                    }
                 },
                 {
                     field: 'PriceChange',
                     headerName: 'PriceChange',
+                    align: 'right',
                     filter: 'agNumberColumnFilter',
+                    align: 'right',
+                    cellRenderer: params => {
+                        const div = document.createElement("div");
+                        div.innerText = params.data.PriceChange
+                        div.className = mapColorPriceChange(params.data.PriceChange)
+                        return div
+                    }
                 },
                 {
                     field: 'Volume',
+                    align: 'right',
                     headerName: 'Volume',
                     filter: 'agNumberColumnFilter',
+                    cellRenderer: params => {
+                        const div = document.createElement("div");
+                        div.innerText = formatNumber(params.data.Volume)
+                        return div
+                    }
                 },
                 {
                     field: 'VolumeChange',
+                    align: 'right',
                     headerName: 'VolumeChange',
                     filter: 'agNumberColumnFilter',
+                    cellRenderer: params => {
+                        const div = document.createElement("div");
+                        div.innerText = formatNumber(params.data.VolumeChange)
+                        return div
+                    }
                 },
                 {
                     field: 'TodayCapital',
+                    align: 'right',
                     headerName: 'TodayCapital',
                     filter: 'agNumberColumnFilter',
+                    cellRenderer: params => {
+                        const div = document.createElement("div");
+                        div.innerText = formatNumber(params.data.TodayCapital)
+                        return div
+                    }
                 },
                 {
                     field: 'MarketCap',
+                    align: 'right',
                     headerName: 'MarketCap',
                     filter: 'agNumberColumnFilter',
+                    cellRenderer: params => {
+                        const div = document.createElement("div");
+                        div.innerText = formatNumber(params.data.MarketCap)
+                        return div
+                    }
                 },
 
             ],
@@ -137,7 +176,9 @@ class Analysis extends React.Component {
 
     crawData2 = async () => {
         let allStocks = this.mapArrayToKeyValue(this.props.AllStocks)
-
+        let data1 = [];
+        let data2 = []
+        let lastUpdatedDate = '';
         let CompanyInfoObj = {}
         await axios({
             url: getCompanyInfoUrl(this.props.Symbol),
@@ -151,29 +192,65 @@ class Analysis extends React.Component {
             .catch(error => {
                 console.log(error)
             })
-        if (!CompanyInfoObj.ICBCode) return;
-        const data = {
-            ICBCode: CompanyInfoObj.ICBCode
-        }
         await axios({
-            url: getStockFilter(),
-            method: 'post',
-            data
+            url: getConfigGetCreateUrl('LAST_UPDATED_HISTORICAL_QUOTES'),
+            method: 'get'
         })
             .then(response => {
                 console.log(response)
-                const data = response.data
-                for (let i = 0; i < data.length; i++) {
-                    data[i].Stock = allStocks[data[i].Stock].Symbol
-                    data[i].TodayCapital = (data[i].PriceClose * data[i].Volume / 1000000000).toFixed(0)
-                }
-                this.setState({
-                    rowData: response.data
-                })
+                lastUpdatedDate = response.data.value
             })
             .catch(error => {
                 console.log(error)
             })
+        if (!lastUpdatedDate) return
+        if (!CompanyInfoObj.ICBCode) return;
+        await axios({
+            url: getStockFilter(),
+            method: 'post',
+            data: {
+                ICBCode: CompanyInfoObj.ICBCode,
+                Date: moment(lastUpdatedDate).format('YYYY-MM-DD')
+            }
+        })
+            .then(response => {
+                console.log(response)
+                data1 = response.data
+
+
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        await axios({
+            url: getStockFilter(),
+            method: 'post',
+            data: {
+                ICBCode: CompanyInfoObj.ICBCode,
+                Date: moment(lastUpdatedDate).add(-1, 'days').format('YYYY-MM-DD')
+            }
+        })
+            .then(response => {
+                console.log(response)
+                data2 = response.data
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        console.log(data1, data2)
+        if (data1.length !== data2.length) return;
+        for (let i = 0; i < data1.length; i++) {
+            data1[i].Stock = allStocks[data1[i].Stock].Symbol
+            data1[i].YesterdayPriceClose = data2[i].PriceClose
+            data1[i].PriceChange = Number(((data1[i].PriceClose - data2[i].PriceClose) * 100 / data2[i].PriceClose).toFixed(1))
+            data1[i].YesterdayVolumeClose = data2[i].Volume
+            data1[i].VolumeChange = Number(((data1[i].Volume - data2[i].Volume) * 100 / data2[i].Volume).toFixed(1))
+            data1[i].TodayCapital = Number((data1[i].PriceClose * data1[i].Volume / 1000000000).toFixed(0))
+            data1[i].MarketCap = Number((data1[i].MarketCap / 1000000000).toFixed(0))
+        }
+        this.setState({
+            rowData: data1
+        })
     }
 
     mapArrayToKeyValue = (data) => {

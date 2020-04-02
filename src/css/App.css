@@ -16,6 +16,7 @@
 
 .App-navigation {
   min-width: 110px;
+  width: 100%;
 }
 
 .App-content {
