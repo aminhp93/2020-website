@@ -13,30 +13,27 @@ class App extends React.Component {
   render() {
     return (
       <Router>
-        <div>
-          <nav className="App-nav">
-            <ul>
-              <li>
-                <Link to="/stock">Stock</Link>
-              </li>
-              <li>
-                <Link to="/todos">Todos</Link>
-              </li>
+        <Switch>
+          <Route path="/stock">
+            <Stock />
+          </Route>
+          <Route path="/todos">
+            <TodoMVC />
+          </Route>
+          <Route path="/">
+            <nav className="App-nav">
+              <ul>
+                <li>
+                  <Link to="/stock">Stock</Link>
+                </li>
+                <li>
+                  <Link to="/todos">Todos</Link>
+                </li>
 
-            </ul>
-          </nav>
-          <Switch>
-            <Route path="/stock">
-              <Stock />
-            </Route>
-            <Route path="/todos">
-              <TodoMVC />
-            </Route>
-            <Route path="/">
-              <div>Hello Amin</div>
-            </Route>
-          </Switch>
-        </div>
+              </ul>
+            </nav>
+          </Route>
+        </Switch>
       </Router>
     );
   }

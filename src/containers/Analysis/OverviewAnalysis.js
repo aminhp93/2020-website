@@ -17,6 +17,12 @@ const data = [
         ]
     },
     {
+        'title': 'Analysis 3',
+        'detail': [
+            'Phan tich BCTC cua nhung CP cung nganh - VND',
+        ]
+    },
+    {
         'title': 'Level 1: Understand the detail of each row if financial reports'
     },
     {
@@ -74,7 +80,7 @@ const data = [
 class OverviewAnalysis extends React.Component {
     render() {
         return (
-            <div>
+            <div className="OverviewAnalysis">
                 <List
                     header={<div>Analysis</div>}
                     footer={<div>Footer</div>}
@@ -82,8 +88,8 @@ class OverviewAnalysis extends React.Component {
                     dataSource={data}
                     renderItem={item => (
                         <List.Item>
-                            <div>
-                                <li>{item.title}</li>
+                            <div className="OverviewAnalysis-item">
+                                <li className='OverviewAnalysis-title'>{item.title}</li>
                                 {
                                     item.detail && item.detail.map(i => {
                                         return <li>{i}</li>

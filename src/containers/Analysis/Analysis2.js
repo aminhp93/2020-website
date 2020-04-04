@@ -1,8 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { DatePicker, Button } from 'antd';
-
 import moment from 'moment';
+import axios from 'axios';
+import {
+    BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+} from 'recharts';
+import { AgGridReact } from '@ag-grid-community/react';
+import { AllCommunityModules } from '@ag-grid-community/all-modules';
+import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
+import '@ag-grid-community/all-modules/dist/styles/ag-theme-alpine.css';
+
 import {
     mapColorPriceChange,
     formatNumber,
@@ -18,14 +26,11 @@ import {
 import {
     // setSymbol,
 } from '../../actions/stock';
-import axios from 'axios';
 
-import { AgGridReact } from '@ag-grid-community/react';
-import { AllCommunityModules } from '@ag-grid-community/all-modules';
-import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
-import '@ag-grid-community/all-modules/dist/styles/ag-theme-alpine.css';
+import AnalysisComponent from '../../components/Analysis';
 
 const { RangePicker } = DatePicker;
+
 
 class Analysis2 extends React.Component {
     constructor(props) {
@@ -217,9 +222,10 @@ class Analysis2 extends React.Component {
         for (let i = 0; i < rowData.length; i++) {
             let item = {
                 stock: rowData[i].Stock,
-                current: rowData[i].PriceClose
             }
-            item[startDate] = rowData[i].YesterdayPriceClose
+            item[startDate ? startDate : moment(lastUpdatedDate).add(-1, 'days').format('YYYY-MM-DD') + 'T00:00:00Z'] = rowData[i].YesterdayPriceClose
+            item[endDate ? endDate : lastUpdatedDate] = rowData[i].PriceClose
+
             dataChart.push(item)
         }
         console.log(dataChart, rowData)
@@ -254,7 +260,8 @@ class Analysis2 extends React.Component {
     }
 
     render() {
-        const { startDate, endDate } = this.state;
+        const { startDate, endDate, dataChart } = this.state;
+        const { AllStocks } = this.props;
         return (
             <div>
                 <div>
@@ -281,6 +288,27 @@ class Analysis2 extends React.Component {
                             onFirstDataRendered={params => params.api.sizeColumnsToFit()}
                         />
                     </div>
+                </div>
+                <div className="flex">
+                    {
+                        ['VND', 'VCB', 'PVD'].map(item => {
+                            return <AnalysisComponent symbol={item} AllStocks={AllStocks} startDate={startDate} endDate={endDate} />
+                        })
+                    }
+                </div>
+                <div className="flex">
+                    {
+                        ['VNM', 'FPT', 'VIC'].map(item => {
+                            return <AnalysisComponent symbol={item} AllStocks={AllStocks} startDate={startDate} endDate={endDate} />
+                        })
+                    }
+                </div>
+                <div className="flex">
+                    {
+                        ['VJC'].map(item => {
+                            return <AnalysisComponent symbol={item} AllStocks={AllStocks} startDate={startDate} endDate={endDate} />
+                        })
+                    }
                 </div>
             </div>
         )

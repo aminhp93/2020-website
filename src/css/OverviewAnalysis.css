@@ -1,0 +1,13 @@
+.OverviewAnalysis {
+
+}
+
+.OverviewAnalysis-item {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.OverviewAnalysis-title {
+    font-weight: 800;
+}

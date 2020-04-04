@@ -15,6 +15,7 @@ import '../../css/Profile.css';
 import '../../css/Stakeholder.css';
 import '../../css/Technical.css';
 import '../../css/Transaction.css';
+import '../../css/OverviewAnalysis.css';
 
 import EquityAndDividends from '../EquityAndDividends/EquityAndDividends';
 import Financial from '../Financial/Financial';
@@ -49,10 +50,8 @@ class Stock extends React.Component {
             fetching: false,
             loading: false,
         }
-
         this.lastFetchId = 0;
         this.fetchUser = debounce(this.fetchUser, 800);
-
     }
 
     componentDidMount() {
@@ -123,12 +122,10 @@ class Stock extends React.Component {
         return (
             <div className="App">
                 <div className="App-header">
-                    <div className="App-header-symbol">
-                        Header - Current Symbol {this.props.Symbol}
-                    </div>
+
                     <div className="App-search">
                         <Select
-                            // mode="multiple"
+                            mode="multiple"
                             labelInValue
                             value={value}
                             placeholder="Select stock"
@@ -136,12 +133,15 @@ class Stock extends React.Component {
                             filterOption={false}
                             onSearch={this.fetchUser}
                             onChange={this.handleChange}
-                            style={{ width: '100%' }}
+                            style={{ width: '200px' }}
                         >
                             {data.map(d => (
                                 <Option key={d.Symbol}>{d.Symbol}</Option>
                             ))}
                         </Select>
+                    </div>
+                    <div className="App-header-symbol">
+                        Header - Current Symbol {this.props.Symbol}
                     </div>
 
                 </div>

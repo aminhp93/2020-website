@@ -688,7 +688,7 @@ class Financial extends React.Component {
         return (
             <div className="Financial-revenue-quarter-chart-container">
                 <BarChart
-                    width={400}
+                    width={500}
                     height={300}
                     data={data}
                     margin={{
@@ -696,7 +696,7 @@ class Financial extends React.Component {
                     }}
                 >
                     {/* <CartesianGrid strokeDasharray="3 3" /> */}
-                    <XAxis dataKey="Name" tick={{ fontSize: 10 }} />
+                    <XAxis dataKey="Name" />
                     <YAxis />
                     <Tooltip />
                     <Legend />
