@@ -31,8 +31,6 @@ const TYPE_BAO_HIEM = ["ABI", "BIC", "BLI", "BMI", "BVH", "MIG", "PGI", "PTI", "
 const TYPE_CHUNG_KHOAN = ["AGR", "APG", "APS", "ART", "BMS", "BSI", "BVS", "CSI", "CTS", "DSC", "EVS", "FTS", "HAC", "HBS", "HCM", "HFT", "IVS", "MBS", "ORS", "PHS", "PSI", "SBS", "SHS", "SSI", "TCI", "TVB", "TVS", "VCI", "VDS", "VIG", "VIX", "VND", "WSS"]
 const TYPE_QUY = ["E1VFVN30", "FUCVREIT", "FUCTVGF1"]
 
-
-
 // 0: "4. Giá vốn hàng bán"
 // 1: "ABC"
 // 2: "Lãi/Lỗ thuần từ hoạt động dịch vụ"

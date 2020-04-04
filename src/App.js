@@ -14,7 +14,7 @@ class App extends React.Component {
     return (
       <Router>
         <div>
-          <nav>
+          <nav className="App-nav">
             <ul>
               <li>
                 <Link to="/stock">Stock</Link>

@@ -340,7 +340,7 @@ class Price extends React.Component {
             method: 'put',
             data: {
                 key: obj.key,
-                value: moment().format('YYYY-MM-DD')
+                value: moment().format('YYYY-MM-DD') + 'T00:00:00Z'
             }
         })
             .then(response => {

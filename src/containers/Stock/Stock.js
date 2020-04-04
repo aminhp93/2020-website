@@ -56,7 +56,7 @@ class Stock extends React.Component {
     }
 
     componentDidMount() {
-        this.props.setSymbol('FPT')
+        this.props.setSymbol('VND')
         this.setState({
             loading: true
         })
@@ -122,11 +122,13 @@ class Stock extends React.Component {
         if (loading) return <Spin size='large' />
         return (
             <div className="App">
-                <div className="App-header">Header - Current Symbol {this.props.Symbol}</div>
-                <div className="App-container">
-                    <div className="App-navigation">
+                <div className="App-header">
+                    <div className="App-header-symbol">
+                        Header - Current Symbol {this.props.Symbol}
+                    </div>
+                    <div className="App-search">
                         <Select
-                            mode="multiple"
+                            // mode="multiple"
                             labelInValue
                             value={value}
                             placeholder="Select stock"
@@ -140,6 +142,12 @@ class Stock extends React.Component {
                                 <Option key={d.Symbol}>{d.Symbol}</Option>
                             ))}
                         </Select>
+                    </div>
+
+                </div>
+                <div className="App-container">
+                    <div className="App-navigation">
+
                         <div>
                             <Tabs defaultActiveKey="1" tabPosition="left">
                                 <TabPane tab="OverallMarket" key="1">

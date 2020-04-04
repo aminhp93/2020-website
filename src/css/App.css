@@ -3,20 +3,38 @@
   display: flex;
   height: 100%;
   flex-direction: column;
+  margin-top: 40px;
 }
 
 .App-header {
-  background: green
+  background: green;
+  position: fixed;
+  height: 40px;
+  overflow: hidden;
+  width: 100%;
+  display: flex;
+  z-index: 2;
 }
 
 .App-container {
   display: flex;
   height: 100%;
+  margin-top: 40px;
 }
 
 .App-navigation {
   min-width: 110px;
   width: 100%;
+}
+
+.App-navigation .ant-tabs-bar.ant-tabs-left-bar{
+  position: fixed;
+  overflow: hidden;
+  width: 120px;
+}
+
+.App-navigation .ant-tabs-content {
+  margin-left: 120px;
 }
 
 .App-content {
@@ -25,4 +43,22 @@
 
 .App-content-detail {
   height: 100%;
+}
+
+.App-nav {
+  height: 40px;
+  position: fixed;
+  overflow: hidden;
+  top: 0;
+  z-index: 1;
+  background: red;
+  width: 100%;
+}
+
+.App-header-symbol {
+  width: 200px;
+}
+
+.App-search {
+  flex: 1;
 }
