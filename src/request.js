@@ -3,6 +3,7 @@ export const host_2020_server = 'http://18.207.193.124'
 export const localhost = 'http://localhost:8000'
 export const hostName1 = 'https://svr1.fireant.vn';
 export const hostName3 = 'https://svr3.fireant.vn';
+export const myIP = 'http://192.169.1.125:8000'
 const hostName = localhost;
 
 export function getMarketTradingStatistic() {
@@ -93,12 +94,20 @@ export function getYearlyFinancialInfoUpdateUrl(symbol) {
     return `${hostName}/api/Data/Finance/YearlyFinancialInfo/update${hostName === hostName1 ? '' : '/'}?symbol=${symbol}`
 }
 
+export function getYearlyFinancialInfoFilterUrl() {
+    return `${hostName}/api/Data/Finance/YearlyFinancialInfo/filter/`
+}
+
 export function getQuarterlyFinancialInfoUrl(symbol) {
     return `${hostName}/api/Data/Finance/QuarterlyFinancialInfo${hostName === hostName1 ? '' : '/'}?symbol=${symbol}&fromYear=2016&fromQuarter=1&toYear=2019&toQuarter=4`
 }
 
 export function getQuarterlyFinancialInfoUpdateUrl(symbol) {
     return `${hostName}/api/Data/Finance/QuarterlyFinancialInfo/update${hostName === hostName1 ? '' : '/'}?symbol=${symbol}&fromYear=2016&fromQuarter=1&toYear=2019&toQuarter=4`
+}
+
+export function getQuarterlyFinancialInfoFilterUrl() {
+    return `${hostName}/api/Data/Finance/QuarterlyFinancialInfo/filter/`
 }
 
 export function getLastestFinancialReportsUrl(symbol, type = 1, year = 2020, quarter = 0, count = 5) {

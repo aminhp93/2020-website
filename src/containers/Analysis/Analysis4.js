@@ -36,7 +36,7 @@ import AnalysisComponent from '../../components/Analysis';
 const { RangePicker } = DatePicker;
 
 
-class Analysis3 extends React.Component {
+class Analysis4 extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -55,8 +55,15 @@ class Analysis3 extends React.Component {
         this.crawData()
     }
 
+    componentDidUpdate(preProps) {
+        console.log('componentDidUpdate Analysis4', this.props, preProps)
+        if (this.props.Symbol !== preProps.Symbol) {
+            this.crawData();
+        }
+    }
+
     crawData = () => {
-        const { AllStocksObj } = this.props;
+        const { AllStocksObj, Symbol: symbol } = this.props;
         // axios({
         //     method: 'post',
         //     url: getYearlyFinancialInfoFilterUrl(),
@@ -82,17 +89,25 @@ class Analysis3 extends React.Component {
             method: 'post',
             url: getQuarterlyFinancialInfoFilterUrl(),
             data: {
-                ICBCode: 8777,
+                symbol
             }
         })
             .then(response => {
                 console.log(response)
+                let data = response.data.map(item => {
+                    item.Stock = AllStocksObj[item.Stock].Symbol
+                    return item
+                }).sort((a, b) => {
+                    if (a.Year < b.Year) return 1
+                    if (a.Year > b.Year) return -1
+                    if (a.Quarter < b.Quarter) return 1
+                    if (a.Quarter > b.Quarter) return -1
+                    return 0
+                })
+                console.log(data)
                 this.setState({
                     columnDefs: getQuarterlyFinancialInfoColumnDefs(),
-                    rowData: response.data.filter(item => item.Year === 2018 && item.Quarter === 4).map(item => {
-                        item.Stock = AllStocksObj[item.Stock].Symbol
-                        return item
-                    })
+                    rowData: data
                 })
 
             })
@@ -145,4 +160,4 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Analysis3);
+export default connect(mapStateToProps, mapDispatchToProps)(Analysis4);

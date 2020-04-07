@@ -35,20 +35,29 @@ export function mapArrayToKeyValue(data) {
 
 export function mapDataTwoDate(data1, data2, allStocks) {
     if (!data1 || !data2 || !allStocks) return []
-
+    let data1Obj = {};
+    let data2Obj = {};
+    data1.map(item => {
+        data1Obj[item.Stock] = item
+    })
+    data2.map(item => {
+        data2Obj[item.Stock] = item
+    })
     console.log(allStocks, data1)
     for (let i = 0; i < data1.length; i++) {
-        data1[i].Stock = allStocks[data1[i].Stock].Symbol
         data1[i].TodayCapital = Number((data1[i].PriceClose * data1[i].DealVolume / 1000000000).toFixed(0))
         data1[i].MarketCap = Number((data1[i].MarketCap / 1000000000).toFixed(0))
         if (!data2[i]) {
 
         } else {
-            data1[i].YesterdayPriceClose = data2[i].PriceClose
-            data1[i].PriceChange = Number(((data1[i].PriceClose - data2[i].PriceClose) * 100 / data2[i].PriceClose).toFixed(1))
-            data1[i].YesterdayVolumeClose = data2[i].DealVolume
-            data1[i].VolumeChange = Number(((data1[i].DealVolume - data2[i].DealVolume) * 100 / data2[i].DealVolume).toFixed(1))
+            const data2Item = data2Obj[data1[i].Stock]
+            data1[i].YesterdayPriceClose = data2Item.PriceClose
+            data1[i].PriceChange = Number(((data1[i].PriceClose - data2Item.PriceClose) * 100 / data2Item.PriceClose).toFixed(1))
+            data1[i].YesterdayVolumeClose = data2Item.DealVolume
+            data1[i].VolumeChange = Number(((data1[i].DealVolume - data2Item.DealVolume) * 100 / data2Item.DealVolume).toFixed(1))
         }
+        data1[i].Stock = allStocks[data1[i].Stock].Symbol
+
 
     }
     return data1;

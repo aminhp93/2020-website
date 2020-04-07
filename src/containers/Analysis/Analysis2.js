@@ -305,7 +305,7 @@ class Analysis2 extends React.Component {
                 </div>
                 <div className="flex">
                     {
-                        ['VJC'].map(item => {
+                        ['VJC', 'HPG', 'ROS'].map(item => {
                             return <AnalysisComponent symbol={item} AllStocks={AllStocks} startDate={startDate} endDate={endDate} />
                         })
                     }

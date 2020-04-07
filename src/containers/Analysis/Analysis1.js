@@ -189,10 +189,9 @@ class Analysis1 extends React.Component {
                 console.log(error)
             })
 
-        let mappedData = data1
-        if (data1.length === data2.length) {
-            mappedData = mapDataTwoDate(data1, data2, mapArrayToKeyValue(AllStocks));
-        }
+        let mappedData = mapDataTwoDate(data1, data2, mapArrayToKeyValue(AllStocks));
+        if (!mappedData.length) return;
+
         if (startDate) {
             this.setState({
                 rowData: mappedData.filter(item => item.TodayCapital > 5 && item.PriceChange > 1).sort((a, b) => b.TodayCapital - a.TodayCapital),
@@ -221,13 +220,14 @@ class Analysis1 extends React.Component {
     }
 
     render() {
-        const { startDate, endDate } = this.state;
+        const { startDate, endDate, rowData, modules, columnDefs, defaultColDef } = this.state;
         return (
             <div>
                 <div>
                     <h1>
                         Danh sach nhung co phieu trong ngay MarketCap > 5 ty, ChangePrice > 1%
                     </h1>
+                    <h2>TONG CP: {rowData.length}</h2>
                 </div>
                 <RangePicker onChange={this.onChange} value={startDate ? [moment(startDate), moment(endDate)] : []} />
                 <Button onClick={() => this.crawData(startDate, endDate)}>Xem</Button>
@@ -240,11 +240,11 @@ class Analysis1 extends React.Component {
                         className="ag-theme-alpine"
                     >
                         <AgGridReact
-                            modules={this.state.modules}
-                            columnDefs={this.state.columnDefs}
-                            defaultColDef={this.state.defaultColDef}
+                            modules={modules}
+                            columnDefs={columnDefs}
+                            defaultColDef={defaultColDef}
                             onGridReady={this.onGridReady}
-                            rowData={this.state.rowData}
+                            rowData={rowData}
                             onFirstDataRendered={params => params.api.sizeColumnsToFit()}
                         />
                     </div>
