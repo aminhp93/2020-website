@@ -21,6 +21,8 @@ jobs:
             - "node_modules"
   
   deploy:
+    machine:
+      enabled: true
     steps:
       - add_ssh_key:
           fingerprints:
