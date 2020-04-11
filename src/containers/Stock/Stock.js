@@ -152,7 +152,7 @@ class Stock extends React.Component {
                             <Tabs defaultActiveKey="1" tabPosition="left">
                                 <TabPane tab="OverallMarket1" key="1">
                                     <div className="App-content">
-                                        <div>Content1</div>
+                                        <div>Content2</div>
                                         <div>
                                             <Tabs defaultActiveKey="6">
                                                 <TabPane tab="Transaction" key="1">
