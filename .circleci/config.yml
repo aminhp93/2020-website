@@ -35,6 +35,8 @@ jobs:
             chmod 400 2020-website.pem
             ssh -i 2020-website.pem ubuntu@ec2-54-91-242-89.compute-1.amazonaws.com bash -c '\
                 cd /var/www/2020-website/
+                pwd
+                ls -a
                 sudo git pull
                 sudo yarn install'
 
