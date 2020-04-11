@@ -23,6 +23,7 @@ import {
     getQuarterlyFinancialInfoColumnDefs
 } from '../../utils/columnDefs';
 import {
+    getCompanyInfoUrl,
     getYearlyFinancialInfoFilterUrl,
     getQuarterlyFinancialInfoFilterUrl
 } from '../../request';
@@ -55,8 +56,15 @@ class Analysis3 extends React.Component {
         this.crawData()
     }
 
-    crawData = () => {
-        const { AllStocksObj } = this.props;
+    componentDidUpdate(preProps) {
+        console.log('componentDidUpdate Analysis3', this.props, preProps)
+        if (this.props.Symbol !== preProps.Symbol) {
+            this.crawData();
+        }
+    }
+
+    crawData = async () => {
+        const { AllStocksObj, Symbol: symbol } = this.props;
         // axios({
         //     method: 'post',
         //     url: getYearlyFinancialInfoFilterUrl(),
@@ -78,27 +86,40 @@ class Analysis3 extends React.Component {
         //     .catch(error => {
         //         console.log(error)
         //     })
-        axios({
-            method: 'post',
-            url: getQuarterlyFinancialInfoFilterUrl(),
-            data: {
-                ICBCode: 8777,
-            }
+        let result = '';
+        let CompanyInfoObj = {}
+        await axios({
+            url: getCompanyInfoUrl(symbol),
+            method: 'get',
         })
             .then(response => {
-                console.log(response)
-                this.setState({
-                    columnDefs: getQuarterlyFinancialInfoColumnDefs(),
-                    rowData: response.data.filter(item => item.Year === 2018 && item.Quarter === 4).map(item => {
-                        item.Stock = AllStocksObj[item.Stock].Symbol
-                        return item
-                    })
-                })
-
+                CompanyInfoObj = response.data
             })
             .catch(error => {
                 console.log(error)
             })
+        if (!CompanyInfoObj.ICBCode) return
+
+        await axios({
+            method: 'post',
+            url: getQuarterlyFinancialInfoFilterUrl(),
+            data: {
+                ICBCode: CompanyInfoObj.ICBCode,
+            }
+        })
+            .then(response => {
+                result = response
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        this.setState({
+            columnDefs: getQuarterlyFinancialInfoColumnDefs(),
+            rowData: result.data.filter(item => item.Year === 2019 && item.Quarter === 4).map(item => {
+                item.Stock = AllStocksObj[item.Stock].Symbol
+                return item
+            }).sort((a, b) => b.TotalAssets_MRQ - a.TotalAssets_MRQ)
+        })
     }
 
     onGridReady = params => {
