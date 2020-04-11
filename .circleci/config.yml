@@ -19,11 +19,33 @@ jobs:
           key: v1-repo-{{ checksum "package-lock.json" }}
           paths:
             - "node_modules"
+  
+  deploy:
+    steps:
+      - add_ssh_key:
+          fingerprints:
+            - "65:b3:13:c0:4f:46:fe:2b:6f:57:af:97:09:56:84:5b"
+      - run:
+          name: "SSH to Ubuntu and run the deployment script"
+          command: |
+            echo $KEY_PEM > 2020-website.base64
+            base64 --decode 2020-website.base64 > 2020-website.pem
+            ssh -i ./2020-website.pem ubuntu@ec2-54-91-242-89.compute-1.amazonaws.com
+            sudo cd /var/www/2020-website
+            sudo git pull
+            sudo yarn install
 
 workflows:
   version: 2
   Build and Test:
     jobs:
       - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: [master]
+        
 
       
