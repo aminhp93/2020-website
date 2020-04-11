@@ -33,10 +33,10 @@ jobs:
             echo $KEY_PEM > 2020-website.base64
             base64 --decode 2020-website.base64 > 2020-website.pem
             chmod 400 2020-website.pem
-            ssh -i 2020-website.pem ubuntu@ec2-54-91-242-89.compute-1.amazonaws.com
-            sudo cd /var/www/2020-website
-            sudo git pull
-            sudo yarn install
+            ssh -i 2020-website.pem ubuntu@ec2-54-91-242-89.compute-1.amazonaws.com bash -c '\
+                sudo cd /var/www/2020-website    
+                sudo git pull
+                sudo yarn install'
 
 workflows:
   version: 2
