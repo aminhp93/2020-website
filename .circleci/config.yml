@@ -41,8 +41,6 @@ jobs:
                 ls -a
                 sudo git pull
                 sudo rm -rf node-modules
-                sudo rm -rf package-lock.json
-                sudo rm -rf yarn.lock
                 sudo yarn install
                 sudo systemctl restart 2020-website
                 sudo service nginx restart'
