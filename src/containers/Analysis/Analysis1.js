@@ -1,7 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { DatePicker, Button } from 'antd';
-
+import ReactDOM from 'react-dom';
+import { DatePicker, Button, Modal } from 'antd';
+import {
+    BarChartOutlined,
+    InfoCircleOutlined
+} from '@ant-design/icons';
 import moment from 'moment';
 import {
     mapColorPriceChange,
@@ -23,6 +27,8 @@ import { AgGridReact } from '@ag-grid-community/react';
 import { AllCommunityModules } from '@ag-grid-community/all-modules';
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-alpine.css';
+import ChartTV from '../ChartTV/ChartTV';
+import Profile from '../Profile/Profile';
 
 const { RangePicker } = DatePicker;
 
@@ -37,6 +43,22 @@ class Analysis1 extends React.Component {
                     headerName: 'Stock',
                     field: 'Stock',
                     align: 'left',
+                    cellRenderer: params => {
+                        const div = document.createElement("div");
+                        div.className = 'flex space-between'
+                        ReactDOM.render(
+                            <>
+                                <div>{params.data.Stock}</div>
+                                <div className="flex">
+                                    <div onClick={() => { this.setState({ visibleChart: true }) }}><BarChartOutlined style={{ fontSize: '16px' }} /></div>
+                                    <div onClick={() => { this.setState({ visibleInfo: true }) }}><InfoCircleOutlined style={{ fontSize: '16px' }} /></div>
+                                </div>
+
+                            </>,
+                            div
+                        );
+                        return div
+                    }
                 },
                 {
                     field: 'PriceClose',
@@ -137,6 +159,8 @@ class Analysis1 extends React.Component {
             rowData: [],
             startDate: '',
             endDate: '',
+            visibleChart: false,
+            visibleInfo: false
         }
     }
 
@@ -219,8 +243,25 @@ class Analysis1 extends React.Component {
         }
     }
 
+    handleOk = e => {
+        this.setState({
+            visibleChart: false,
+            visibleInfo: false,
+        });
+    };
+
+    handleCancel = e => {
+        this.setState({
+            visibleChart: false,
+            visibleInfo: false,
+        });
+    };
+
     render() {
-        const { startDate, endDate, rowData, modules, columnDefs, defaultColDef } = this.state;
+        const { startDate, endDate, rowData,
+            modules, columnDefs, defaultColDef,
+            visibleChart, visibleInfo
+        } = this.state;
         return (
             <div>
                 <div>
@@ -249,6 +290,30 @@ class Analysis1 extends React.Component {
                         />
                     </div>
                 </div>
+                {visibleChart ?
+                    <Modal
+                        title="Basic Modal"
+                        visible={visibleChart}
+                        onOk={this.handleOk}
+                        onCancel={this.handleCancel}
+                    >
+                        <div>
+                            <ChartTV />
+                        </div>
+
+
+                    </Modal>
+                    : null}
+                {visibleInfo
+                    ? <Modal
+                        title="Basic Modal"
+                        visible={visibleInfo}
+                        onOk={this.handleOk}
+                        onCancel={this.handleCancel}
+                    >
+                        <Profile />
+                    </Modal>
+                    : null}
             </div>
         )
     }

@@ -5,6 +5,7 @@
   "dependencies": {
     "@ag-grid-community/all-modules": "^23.0.2",
     "@ag-grid-community/react": "^23.0.2",
+    "@ant-design/icons": "^4.0.6",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import { cloneDeep } from 'lodash';
 import moment from 'moment';
-import { DatePicker, Tabs, Table, Button } from 'antd';
+import { DatePicker, Tabs, Table, Button, Spin } from 'antd';
 
 import {
     getHistoricalQuotesUrl,
@@ -219,7 +219,8 @@ class Price extends React.Component {
             HistoricalQuotesArray: [],
             startDate: moment().add(-7, 'days').format('YYYY-MM-DD'),
             endDate: moment().format('YYYY-MM-DD'),
-            lastUpdatedDate: ''
+            lastUpdatedDate: '',
+            loading: false,
         }
     }
 
@@ -357,6 +358,7 @@ class Price extends React.Component {
     }
 
     udpateHistoricalQuotesDaily = async () => {
+        this.setState({ loading: true })
         const lastUpdatedDate = await this.getLastUpdatedDate();
         const todayDate = moment().format('YYYY-MM-DD');
         if (!lastUpdatedDate || !lastUpdatedDate.value) return;
@@ -367,10 +369,12 @@ class Price extends React.Component {
         await this.udpateHistoricalQuotesPartial(500, 1000, startDate, endDate);
         await this.udpateHistoricalQuotesPartial(1000, 2000, startDate, endDate);
         await this.updateLastUpdatedDate(lastUpdatedDate);
+        this.setState({ loading: true })
     }
 
     render() {
-        const { HistoricalQuotesArray, lastUpdatedDate, startDate, endDate } = this.state;
+        const { HistoricalQuotesArray, lastUpdatedDate, startDate, endDate, loading } = this.state;
+        if (loading) return <Spin />
         return (
             <div>
                 <div>
