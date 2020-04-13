@@ -40,7 +40,7 @@ jobs:
                 pwd
                 ls -a
                 sudo git pull
-                sudo yarn install'
+                sudo npm install'
 
 workflows:
   version: 2
