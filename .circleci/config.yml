@@ -40,7 +40,10 @@ jobs:
                 pwd
                 ls -a
                 sudo git pull
-                sudo npm install'
+                sudo rm -rf node-modules
+                sudo yarn install
+                sudo systemctl restart 2020-website
+                sudo service nginx restart'
 
 workflows:
   version: 2
