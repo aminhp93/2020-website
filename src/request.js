@@ -4,7 +4,7 @@ export const localhost = 'http://localhost:8000'
 export const hostName1 = 'https://svr1.fireant.vn';
 export const hostName3 = 'https://svr3.fireant.vn';
 export const myIP = 'http://192.169.1.125:8000'
-const hostName = localhost;
+const hostName = process.env.NODE_ENV === 'production' ? host_2020_server : localhost;
 
 export function getMarketTradingStatistic() {
     return `${hostName}/api/Data/Markets/TradingStatistic/`

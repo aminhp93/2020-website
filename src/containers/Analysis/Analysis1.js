@@ -62,7 +62,7 @@ class Analysis1 extends React.Component {
                 },
                 {
                     field: 'PriceClose',
-                    headerName: 'PriceClose',
+                    headerName: 'Price',
                     filter: 'agNumberColumnFilter',
                     align: 'right',
                     cellRenderer: params => {
@@ -73,7 +73,7 @@ class Analysis1 extends React.Component {
                 },
                 {
                     field: 'PriceChange',
-                    headerName: 'PriceChange',
+                    headerName: '%',
                     align: 'right',
                     filter: 'agNumberColumnFilter',
                     cellRenderer: params => {
@@ -83,28 +83,17 @@ class Analysis1 extends React.Component {
                         return div
                     }
                 },
-                {
-                    field: 'Volume',
-                    align: 'right',
-                    headerName: 'DealVolume',
-                    filter: 'agNumberColumnFilter',
-                    cellRenderer: params => {
-                        const div = document.createElement("div");
-                        div.innerText = formatNumber(params.data.DealVolume)
-                        return div
-                    }
-                },
-                {
-                    field: 'VolumeChange',
-                    align: 'right',
-                    headerName: 'VolumeChange',
-                    filter: 'agNumberColumnFilter',
-                    cellRenderer: params => {
-                        const div = document.createElement("div");
-                        div.innerText = formatNumber(params.data.VolumeChange)
-                        return div
-                    }
-                },
+                // {
+                //     field: 'Volume',
+                //     align: 'right',
+                //     headerName: 'DealVolume',
+                //     filter: 'agNumberColumnFilter',
+                //     cellRenderer: params => {
+                //         const div = document.createElement("div");
+                //         div.innerText = formatNumber(params.data.DealVolume)
+                //         return div
+                //     }
+                // },
                 {
                     field: 'TodayCapital',
                     align: 'right',
@@ -113,6 +102,77 @@ class Analysis1 extends React.Component {
                     cellRenderer: params => {
                         const div = document.createElement("div");
                         div.innerText = formatNumber(params.data.TodayCapital)
+                        return div
+                    }
+                },
+                {
+                    field: 'VolumeChange',
+                    align: 'right',
+                    headerName: '%Volume',
+                    filter: 'agNumberColumnFilter',
+                    cellRenderer: params => {
+                        const div = document.createElement("div");
+                        div.innerText = formatNumber(params.data.VolumeChange)
+                        return div
+                    }
+                },
+                {
+                    align: 'right',
+                    headerName: 'ROE',
+                    filter: 'agNumberColumnFilter',
+                    cellRenderer: params => {
+                        const div = document.createElement("div");
+                        div.innerText = formatNumber(params.data.ROE)
+                        return div
+                    }
+                },
+                {
+                    align: 'right',
+                    headerName: 'EPS',
+                    filter: 'agNumberColumnFilter',
+                    cellRenderer: params => {
+                        const div = document.createElement("div");
+                        div.innerText = formatNumber(params.data.EPS)
+                        return div
+                    }
+                },
+                {
+                    align: 'right',
+                    headerName: 'TT EPS cung ky',
+                    filter: 'agNumberColumnFilter',
+                    cellRenderer: params => {
+                        const div = document.createElement("div");
+                        div.innerText = formatNumber(params.data.EPS)
+                        return div
+                    }
+                },
+                {
+                    align: 'right',
+                    headerName: 'TT LNST nam',
+                    filter: 'agNumberColumnFilter',
+                    cellRenderer: params => {
+                        const div = document.createElement("div");
+                        div.innerText = formatNumber(params.data.EPS)
+                        return div
+                    }
+                },
+                {
+                    align: 'right',
+                    headerName: 'Point',
+                    filter: 'agNumberColumnFilter',
+                    cellRenderer: params => {
+                        const div = document.createElement("div");
+                        div.innerText = formatNumber(params.data.EPS)
+                        return div
+                    }
+                },
+                {
+                    align: 'right',
+                    headerName: 'Power',
+                    filter: 'agNumberColumnFilter',
+                    cellRenderer: params => {
+                        const div = document.createElement("div");
+                        div.innerText = formatNumber(params.data.EPS)
                         return div
                     }
                 },
