@@ -63,3 +63,15 @@ code {
 .flex.space-between {
   justify-content: space-between;
 }
+
+.ant-modal-body {
+  height: 600px;
+}
+
+.chartTV-container,
+.chartTV-container .chartTV,
+.chartTV-container .chartTV article,
+.chartTV-container .chartTV article iframe {
+  height: 100% !important;
+}
+

@@ -369,7 +369,7 @@ class Price extends React.Component {
         await this.udpateHistoricalQuotesPartial(500, 1000, startDate, endDate);
         await this.udpateHistoricalQuotesPartial(1000, 2000, startDate, endDate);
         await this.updateLastUpdatedDate(lastUpdatedDate);
-        this.setState({ loading: true })
+        this.setState({ loading: false })
     }
 
     render() {

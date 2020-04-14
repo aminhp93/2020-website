@@ -352,12 +352,14 @@ class Analysis1 extends React.Component {
                 </div>
                 {visibleChart ?
                     <Modal
+                        className="chartTVModal"
                         title="Basic Modal"
                         visible={visibleChart}
                         onOk={this.handleOk}
                         onCancel={this.handleCancel}
+                        width={1200}
                     >
-                        <div>
+                        <div className="chartTV-container">
                             <ChartTV />
                         </div>
 
