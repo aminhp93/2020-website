@@ -16,6 +16,8 @@ import {
 import {
     getConfigGetCreateUrl,
     getStockFilter,
+    getCompanyInfoFilterUrl,
+    getLastestFinancialInfoFilterUrl
 } from '../../request';
 
 import {
@@ -50,13 +52,24 @@ class Analysis1 extends React.Component {
                             <>
                                 <div>{params.data.Stock}</div>
                                 <div className="flex">
-                                    <div onClick={() => { this.setState({ visibleChart: true }) }}><BarChartOutlined style={{ fontSize: '16px' }} /></div>
+                                    <div onClick={() => { this.setState({ visibleChart: true, symbol: params.data.Stock }) }}><BarChartOutlined style={{ fontSize: '16px' }} /></div>
                                     <div onClick={() => { this.setState({ visibleInfo: true }) }}><InfoCircleOutlined style={{ fontSize: '16px' }} /></div>
                                 </div>
 
                             </>,
                             div
                         );
+                        return div
+                    }
+                },
+                {
+                    field: 'ICBCode',
+                    headerName: 'ICBCode',
+                    filter: 'agNumberColumnFilter',
+                    align: 'right',
+                    cellRenderer: params => {
+                        const div = document.createElement("div");
+                        div.innerText = Number(params.data.ICBCode)
                         return div
                     }
                 },
@@ -275,14 +288,61 @@ class Analysis1 extends React.Component {
 
         let mappedData = mapDataTwoDate(data1, data2, mapArrayToKeyValue(AllStocks));
         if (!mappedData.length) return;
-
+        let data = mappedData.filter(item => item.TodayCapital > 5 && item.PriceChange > 1).sort((a, b) => b.TodayCapital - a.TodayCapital)
+        await axios({
+            url: getCompanyInfoFilterUrl(),
+            method: 'post',
+            data: {
+                symbols: data.map(item => item.Stock)
+            }
+        })
+            .then(response => {
+                console.log(response)
+                data.map(item => {
+                    const found = response.data.filter(i => i.Symbol === item.Stock)
+                    if (found.length === 1) {
+                        item.ICBCode = Number(found[0].ICBCode)
+                    } else {
+                        item.ICBCode = null
+                    }
+                    return item
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        await axios({
+            url: getLastestFinancialInfoFilterUrl(),
+            method: 'post',
+            data: {
+                symbols: data.map(item => item.Stock)
+            }
+        })
+            .then(response => {
+                console.log(response)
+                data.map(item => {
+                    const found = response.data.filter(i => i.Symbol === item.Stock)
+                    if (found.length === 1) {
+                        item.ROE = Number((Number(found[0].ROE) * 100).toFixed(2))
+                        item.EPS = Number((Number(found[0].EPS)).toFixed(0))
+                    } else {
+                        item.ROE = null
+                        item.EPS = null
+                    }
+                    return item
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        console.log(data)
         if (startDate) {
             this.setState({
-                rowData: mappedData.filter(item => item.TodayCapital > 5 && item.PriceChange > 1).sort((a, b) => b.TodayCapital - a.TodayCapital),
+                rowData: data
             })
         } else {
             this.setState({
-                rowData: mappedData.filter(item => item.TodayCapital > 5 && item.PriceChange > 1).sort((a, b) => b.TodayCapital - a.TodayCapital),
+                rowData: data,
                 startDate: moment(lastUpdatedDate).add(-1, 'days').format('YYYY-MM-DD') + 'T00:00:00Z',
                 endDate: lastUpdatedDate
             })
@@ -360,7 +420,7 @@ class Analysis1 extends React.Component {
                         width={1200}
                     >
                         <div className="chartTV-container">
-                            <ChartTV />
+                            <ChartTV symbol={this.state.symbol} />
                         </div>
 
 

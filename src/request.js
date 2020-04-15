@@ -18,12 +18,20 @@ export function getCompanyInfoUpdateUrl(symbol) {
     return `${hostName}/api/Data/Companies/CompanyInfo/update${hostName === hostName1 ? '' : '/'}?symbol=${symbol}`
 }
 
+export function getCompanyInfoFilterUrl() {
+    return `${hostName}/api/Data/Companies/CompanyInfo/filter/`
+}
+
 export function getLastestFinancialInfoUrl(symbol) {
     return `${hostName}/api/Data/Finance/LastestFinancialInfo${hostName === hostName1 ? '' : '/'}?symbol=${symbol}`
 }
 
 export function getLastestFinancialInfoUpdateUrl(symbol) {
     return `${hostName}/api/Data/Finance/LastestFinancialInfo/update${hostName === hostName1 ? '' : '/'}?symbol=${symbol}`
+}
+
+export function getLastestFinancialInfoFilterUrl() {
+    return `${hostName}/api/Data/Finance/LastestFinancialInfo/filter/`
 }
 
 export function getSubCompaniesUrl(symbol) {
