@@ -1,7 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
-import { DatePicker, Button, Modal } from 'antd';
+import { DatePicker, Button, Modal, Input } from 'antd';
+import { debounce } from 'lodash';
+
 import {
     BarChartOutlined,
     InfoCircleOutlined
@@ -17,7 +19,8 @@ import {
     getConfigGetCreateUrl,
     getStockFilter,
     getCompanyInfoFilterUrl,
-    getLastestFinancialInfoFilterUrl
+    getLastestFinancialInfoFilterUrl,
+    getStockScanUrl
 } from '../../request';
 
 import {
@@ -35,7 +38,7 @@ import Profile from '../Profile/Profile';
 const { RangePicker } = DatePicker;
 
 
-class Analysis1 extends React.Component {
+class Analysis5 extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -235,6 +238,7 @@ class Analysis1 extends React.Component {
             visibleChart: false,
             visibleInfo: false
         }
+        this.scan = debounce(this.scan, 300);
     }
 
     crawData = async (startDate, endDate) => {
@@ -378,6 +382,27 @@ class Analysis1 extends React.Component {
         });
     };
 
+    scan = () => {
+        console.log(this.state)
+        axios({
+            url: getStockScanUrl(),
+            method: 'post',
+            data: this.state
+        })
+            .then(response => {
+                console.log(response)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+    changeInput = (e, index) => {
+        const data = {};
+        data[index] = e.target.value;
+        this.setState(data, () => this.scan());
+    }
+
     render() {
         const { startDate, endDate, rowData,
             modules, columnDefs, defaultColDef,
@@ -386,10 +411,31 @@ class Analysis1 extends React.Component {
         return (
             <div>
                 <div>
-                    <h1>
-                        Danh sach nhung co phieu trong ngay MarketCap > 5 ty, ChangePrice > 1%
-                    </h1>
-                    <h2>TONG CP: {rowData.length}</h2>
+                    <div>
+                        <div className="flex">
+                            <Input addonBefore="Symbol" onChange={(e) => this.changeInput(e, 'Symbol')} />
+                            <Input addonBefore="ICBCode" onChange={(e) => this.changeInput(e, 'ICBCode')} />
+                            <Input addonBefore="Price" onChange={(e) => this.changeInput(e, 'Price')} />
+                            <Input addonBefore="%ChangePrice" onChange={(e) => this.changeInput(e, 'ChangePrice')} />
+                            <Input addonBefore="TodayCapital" onChange={(e) => this.changeInput(e, 'TodayCapital')} />
+                        </div>
+                        <div className="flex">
+                            <Input addonBefore="%Volume" onChange={(e) => this.changeInput(e, 'ChangeVolume')} />
+                            <Input addonBefore="ROE" onChange={(e) => this.changeInput(e, 'ROE')} />
+                            <Input addonBefore="EPS" onChange={(e) => this.changeInput(e, 'EPS')} />
+                            <Input addonBefore="TT EPS" onChange={(e) => this.changeInput(e, 'ChangeEPS')} />
+                            <Input addonBefore="TT LNST nam" onChange={(e) => this.changeInput(e, 'ChangeYearlyProfit')} />
+                        </div>
+                        <div className="flex">
+                            <Input addonBefore="Buy Foreigner" onChange={(e) => this.changeInput(e, 'BuyForeigner')} />
+                            <Input addonBefore="Sell Foreigner" onChange={(e) => this.changeInput(e, 'SellForeinger')} />
+                            <Input addonBefore="None" onChange={(e) => this.changeInput(e, 'None')} />
+                            <Input addonBefore="None" onChange={(e) => this.changeInput(e, 'None')} />
+                            <Input addonBefore="None" onChange={(e) => this.changeInput(e, 'None')} />
+                        </div>
+
+
+                    </div>
                 </div>
                 <RangePicker onChange={this.onChange} value={startDate ? [moment(startDate), moment(endDate)] : []} />
                 <Button onClick={() => this.crawData(startDate, endDate)}>Xem</Button>
@@ -455,4 +501,4 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Analysis1);
+export default connect(mapStateToProps, mapDispatchToProps)(Analysis5);

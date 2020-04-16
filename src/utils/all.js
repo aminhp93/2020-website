@@ -43,11 +43,11 @@ export function mapDataTwoDate(data1, data2, allStocks) {
     data2.map(item => {
         data2Obj[item.Stock] = item
     })
-    console.log(allStocks, data1)
+    console.log(allStocks, data1, data2, data1Obj, data2Obj)
     for (let i = 0; i < data1.length; i++) {
         data1[i].TodayCapital = Number((data1[i].PriceClose * data1[i].DealVolume / 1000000000).toFixed(0))
         data1[i].MarketCap = Number((data1[i].MarketCap / 1000000000).toFixed(0))
-        if (!data2[i]) {
+        if (!data2Obj[data1[i].Stock]) {
 
         } else {
             const data2Item = data2Obj[data1[i].Stock]

@@ -6,6 +6,7 @@ import Analysis1 from './Analysis1';
 import Analysis2 from './Analysis2';
 import Analysis3 from './Analysis3';
 import Analysis4 from './Analysis4';
+import Analysis5 from './Analysis5';
 
 const { TabPane } = Tabs;
 class Analysis extends React.Component {
@@ -27,6 +28,9 @@ class Analysis extends React.Component {
                     </TabPane>
                     <TabPane tab="Chieu ngang" key="5">
                         <Analysis4 />
+                    </TabPane>
+                    <TabPane tab="Testing" key="6">
+                        <Analysis5 />
                     </TabPane>
                 </Tabs>
             </div>

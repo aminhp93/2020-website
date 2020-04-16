@@ -65,7 +65,7 @@ code {
 }
 
 .ant-modal-body {
-  height: 600px;
+  height: 750px;
 }
 
 .chartTV-container,
@@ -75,3 +75,11 @@ code {
   height: 100% !important;
 }
 
+.chartTVModal .ant-modal-header,
+.chartTVModal .ant-modal-close-x {
+  display: none;
+}
+
+.chartTVModal .ant-modal-body {
+  padding: 0;
+}

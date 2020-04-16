@@ -166,3 +166,7 @@ export function getAnalysisUrl(date) {
 export function getStockFilter() {
     return `${hostName}/api/Stock/Filter/`
 }
+
+export function getStockScanUrl() {
+    return `${hostName}/api/Stock/scan/`
+}
