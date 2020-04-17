@@ -152,6 +152,7 @@ export function getSaveLayoutChartUrl(id) {
 }
 
 export function getConfigGetCreateUrl(id) {
+    console.log(process.env.NODE_ENV, process)
     return `${hostName}/api/config/${id ? `?key=${id}` : ''}`
 }
 
