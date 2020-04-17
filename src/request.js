@@ -170,3 +170,7 @@ export function getStockFilter() {
 export function getStockScanUrl() {
     return `${hostName}/api/Stock/scan/`
 }
+
+export function getMarketNewsUrl() {
+    return `${hostName}/api/Stock/News/`
+}

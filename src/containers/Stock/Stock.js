@@ -16,6 +16,7 @@ import '../../css/Stakeholder.css';
 import '../../css/Technical.css';
 import '../../css/Transaction.css';
 import '../../css/OverviewAnalysis.css';
+import '../../css/MarketNews.css';
 
 import EquityAndDividends from '../EquityAndDividends/EquityAndDividends';
 import Financial from '../Financial/Financial';

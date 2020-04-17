@@ -7,8 +7,11 @@ import Analysis2 from './Analysis2';
 import Analysis3 from './Analysis3';
 import Analysis4 from './Analysis4';
 import Analysis5 from './Analysis5';
+import MarketNews from './MarketNews';
+
 
 const { TabPane } = Tabs;
+
 class Analysis extends React.Component {
     render() {
         return (
@@ -31,6 +34,9 @@ class Analysis extends React.Component {
                     </TabPane>
                     <TabPane tab="Testing" key="6">
                         <Analysis5 />
+                    </TabPane>
+                    <TabPane tab="MarketNews" key="7">
+                        <MarketNews />
                     </TabPane>
                 </Tabs>
             </div>
