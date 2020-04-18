@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { List, Avatar, Input, Button } from 'antd';
 import { debounce } from 'lodash';
 import axios from 'axios';
+import moment from 'moment';
 
 import {
     getListNotesUrl,
@@ -12,6 +13,11 @@ import {
 import {
     arrayToKeyValue
 } from '../../utils/all';
+import ReactHtmlParser from 'react-html-parser';
+
+const MarkdownIt = require('markdown-it');
+
+const { TextArea } = Input;
 
 class Note extends React.Component {
     constructor(props) {
@@ -29,6 +35,8 @@ class Note extends React.Component {
     }
 
     sendRequest = (content, noteId) => {
+        const { listNotesObj } = this.state;
+
         axios({
             url: getUpdateNoteUrl(noteId),
             method: 'patch',
@@ -37,7 +45,10 @@ class Note extends React.Component {
             }
         })
             .then(response => {
-
+                listNotesObj[noteId] = response.data
+                this.setState({
+                    listNotesObj
+                })
             })
             .catch(error => {
 
@@ -99,35 +110,62 @@ class Note extends React.Component {
             })
     }
 
+    parseMarkdown = (data) => {
+        const md = new MarkdownIt();
+
+        return ReactHtmlParser(md.render(data))
+    }
+
+    renderDescription = (item) => {
+        const { allowEdit } = this.state;
+        if (allowEdit) {
+            return <TextArea onChange={e => this.handleChangeInput(e, item.id)} defaultValue={item.content} />
+        } else {
+            return <div>{this.parseMarkdown(item.content)}</div>
+        }
+    }
+
     render() {
         const { listNotesObj, allowEdit } = this.state;
         const listNotesArray = Object.values(listNotesObj)
         return (
-            <div>
-                <List
-                    itemLayout="horizontal"
-                    dataSource={listNotesArray}
-                    renderItem={item => (
-                        <List.Item actions={allowEdit ? [<div onClick={() => this.handleDeleteNote(item.id)}>Delete</div>] : null}>
-                            <List.Item.Meta
-                                avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-                                description={<Input disabled={!allowEdit} onChange={e => this.handleChangeInput(e, item.id)} defaultValue={item.content} />}
-                            />
-                        </List.Item>
-                    )}
-                />
-                {
-                    allowEdit
-                        ? (
-                            <div className="flex">
-                                <Input onChange={e => this.setState({ newNoteContent: e.target.value })} value={this.state.newNoteContent} />
-                                <Button onClick={this.handleCreateNote}>Add note</Button>
-                            </div>
-                        )
-                        : null
-                }
+            <div className='Note'>
+                <div className='Note-body'>
+                    <List
+                        itemLayout="horizontal"
+                        dataSource={listNotesArray}
+                        renderItem={item => (
+                            <List.Item actions={allowEdit ? [<div onClick={() => this.handleDeleteNote(item.id)}>Delete</div>] : null}>
+                                <List.Item.Meta
+                                    description={
+                                        <div className="flex">
+                                            <div className="Note-created-time">{moment(item.created).format('YYYY-MM-DD')}</div>
+                                            {this.renderDescription(item)}
+                                        </div>
+                                    }
+                                />
+                            </List.Item>
+                        )}
+                    />
+                </div>
+                <div className="Note-footer">
+                    {
+                        allowEdit
+                            ? (
+                                <div className="flex">
+                                    <TextArea onChange={e => this.setState({ newNoteContent: e.target.value })} value={this.state.newNoteContent} />
+                                    <div>
+                                        <Button onClick={this.handleCreateNote}>Add note</Button>
+                                    </div>
 
-                <Button onClick={() => this.setState({ allowEdit: !allowEdit })}>{allowEdit ? 'Disable edit' : 'Allow edit'}</Button>
+                                </div>
+                            )
+                            : null
+                    }
+                    <Button className='Note-allow-button' onClick={() => this.setState({ allowEdit: !allowEdit })}>{allowEdit ? 'Disable edit' : 'Allow edit'}</Button>
+
+                </div>
+
             </div>
         )
     }
