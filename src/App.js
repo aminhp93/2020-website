@@ -8,6 +8,7 @@ import {
 
 import Stock from './containers/Stock/Stock'
 import TodoMVC from './containers/TodoMVC/TodoMVC';
+import Note from './containers/Note';
 
 class App extends React.Component {
   render() {
@@ -17,8 +18,9 @@ class App extends React.Component {
           <Route path="/stock">
             <Stock />
           </Route>
-          <Route path="/todos">
-            <TodoMVC />
+          <Route path="/note">
+            {/* <TodoMVC /> */}
+            <Note />
           </Route>
           <Route path="/">
             <nav className="App-nav">
@@ -27,7 +29,7 @@ class App extends React.Component {
                   <Link to="/stock">Stock</Link>
                 </li>
                 <li>
-                  <Link to="/todos">Todos</Link>
+                  <Link to="/note">Note</Link>
                 </li>
 
               </ul>

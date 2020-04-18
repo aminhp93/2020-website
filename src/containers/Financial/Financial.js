@@ -17,7 +17,7 @@ import {
     getLastestFinancialInfoUpdateUrl,
     getLastestFinancialReportsNameUpdateUrl,
     getLastestFinancialReportsValueUpdateUrl
-} from '../../request';
+} from '../../utils/request';
 import { BILLION_UNIT } from '../../utils/unit';
 import { LATEST_FINANCIAL_REPORTS, formatNumber } from '../../utils/all'
 

@@ -31,7 +31,7 @@ import debounce from 'lodash/debounce';
 
 import {
     getMarketTradingStatistic
-} from '../../request'
+} from '../../utils/request'
 
 import {
     setSymbol,

@@ -9,7 +9,7 @@ import {
     getCompanyNewsUrl,
     getCompanyNewsCountUrl,
     getNewsContentUrl,
-} from '../../request';
+} from '../../utils/request';
 
 
 class News extends React.Component {

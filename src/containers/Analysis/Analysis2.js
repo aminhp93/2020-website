@@ -21,7 +21,7 @@ import {
     getConfigGetCreateUrl,
     getStockFilter,
     getCompanyInfoUrl
-} from '../../request';
+} from '../../utils/request';
 
 import {
     // setSymbol,
