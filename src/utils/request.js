@@ -183,3 +183,6 @@ export function getUpdateNoteUrl(noteId) {
     return `${hostName}/api/Note/${noteId}/`
 }
 
+export function getCreateNoteUrl() {
+    return `${hostName}/api/Note/`
+}

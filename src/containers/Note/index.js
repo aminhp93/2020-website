@@ -6,15 +6,18 @@ import axios from 'axios';
 
 import {
     getListNotesUrl,
-    getUpdateNoteUrl
-} from '../../utils/request.js';
-
+    getUpdateNoteUrl,
+    getCreateNoteUrl
+} from '../../utils/request';
+import {
+    arrayToKeyValue
+} from '../../utils/all';
 
 class Note extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            noteListArray: [],
+            listNotesObj: [],
             allowEdit: false
         }
         this.sendRequest = debounce(this.sendRequest, 300)
@@ -48,7 +51,29 @@ class Note extends React.Component {
         })
             .then(response => {
                 this.setState({
-                    noteListArray: response.data
+                    listNotesObj: arrayToKeyValue(response.data)
+                })
+            })
+            .catch(error => {
+
+            })
+    }
+
+    handleCreateNote = () => {
+        const { listNotesObj } = this.state;
+
+        axios({
+            url: getCreateNoteUrl(),
+            method: 'post',
+            data: {
+                content: this.state.newNoteContent
+            }
+        })
+            .then(response => {
+                listNotesObj[response.data.id] = response.data
+                this.setState({
+                    listNotesObj,
+                    newNoteContent: ''
                 })
             })
             .catch(error => {
@@ -57,12 +82,17 @@ class Note extends React.Component {
     }
 
     handleDeleteNote = (noteId) => {
+        const { listNotesObj } = this.state;
+
         axios({
             url: getUpdateNoteUrl(noteId),
             method: 'delete',
         })
             .then(response => {
-
+                delete listNotesObj[noteId]
+                this.setState({
+                    listNotesObj
+                })
             })
             .catch(error => {
 
@@ -70,22 +100,33 @@ class Note extends React.Component {
     }
 
     render() {
-        const { noteListArray, allowEdit } = this.state;
+        const { listNotesObj, allowEdit } = this.state;
+        const listNotesArray = Object.values(listNotesObj)
         return (
             <div>
                 <List
                     itemLayout="horizontal"
-                    dataSource={noteListArray}
+                    dataSource={listNotesArray}
                     renderItem={item => (
                         <List.Item actions={allowEdit ? [<div onClick={() => this.handleDeleteNote(item.id)}>Delete</div>] : null}>
                             <List.Item.Meta
                                 avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-                                title={<a href="https://ant.design">{item.title}</a>}
                                 description={<Input disabled={!allowEdit} onChange={e => this.handleChangeInput(e, item.id)} defaultValue={item.content} />}
                             />
                         </List.Item>
                     )}
                 />
+                {
+                    allowEdit
+                        ? (
+                            <div className="flex">
+                                <Input onChange={e => this.setState({ newNoteContent: e.target.value })} value={this.state.newNoteContent} />
+                                <Button onClick={this.handleCreateNote}>Add note</Button>
+                            </div>
+                        )
+                        : null
+                }
+
                 <Button onClick={() => this.setState({ allowEdit: !allowEdit })}>{allowEdit ? 'Disable edit' : 'Allow edit'}</Button>
             </div>
         )
