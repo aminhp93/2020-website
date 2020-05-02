@@ -21,7 +21,7 @@ import {
     getCompanyInfoFilterUrl,
     getLastestFinancialInfoFilterUrl,
     getStockScanUrl
-} from '../../request';
+} from '../../utils/request';
 
 import {
     // setSymbol,
@@ -30,6 +30,8 @@ import axios from 'axios';
 
 import { AgGridReact } from '@ag-grid-community/react';
 import { AllCommunityModules } from '@ag-grid-community/all-modules';
+import { AllModules } from '@ag-grid-enterprise/all-modules';
+
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-alpine.css';
 import ChartTV from '../ChartTV/ChartTV';
@@ -42,7 +44,7 @@ class Analysis5 extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            modules: AllCommunityModules,
+            modules: AllModules,
             columnDefs: [
                 {
                     headerName: 'Stock',
@@ -231,12 +233,17 @@ class Analysis5 extends React.Component {
                 flex: 1,
                 filter: true,
                 sortable: true,
+                flex: 1,
+                minWidth: 100,
+                enableValue: true,
+                enableRowGroup: true,
+                enablePivot: true,
             },
             rowData: [],
             startDate: '',
             endDate: '',
             visibleChart: false,
-            visibleInfo: false
+            visibleInfo: false,
         }
         this.scan = debounce(this.scan, 300);
     }
@@ -453,6 +460,7 @@ class Analysis5 extends React.Component {
                             defaultColDef={defaultColDef}
                             onGridReady={this.onGridReady}
                             rowData={rowData}
+                            sideBar={true}
                             onFirstDataRendered={params => params.api.sizeColumnsToFit()}
                         />
                     </div>
@@ -502,3 +510,5 @@ const mapDispatchToProps = {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Analysis5);
+
+

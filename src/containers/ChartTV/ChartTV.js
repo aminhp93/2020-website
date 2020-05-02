@@ -7,7 +7,7 @@ import chartTV_constants from "../../constants/chartTV_constants";
 import {
   getSaveLayoutChartUrl,
   getAllLayoutsUrl
-} from "../../request";
+} from "../../utils/request";
 // import FormData from "form-data";
 
 class ChartTV extends React.Component {

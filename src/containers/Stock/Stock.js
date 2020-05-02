@@ -17,6 +17,7 @@ import '../../css/Technical.css';
 import '../../css/Transaction.css';
 import '../../css/OverviewAnalysis.css';
 import '../../css/MarketNews.css';
+import '../../css/Note.css';
 
 import EquityAndDividends from '../EquityAndDividends/EquityAndDividends';
 import Financial from '../Financial/Financial';
@@ -31,7 +32,7 @@ import debounce from 'lodash/debounce';
 
 import {
     getMarketTradingStatistic
-} from '../../request'
+} from '../../utils/request'
 
 import {
     setSymbol,

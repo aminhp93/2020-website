@@ -174,3 +174,15 @@ export function getStockScanUrl() {
 export function getMarketNewsUrl() {
     return `${hostName}/api/Stock/News/`
 }
+
+export function getListNotesUrl() {
+    return `${hostName}/api/Note/`
+}
+
+export function getUpdateNoteUrl(noteId) {
+    return `${hostName}/api/Note/${noteId}/`
+}
+
+export function getCreateNoteUrl() {
+    return `${hostName}/api/Note/`
+}

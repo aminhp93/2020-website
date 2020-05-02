@@ -8,7 +8,7 @@ import { List, Avatar, Pagination, Modal } from 'antd';
 import {
     getMarketNewsUrl,
     getNewsContentUrl,
-} from '../../request';
+} from '../../utils/request';
 
 
 class MarketNews extends React.Component {

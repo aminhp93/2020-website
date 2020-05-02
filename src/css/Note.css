@@ -1,0 +1,29 @@
+.Note textarea {
+    height: 150px
+}
+
+.Note .Note-created-time {
+    margin-right: 20px;
+}
+
+.Note-footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: white;
+    right: 0;
+}
+
+.Note-footer .flex button {
+    margin-left: 20px;
+}
+
+.Note-body {
+    padding-bottom: 300px;
+}
+
+.Note-allow-button {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+}

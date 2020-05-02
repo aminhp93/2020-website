@@ -15,7 +15,7 @@ import {
     getConfigGetCreateUrl,
     getStockFilter,
     getCompanyInfoUrl
-} from '../request';
+} from '../utils/request';
 
 
 class Analysis extends React.Component {
