@@ -1,4 +1,5 @@
 export const StockAction = {
     SET_SYMBOL: 'SET_SYMBOL',
     SET_ALL_STOCKS: 'SET_ALL_STOCKS',
+    SET_LAST_UPDATED_DATE: 'SET_LAST_UPDATED_DATE'
 }

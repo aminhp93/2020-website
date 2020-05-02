@@ -1,7 +1,9 @@
 import React from 'react';
-
 import { Tabs, Select, Spin } from 'antd';
 import { connect } from 'react-redux';
+import { debounce, get } from 'lodash';
+import axios from 'axios';
+
 
 import 'antd/dist/antd.css';
 import '../../css/index.css';
@@ -28,17 +30,18 @@ import Stakeholder from '../Stakeholder/Stakeholder';
 import Technical from '../Technical/Technical';
 import Transaction from '../Transaction/Transaction';
 import Analysis from '../Analysis/Analysis';
-import debounce from 'lodash/debounce';
+
 
 import {
-    getMarketTradingStatistic
+    getMarketTradingStatistic,
+    getConfigGetCreateUrl
 } from '../../utils/request'
 
 import {
     setSymbol,
     setAllStocks,
+    setLastUpdatedDate
 } from '../../actions/stock';
-import Axios from 'axios';
 
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -50,18 +53,18 @@ class Stock extends React.Component {
             data: [],
             value: [],
             fetching: false,
-            loading: false,
+            loading: true,
         }
         this.lastFetchId = 0;
         this.fetchUser = debounce(this.fetchUser, 800);
     }
 
-    componentDidMount() {
-        this.props.setSymbol('VND')
-        this.setState({
-            loading: true
-        })
-        Axios({
+    async componentDidMount() {
+        return
+        this.setState({ loading: true })
+
+        // GET ALL STOCK INFO
+        await axios({
             method: 'get',
             url: getMarketTradingStatistic()
         })
@@ -69,17 +72,28 @@ class Stock extends React.Component {
                 console.log(response)
                 if (response.data) {
                     this.props.setAllStocks(response.data)
-                    this.setState({
-                        loading: false
-                    })
+
                 }
             })
             .catch(error => {
                 console.log(error)
-                this.setState({
-                    loading: false
-                })
             })
+
+        // GET LAST UPDATED DATE
+        await axios({
+            url: getConfigGetCreateUrl('LAST_UPDATED_HISTORICAL_QUOTES'),
+            method: 'get'
+        })
+            .then(response => {
+                console.log(response)
+                if (response.data) {
+                    this.props.setLastUpdatedDate(response.data.value)
+                }
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        this.setState({ loading: false })
         // Axios({
         //     method: 'put',
         //     url: 'http://localhost:8000/api/Data/Markets/TradingStatistic/'
@@ -143,7 +157,8 @@ class Stock extends React.Component {
                         </Select>
                     </div>
                     <div className="App-header-symbol">
-                        Header - Current Symbol {this.props.Symbol}
+                        <div>Current Symbol {this.props.Symbol}</div>
+                        <div>Updated at: {this.props.LastUpdatedDate}</div>
                     </div>
 
                 </div>
@@ -201,16 +216,19 @@ class Stock extends React.Component {
 
 const mapStateToProps = state => {
     console.log(state);
+    const stock = get(state, 'stock') || {};
     return {
-        Symbol: state.stock.Symbol,
-        AllStocks: state.stock.AllStocks,
+        Symbol: get(stock, 'Symbol') || '',
+        AllStocks: get(stock, 'AllStocks') || [],
+        LastUpdatedDate: get(stock, 'LastUpdatedDate') || ''
     }
 
 }
 
 const mapDispatchToProps = {
     setSymbol,
-    setAllStocks
+    setAllStocks,
+    setLastUpdatedDate
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Stock);

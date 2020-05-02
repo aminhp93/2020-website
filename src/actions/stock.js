@@ -9,3 +9,8 @@ export const setAllStocks = (data) => ({
     type: StockAction.SET_ALL_STOCKS,
     payload: data
 })
+
+export const setLastUpdatedDate = (data) => ({
+    type: StockAction.SET_LAST_UPDATED_DATE,
+    payload: data
+})

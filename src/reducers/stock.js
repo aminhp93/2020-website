@@ -3,7 +3,8 @@ import { StockAction } from '../constants/action';
 export const INITIAL_STATE = {
     Symbol: '',
     AllStocks: [],
-    AllStocksObj: {}
+    AllStocksObj: {},
+    LastUpdatedDate: ''
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -22,6 +23,11 @@ export default (state = INITIAL_STATE, action) => {
                 ...state,
                 AllStocks: action.payload,
                 AllStocksObj: result
+            }
+        case StockAction.SET_LAST_UPDATED_DATE:
+            return {
+                ...state,
+                LastUpdatedDate: action.payload
             }
         default:
             return state;

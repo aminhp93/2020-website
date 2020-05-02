@@ -7,7 +7,6 @@ import {
 } from "react-router-dom";
 
 import Stock from './containers/Stock/Stock'
-import TodoMVC from './containers/TodoMVC/TodoMVC';
 import Note from './containers/Note';
 
 class App extends React.Component {
