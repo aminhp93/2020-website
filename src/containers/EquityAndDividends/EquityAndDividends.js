@@ -8,7 +8,7 @@ import {
 
 import {
     getEquityAndDividendsUrl,
-} from '../../utils/request';
+} from '../../urls';
 
 
 class EquityAndDividends extends React.Component {

@@ -2,7 +2,6 @@ import React from 'react';
 import { Tabs, Select, Spin } from 'antd';
 import { connect } from 'react-redux';
 import { debounce, get } from 'lodash';
-import axios from 'axios';
 
 
 import 'antd/dist/antd.css';
@@ -33,14 +32,11 @@ import Analysis from '../Analysis/Analysis';
 
 
 import {
-    getMarketTradingStatistic,
-    getConfigGetCreateUrl
-} from '../../utils/request'
-
-import {
     setSymbol,
     setAllStocks,
-    setLastUpdatedDate
+    setLastUpdatedDate,
+    getLastUpdatedDateRequest,
+    getMarketTradingStatisticRequest
 } from '../../actions/stock';
 
 const { TabPane } = Tabs;
@@ -60,50 +56,14 @@ class Stock extends React.Component {
     }
 
     async componentDidMount() {
-        return
-        this.setState({ loading: true })
-
-        // GET ALL STOCK INFO
-        await axios({
-            method: 'get',
-            url: getMarketTradingStatistic()
-        })
-            .then(response => {
-                console.log(response)
-                if (response.data) {
-                    this.props.setAllStocks(response.data)
-
-                }
-            })
-            .catch(error => {
-                console.log(error)
-            })
-
-        // GET LAST UPDATED DATE
-        await axios({
-            url: getConfigGetCreateUrl('LAST_UPDATED_HISTORICAL_QUOTES'),
-            method: 'get'
-        })
-            .then(response => {
-                console.log(response)
-                if (response.data) {
-                    this.props.setLastUpdatedDate(response.data.value)
-                }
-            })
-            .catch(error => {
-                console.log(error)
-            })
-        this.setState({ loading: false })
-        // Axios({
-        //     method: 'put',
-        //     url: 'http://localhost:8000/api/Data/Markets/TradingStatistic/'
-        // })
-        //     .then(response => {
-        //         console.log(response)
-        //     })
-        //     .catch(error => {
-        //         console.log(error)
-        //     })
+        try {
+            this.setState({ loading: true })
+            await this.props.getLastUpdatedDateRequest();
+            await this.props.getMarketTradingStatisticRequest();
+            this.setState({ loading: false })
+        } catch (error) {
+            this.setState({ loading: false })
+        }
     }
 
     handleChange = value => {
@@ -228,7 +188,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
     setSymbol,
     setAllStocks,
-    setLastUpdatedDate
+    setLastUpdatedDate,
+    getLastUpdatedDateRequest,
+    getMarketTradingStatisticRequest
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Stock);

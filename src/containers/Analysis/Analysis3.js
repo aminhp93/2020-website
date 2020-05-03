@@ -26,7 +26,7 @@ import {
     getCompanyInfoUrl,
     getYearlyFinancialInfoFilterUrl,
     getQuarterlyFinancialInfoFilterUrl
-} from '../../utils/request';
+} from '../../urls';
 
 import {
     // setSymbol,

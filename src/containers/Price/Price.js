@@ -10,7 +10,7 @@ import {
     getHistoricalQuotesUpdateUrl,
     getConfigGetCreateUrl,
     getConfigRetrieveUpdateDeleteUrl
-} from '../../utils/request';
+} from '../../urls';
 import { formatNumber } from '../../utils/all';
 
 

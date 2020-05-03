@@ -11,7 +11,7 @@ import {
     getMajorHoldersUrl,
     getMajorHolderTransactionsUrl,
     getMajorHolderTransactionsRangeUrl,
-} from '../../utils/request';
+} from '../../urls';
 
 const { TabPane } = Tabs;
 

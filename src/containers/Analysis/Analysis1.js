@@ -18,7 +18,7 @@ import {
     getStockFilter,
     getCompanyInfoFilterUrl,
     getLastestFinancialInfoFilterUrl
-} from '../../utils/request';
+} from '../../urls';
 
 import {
     // setSymbol,

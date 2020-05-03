@@ -9,7 +9,7 @@ import {
     getListNotesUrl,
     getUpdateNoteUrl,
     getCreateNoteUrl
-} from '../../utils/request';
+} from '../../urls';
 import {
     arrayToKeyValue
 } from '../../utils/all';

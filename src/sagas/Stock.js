@@ -1,28 +1,29 @@
 
-import { fork } from 'redux-saga/effects';
-import axios from 'axios';
-
+import { fork, put, call, takeLatest } from 'redux-saga/effects';
 import {
-    getConfigGetCreateUrl
-} from '../utils/request'
+    getLastUpdatedDateRequest,
+    getMarketTradingStatisticRequest
+} from '../requests'
 
+import { StockAction } from '../constants/action';
+import {
+    getLastUpdatedDateSuccess,
+    getMarketTradingStatisticRequestSuccess
+} from '../actions/stock'
 
-function getLastUpdatedDate() {
-    axios({
-        url: getConfigGetCreateUrl('LAST_UPDATED_HISTORICAL_QUOTES'),
-        method: 'get'
-    })
-        .then(response => {
-            console.log(response, 16)
-            if (response.data) {
-                // this.props.setLastUpdatedDate(response.data.value)
-            }
-        })
-        .catch(error => {
-            console.log(error)
-        })
+function* getLastUpdatedDate() {
+    const res = yield call(getLastUpdatedDateRequest)
+    yield put(getLastUpdatedDateSuccess(res.data.value))
 }
 
-export default function* root() {
-    yield fork(getLastUpdatedDate)
+function* getMarketTradingStatistic() {
+    const res = yield call(getMarketTradingStatisticRequest)
+    yield put(getMarketTradingStatisticRequestSuccess(res))
 }
+
+function* root() {
+    yield takeLatest(StockAction.GET_LAST_UPDATED_DATE_REQUEST, getLastUpdatedDate);
+    yield takeLatest(StockAction.GET_MARKET_TRADING_STATISTIC_REQUEST, getMarketTradingStatistic);
+}
+
+export default root

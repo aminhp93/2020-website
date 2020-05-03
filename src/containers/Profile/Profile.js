@@ -15,7 +15,7 @@ import {
     getSubCompaniesUpdateUrl,
     getCompanyOfficersUpdateUrl,
     getCompanyTransactionsUpdateUrl,
-} from '../../utils/request';
+} from '../../urls';
 
 import { BILLION_UNIT } from '../../utils/unit';
 import { formatNumber } from '../../utils/all';
