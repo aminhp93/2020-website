@@ -475,9 +475,10 @@ class Financial extends React.Component {
 
     updateLastestFinancialReportsValue = (symbol, resolve) => {
         if (!symbol) return
+        const { period } = this.state;
         axios({
             method: 'put',
-            url: getLastestFinancialReportsValueUpdateUrl(symbol, 1)
+            url: getLastestFinancialReportsValueUpdateUrl(symbol, 1, 2019, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 32 : 8)
         })
             .then(response => {
                 console.log(response)
@@ -492,7 +493,7 @@ class Financial extends React.Component {
 
         axios({
             method: 'put',
-            url: getLastestFinancialReportsValueUpdateUrl(symbol, 2)
+            url: getLastestFinancialReportsValueUpdateUrl(symbol, 2, 2019, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 32 : 8)
         })
             .then(response => {
                 console.log(response)
@@ -505,24 +506,24 @@ class Financial extends React.Component {
                 resolve && resolve(error)
             })
 
-        // axios({
-        //     method: 'put',
-        //     url: getLastestFinancialReportsValueUpdateUrl(symbol, 3)
-        // })
-        //     .then(response => {
-        //         console.log(response)
-        //         if (response.data) {
-        //             resolve && resolve(response.data)
-        //         }
-        //     })
-        //     .catch(error => {
-        //         console.log(error)
-        //         resolve && resolve(error)
-        //     })
+        axios({
+            method: 'put',
+            url: getLastestFinancialReportsValueUpdateUrl(symbol, 3, 2019, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 32 : 8)
+        })
+            .then(response => {
+                console.log(response)
+                if (response.data) {
+                    resolve && resolve(response.data)
+                }
+            })
+            .catch(error => {
+                console.log(error)
+                resolve && resolve(error)
+            })
 
         axios({
             method: 'put',
-            url: getLastestFinancialReportsValueUpdateUrl(symbol, 4)
+            url: getLastestFinancialReportsValueUpdateUrl(symbol, 4, 2019, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 32 : 8)
         })
             .then(response => {
                 console.log(response)
