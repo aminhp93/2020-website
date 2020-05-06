@@ -478,7 +478,8 @@ class Financial extends React.Component {
         const { period } = this.state;
         axios({
             method: 'put',
-            url: getLastestFinancialReportsValueUpdateUrl(symbol, 1, 2019, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 32 : 8)
+            // url: getLastestFinancialReportsValueUpdateUrl(symbol, 1, 2019, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 32 : 8)
+            url: getLastestFinancialReportsValueUpdateUrl(symbol, 1, 2020, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 4 : 0)
         })
             .then(response => {
                 console.log(response)
@@ -493,7 +494,8 @@ class Financial extends React.Component {
 
         axios({
             method: 'put',
-            url: getLastestFinancialReportsValueUpdateUrl(symbol, 2, 2019, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 32 : 8)
+            // url: getLastestFinancialReportsValueUpdateUrl(symbol, 2, 2019, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 32 : 8)
+            url: getLastestFinancialReportsValueUpdateUrl(symbol, 2, 2020, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 4 : 0)
         })
             .then(response => {
                 console.log(response)
@@ -508,7 +510,8 @@ class Financial extends React.Component {
 
         axios({
             method: 'put',
-            url: getLastestFinancialReportsValueUpdateUrl(symbol, 3, 2019, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 32 : 8)
+            // url: getLastestFinancialReportsValueUpdateUrl(symbol, 3, 2019, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 32 : 8)
+            url: getLastestFinancialReportsValueUpdateUrl(symbol, 3, 2020, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 4 : 0)
         })
             .then(response => {
                 console.log(response)
@@ -523,7 +526,8 @@ class Financial extends React.Component {
 
         axios({
             method: 'put',
-            url: getLastestFinancialReportsValueUpdateUrl(symbol, 4, 2019, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 32 : 8)
+            // url: getLastestFinancialReportsValueUpdateUrl(symbol, 4, 2019, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 32 : 8)
+            url: getLastestFinancialReportsValueUpdateUrl(symbol, 4, 2020, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 4 : 0)
         })
             .then(response => {
                 console.log(response)
@@ -560,23 +564,23 @@ class Financial extends React.Component {
 
     updateLastestFinancialReportsValueAll = async () => {
         await this.updateLastestFinancialReportsValuePartial(0, 100);
-        await this.updateLastestFinancialReportsValuePartial(100, 200);
-        await this.updateLastestFinancialReportsValuePartial(200, 300);
-        await this.updateLastestFinancialReportsValuePartial(300, 400);
-        await this.updateLastestFinancialReportsValuePartial(400, 500);
-        await this.updateLastestFinancialReportsValuePartial(500, 600);
-        await this.updateLastestFinancialReportsValuePartial(600, 700);
-        await this.updateLastestFinancialReportsValuePartial(700, 800);
-        await this.updateLastestFinancialReportsValuePartial(800, 900);
-        await this.updateLastestFinancialReportsValuePartial(900, 1000);
-        await this.updateLastestFinancialReportsValuePartial(1000, 1100);
-        await this.updateLastestFinancialReportsValuePartial(1100, 1200);
-        await this.updateLastestFinancialReportsValuePartial(1200, 1300);
-        await this.updateLastestFinancialReportsValuePartial(1300, 1400);
-        await this.updateLastestFinancialReportsValuePartial(1400, 1500);
-        await this.updateLastestFinancialReportsValuePartial(1500, 1600);
-        await this.updateLastestFinancialReportsValuePartial(1600, 1700);
-        await this.updateLastestFinancialReportsValuePartial(1700, 1800);
+        // await this.updateLastestFinancialReportsValuePartial(100, 200);
+        // await this.updateLastestFinancialReportsValuePartial(200, 300);
+        // await this.updateLastestFinancialReportsValuePartial(300, 400);
+        // await this.updateLastestFinancialReportsValuePartial(400, 500);
+        // await this.updateLastestFinancialReportsValuePartial(500, 600);
+        // await this.updateLastestFinancialReportsValuePartial(600, 700);
+        // await this.updateLastestFinancialReportsValuePartial(700, 800);
+        // await this.updateLastestFinancialReportsValuePartial(800, 900);
+        // await this.updateLastestFinancialReportsValuePartial(900, 1000);
+        // await this.updateLastestFinancialReportsValuePartial(1000, 1100);
+        // await this.updateLastestFinancialReportsValuePartial(1100, 1200);
+        // await this.updateLastestFinancialReportsValuePartial(1200, 1300);
+        // await this.updateLastestFinancialReportsValuePartial(1300, 1400);
+        // await this.updateLastestFinancialReportsValuePartial(1400, 1500);
+        // await this.updateLastestFinancialReportsValuePartial(1500, 1600);
+        // await this.updateLastestFinancialReportsValuePartial(1600, 1700);
+        // await this.updateLastestFinancialReportsValuePartial(1700, 1800);
     }
 
     test = (symbol, resolve) => {
@@ -958,7 +962,8 @@ class Financial extends React.Component {
                             </div>
                             <div>
                                 <Button onClick={() => this.updateLastestFinancialReportsValue(this.props.Symbol)}>LastestFinancialReportsValue</Button>
-                                <Button onClick={this.updateLastestFinancialReportsValueAll}>Update all</Button>
+                                {/* <Button onClick={this.updateLastestFinancialReportsValueAll}>Update all</Button> */}
+                                <Button onClick={() => this.updateLastestFinancialReportsValue('AAV')}>Update all</Button>
                             </div>
                         </div>
                         <div>
