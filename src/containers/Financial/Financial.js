@@ -242,6 +242,10 @@ class Financial extends React.Component {
             {
                 Year: 2019,
                 Quarter: 4
+            },
+            {
+                Year: 2020,
+                Quarter: 1
             }
         ]
 
@@ -693,7 +697,7 @@ class Financial extends React.Component {
         return (
             <div className="Financial-revenue-quarter-chart-container">
                 <BarChart
-                    width={500}
+                    width={400}
                     height={300}
                     data={data}
                     margin={{
