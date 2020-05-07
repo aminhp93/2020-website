@@ -42,7 +42,7 @@ const HistoricalQuotesPastPriceColumns = [
         title: '%',
         align: 'right',
         render: params => {
-            const content = ((params.PriceClose - params.PriceBasic) / (params.PriceBasic)).toFixed(2)
+            const content = ((params.PriceClose - params.PriceOpen) * 100 / (params.PriceOpen)).toFixed(2)
             let className = '';
             if (content > 0) {
                 className = 'green';

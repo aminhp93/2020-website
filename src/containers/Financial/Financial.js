@@ -242,6 +242,10 @@ class Financial extends React.Component {
             {
                 Year: 2019,
                 Quarter: 4
+            },
+            {
+                Year: 2020,
+                Quarter: 1
             }
         ]
 
@@ -475,9 +479,11 @@ class Financial extends React.Component {
 
     updateLastestFinancialReportsValue = (symbol, resolve) => {
         if (!symbol) return
+        const { period } = this.state;
         axios({
             method: 'put',
-            url: getLastestFinancialReportsValueUpdateUrl(symbol, 1)
+            // url: getLastestFinancialReportsValueUpdateUrl(symbol, 1, 2019, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 32 : 8)
+            url: getLastestFinancialReportsValueUpdateUrl(symbol, 1, 2020, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 4 : 0)
         })
             .then(response => {
                 console.log(response)
@@ -492,7 +498,8 @@ class Financial extends React.Component {
 
         axios({
             method: 'put',
-            url: getLastestFinancialReportsValueUpdateUrl(symbol, 2)
+            // url: getLastestFinancialReportsValueUpdateUrl(symbol, 2, 2019, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 32 : 8)
+            url: getLastestFinancialReportsValueUpdateUrl(symbol, 2, 2020, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 4 : 0)
         })
             .then(response => {
                 console.log(response)
@@ -505,24 +512,26 @@ class Financial extends React.Component {
                 resolve && resolve(error)
             })
 
-        // axios({
-        //     method: 'put',
-        //     url: getLastestFinancialReportsValueUpdateUrl(symbol, 3)
-        // })
-        //     .then(response => {
-        //         console.log(response)
-        //         if (response.data) {
-        //             resolve && resolve(response.data)
-        //         }
-        //     })
-        //     .catch(error => {
-        //         console.log(error)
-        //         resolve && resolve(error)
-        //     })
+        axios({
+            method: 'put',
+            // url: getLastestFinancialReportsValueUpdateUrl(symbol, 3, 2019, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 32 : 8)
+            url: getLastestFinancialReportsValueUpdateUrl(symbol, 3, 2020, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 4 : 0)
+        })
+            .then(response => {
+                console.log(response)
+                if (response.data) {
+                    resolve && resolve(response.data)
+                }
+            })
+            .catch(error => {
+                console.log(error)
+                resolve && resolve(error)
+            })
 
         axios({
             method: 'put',
-            url: getLastestFinancialReportsValueUpdateUrl(symbol, 4)
+            // url: getLastestFinancialReportsValueUpdateUrl(symbol, 4, 2019, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 32 : 8)
+            url: getLastestFinancialReportsValueUpdateUrl(symbol, 4, 2020, period === 'quarterly' ? 4 : 0, period === 'quarterly' ? 4 : 0)
         })
             .then(response => {
                 console.log(response)
@@ -688,7 +697,7 @@ class Financial extends React.Component {
         return (
             <div className="Financial-revenue-quarter-chart-container">
                 <BarChart
-                    width={500}
+                    width={400}
                     height={300}
                     data={data}
                     margin={{
@@ -958,6 +967,7 @@ class Financial extends React.Component {
                             <div>
                                 <Button onClick={() => this.updateLastestFinancialReportsValue(this.props.Symbol)}>LastestFinancialReportsValue</Button>
                                 <Button onClick={this.updateLastestFinancialReportsValueAll}>Update all</Button>
+                                {/* <Button onClick={() => this.updateLastestFinancialReportsValue('AAV')}>Update all</Button> */}
                             </div>
                         </div>
                         <div>
