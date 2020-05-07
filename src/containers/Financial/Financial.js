@@ -20,6 +20,10 @@ import {
 } from '../../urls';
 import { BILLION_UNIT } from '../../utils/unit';
 import { LATEST_FINANCIAL_REPORTS, formatNumber } from '../../utils/all'
+import {
+    openModal,
+} from '../../actions/modal';
+import CustomModal from '../CustomModal';
 
 const { TabPane } = Tabs;
 
@@ -912,6 +916,10 @@ class Financial extends React.Component {
         )
     }
 
+    test2 = () => {
+        console.log(919)
+    }
+
     renderManagement = () => {
         const { LastestFinancialInfoObj } = this.state;
 
@@ -1053,6 +1061,10 @@ class Financial extends React.Component {
                         {this.renderManagement()}
                     </div>
                 </div>
+                <Button onClick={() => this.props.openModal()}>Test</Button>
+                <CustomModal>
+
+                </CustomModal>
             </div>
         )
     }
@@ -1067,6 +1079,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
+    openModal
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Financial);

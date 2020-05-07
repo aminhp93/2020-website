@@ -9,33 +9,38 @@ import {
 import Stock from './containers/Stock/Stock'
 import Note from './containers/Note';
 
+
 class App extends React.Component {
+
   render() {
     return (
-      <Router>
-        <Switch>
-          <Route path="/stock">
-            <Stock />
-          </Route>
-          <Route path="/note">
-            {/* <TodoMVC /> */}
-            <Note />
-          </Route>
-          <Route path="/">
-            <nav className="App-nav">
-              <ul>
-                <li>
-                  <Link to="/stock">Stock</Link>
-                </li>
-                <li>
-                  <Link to="/note">Note</Link>
-                </li>
+      <>
+        <Router>
+          <Switch>
+            <Route path="/stock">
+              <Stock />
+            </Route>
+            <Route path="/note">
+              {/* <TodoMVC /> */}
+              <Note />
+            </Route>
+            <Route path="/">
+              <nav className="App-nav">
+                <ul>
+                  <li>
+                    <Link to="/stock">Stock</Link>
+                  </li>
+                  <li>
+                    <Link to="/note">Note</Link>
+                  </li>
 
-              </ul>
-            </nav>
-          </Route>
-        </Switch>
-      </Router>
+                </ul>
+              </nav>
+            </Route>
+          </Switch>
+        </Router>
+
+      </>
     );
   }
 }

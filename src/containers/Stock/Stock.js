@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tabs, Select, Spin } from 'antd';
+import { Tabs, Select, Spin, Button, Modal } from 'antd';
 import { connect } from 'react-redux';
 import { debounce, get } from 'lodash';
 
@@ -39,10 +39,16 @@ import {
     getMarketTradingStatisticRequest
 } from '../../actions/stock';
 
+import {
+    closeModal,
+} from '../../actions/modal';
+
 const { TabPane } = Tabs;
 const { Option } = Select;
 
 class Stock extends React.Component {
+
+
     constructor(props) {
         super(props);
         this.state = {
@@ -50,6 +56,7 @@ class Stock extends React.Component {
             value: [],
             fetching: false,
             loading: true,
+            visible: false
         }
         this.lastFetchId = 0;
         this.fetchUser = debounce(this.fetchUser, 800);
@@ -94,6 +101,8 @@ class Stock extends React.Component {
 
     render() {
         const { fetching, data, value, loading } = this.state;
+        const { modal } = this.props;
+        const { isOpen } = modal;
         if (loading) return <Spin size='large' />
         return (
             <div className="App">
@@ -169,6 +178,8 @@ class Stock extends React.Component {
                     </div>
 
                 </div>
+
+
             </div>
         );
     }
@@ -180,7 +191,8 @@ const mapStateToProps = state => {
     return {
         Symbol: get(stock, 'Symbol') || '',
         AllStocks: get(stock, 'AllStocks') || [],
-        LastUpdatedDate: get(stock, 'LastUpdatedDate') || ''
+        LastUpdatedDate: get(stock, 'LastUpdatedDate') || '',
+        modal: get(state, 'modal') || {}
     }
 
 }
@@ -190,7 +202,8 @@ const mapDispatchToProps = {
     setAllStocks,
     setLastUpdatedDate,
     getLastUpdatedDateRequest,
-    getMarketTradingStatisticRequest
+    getMarketTradingStatisticRequest,
+    closeModal
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Stock);
