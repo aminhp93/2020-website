@@ -15,10 +15,10 @@ import {
     getSubCompaniesUpdateUrl,
     getCompanyOfficersUpdateUrl,
     getCompanyTransactionsUpdateUrl,
-} from '../../urls';
+} from '../urls';
 
-import { BILLION_UNIT } from '../../utils/unit';
-import { formatNumber } from '../../utils/all';
+import { BILLION_UNIT } from '../utils/unit';
+import { formatNumber } from '../utils/all';
 
 const subCompaniesColumns = [
     {

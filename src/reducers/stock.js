@@ -1,8 +1,7 @@
 import { StockAction } from '../constants/action';
 
 export const INITIAL_STATE = {
-    Symbol: '',
-    AllStocks: [],
+    SelectedSymbol: '',
     AllStocksObj: {},
     LastUpdatedDate: ''
 }
@@ -12,19 +11,19 @@ export default (state = INITIAL_STATE, action) => {
         case StockAction.SET_SYMBOL:
             return {
                 ...state,
-                Symbol: action.payload
-            }
-        case StockAction.SET_ALL_STOCKS:
-            let result = {};
-            action.payload.map(item => {
-                result[item.id] = item
-            })
-            return {
-                ...state,
-                AllStocks: action.payload,
-                AllStocksObj: result
+                SelectedSymbol: action.payload
             }
         case StockAction.SET_LAST_UPDATED_DATE:
+            return {
+                ...state,
+                LastUpdatedDate: action.payload
+            }
+        case StockAction.GET_MARKET_TRADING_STATISTIC_SUCCESS:
+            return {
+                ...state,
+                AllStocksObj: action.payload
+            }
+        case StockAction.GET_LAST_UPDATED_DATE_SUCCESS:
             return {
                 ...state,
                 LastUpdatedDate: action.payload

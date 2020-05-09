@@ -17,13 +17,13 @@ import {
     getLastestFinancialInfoUpdateUrl,
     getLastestFinancialReportsNameUpdateUrl,
     getLastestFinancialReportsValueUpdateUrl
-} from '../../urls';
-import { BILLION_UNIT } from '../../utils/unit';
-import { LATEST_FINANCIAL_REPORTS, formatNumber } from '../../utils/all'
+} from '../urls';
+import { BILLION_UNIT } from '../utils/unit';
+import { LATEST_FINANCIAL_REPORTS, formatNumber } from '../utils/all'
 import {
     openModal,
-} from '../../actions/modal';
-import CustomModal from '../CustomModal';
+} from '../actions/modal';
+import CustomModal from './CustomModal';
 
 const { TabPane } = Tabs;
 

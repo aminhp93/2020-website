@@ -6,7 +6,7 @@ import {
   Link
 } from "react-router-dom";
 
-import Stock from './containers/Stock/Stock'
+import Stock from './containers/Stock.tsx'
 import Note from './containers/Note';
 
 

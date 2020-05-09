@@ -65,3 +65,4 @@ export function mapDataTwoDate(data1, data2, allStocks) {
 
 export const arrayToKeyValue = (array, key = 'id') =>
     Object.fromEntries(array.map(item => [item[key], item]))
+

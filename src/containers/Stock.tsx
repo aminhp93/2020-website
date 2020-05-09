@@ -5,49 +5,65 @@ import { debounce, get } from 'lodash';
 
 
 import 'antd/dist/antd.css';
-import '../../css/index.css';
+import '../css/index.css';
 
-import '../../css/App.css';
-import '../../css/EquityAndDividends.css';
-import '../../css/Financial.css';
-import '../../css/News.css';
-import '../../css/Price.css';
-import '../../css/Profile.css';
-import '../../css/Stakeholder.css';
-import '../../css/Technical.css';
-import '../../css/Transaction.css';
-import '../../css/OverviewAnalysis.css';
-import '../../css/MarketNews.css';
-import '../../css/Note.css';
+import '../css/App.css';
+import '../css/EquityAndDividends.css';
+import '../css/Financial.css';
+import '../css/News.css';
+import '../css/Price.css';
+import '../css/Profile.css';
+import '../css/Stakeholder.css';
+import '../css/Technical.css';
+import '../css/Transaction.css';
+import '../css/OverviewAnalysis.css';
+import '../css/MarketNews.css';
+import '../css/Note.css';
 
-import EquityAndDividends from '../EquityAndDividends/EquityAndDividends';
-import Financial from '../Financial/Financial';
-import News from '../News/News';
-import Price from '../Price/Price';
-import Profile from '../Profile/Profile';
-import Stakeholder from '../Stakeholder/Stakeholder';
-import Technical from '../Technical/Technical';
-import Transaction from '../Transaction/Transaction';
-import Analysis from '../Analysis/Analysis';
+import EquityAndDividends from './EquityAndDividends';
+import Financial from './Financial';
+import News from './News';
+import Price from './Price';
+import Profile from './Profile';
+import Stakeholder from './Stakeholder';
+import Technical from './Technical';
+import Transaction from './Transaction';
+import Analysis from './Analysis/Analysis';
 
 
 import {
-    setSymbol,
-    setAllStocks,
-    setLastUpdatedDate,
-    getLastUpdatedDateRequest,
-    getMarketTradingStatisticRequest
-} from '../../actions/stock';
+    setSymbolAction,
+    getLastUpdatedDateAction,
+    getMarketTradingStatisticAction
+} from '../actions/stock';
 
 import {
     closeModal,
-} from '../../actions/modal';
+} from '../actions/modal';
 
 const { TabPane } = Tabs;
 const { Option } = Select;
 
-class Stock extends React.Component {
+interface IProps {
+    AllStocksObj: any,
+    SelectedSymbol: string,
+    LastUpdatedDate: string,
+    modal: any,
+    setSymbol: any,
+    getLastUpdatedDate: any,
+    getMarketTradingStatistic: any,
+}
 
+interface IState {
+    data: any,
+    value: any,
+    fetching: boolean,
+    loading: boolean,
+    visible: boolean,
+}
+
+class Stock extends React.Component<IProps, IState> {
+    lastFetchId: any;
 
     constructor(props) {
         super(props);
@@ -65,8 +81,8 @@ class Stock extends React.Component {
     async componentDidMount() {
         try {
             this.setState({ loading: true })
-            await this.props.getLastUpdatedDateRequest();
-            await this.props.getMarketTradingStatisticRequest();
+            await this.props.getLastUpdatedDate();
+            await this.props.getMarketTradingStatistic();
             this.setState({ loading: false })
         } catch (error) {
             this.setState({ loading: false })
@@ -89,7 +105,7 @@ class Stock extends React.Component {
             data: [],
             fetching: true
         }, () => {
-            const filteredStocks = this.props.AllStocks.filter(item => {
+            const filteredStocks = Object.values(this.props.AllStocksObj).filter(item => {
                 return (item.Symbol || '').toLowerCase().includes((value || '').toLowerCase())
             })
             this.setState({
@@ -101,7 +117,7 @@ class Stock extends React.Component {
 
     render() {
         const { fetching, data, value, loading } = this.state;
-        const { modal } = this.props;
+        const { modal, SelectedSymbol, LastUpdatedDate } = this.props;
         const { isOpen } = modal;
         if (loading) return <Spin size='large' />
         return (
@@ -126,8 +142,8 @@ class Stock extends React.Component {
                         </Select>
                     </div>
                     <div className="App-header-symbol">
-                        <div>Current Symbol {this.props.Symbol}</div>
-                        <div>Updated at: {this.props.LastUpdatedDate}</div>
+                        <div>Current Symbol {SelectedSymbol}</div>
+                        <div>Updated at: {LastUpdatedDate}</div>
                     </div>
 
                 </div>
@@ -189,8 +205,8 @@ const mapStateToProps = state => {
     console.log(state);
     const stock = get(state, 'stock') || {};
     return {
-        Symbol: get(stock, 'Symbol') || '',
-        AllStocks: get(stock, 'AllStocks') || [],
+        SelectedSymbol: get(stock, 'SelectedSymbol') || '',
+        AllStocksObj: get(stock, 'AllStocksObj') || {},
         LastUpdatedDate: get(stock, 'LastUpdatedDate') || '',
         modal: get(state, 'modal') || {}
     }
@@ -198,11 +214,9 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-    setSymbol,
-    setAllStocks,
-    setLastUpdatedDate,
-    getLastUpdatedDateRequest,
-    getMarketTradingStatisticRequest,
+    setSymbol: setSymbolAction,
+    getLastUpdatedDate: getLastUpdatedDateAction,
+    getMarketTradingStatistic: getMarketTradingStatisticAction,
     closeModal
 }
 
