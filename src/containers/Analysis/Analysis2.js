@@ -23,9 +23,9 @@ import {
     getCompanyInfoUrl
 } from '../../utils/request';
 
-import {
-    // setSymbol,
-} from '../../actions/stock';
+// import {
+// setSymbol,
+// } from '../../actions/stock';
 
 import AnalysisComponent from '../../components/Analysis';
 

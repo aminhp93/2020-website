@@ -34,10 +34,10 @@ import {
     getMarketTradingStatistic
 } from '../../utils/request'
 
-import {
-    setSymbol,
-    setAllStocks,
-} from '../../actions/stock';
+// import {
+// setSymbol,
+// setAllStocks,
+// } from '../../actions/stock';
 import Axios from 'axios';
 
 const { TabPane } = Tabs;
@@ -202,15 +202,15 @@ class Stock extends React.Component {
 const mapStateToProps = state => {
     console.log(state);
     return {
-        Symbol: state.stock.Symbol,
-        AllStocks: state.stock.AllStocks,
+        // Symbol: state.stock.Symbol,
+        // AllStocks: state.stock.AllStocks,
     }
 
 }
 
 const mapDispatchToProps = {
-    setSymbol,
-    setAllStocks
+    // setSymbol,
+    // setAllStocks
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Stock);
