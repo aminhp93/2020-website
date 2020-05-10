@@ -43,7 +43,7 @@ const { Option } = Select;
 interface IProps {
     selectedSymbol: string,
     stocks: IStock,
-    lastUpdatedDate: string
+    lastUpdatedDate: any
     updateSelectedSymbolSuccess: any,
     fetchListStocks: any
     getLastUpdatedDate: any;
@@ -134,7 +134,7 @@ class Stock extends React.Component<IProps, IState> {
                     </div>
                     <div className="App-header-symbol">
                         Header - Current Symbol {selectedSymbol}
-                        Last udpated {lastUpdatedDate}
+                        Last udpated {lastUpdatedDate.value}
                     </div>
 
                 </div>

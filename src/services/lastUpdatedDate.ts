@@ -13,7 +13,7 @@ const LastUpdatedDateService = {
     updateLastUpdatedDate(data) {
         return request({
             method: 'PUT',
-            url: LastUpdatedDateUrls.updateLastUpdatedDate,
+            url: LastUpdatedDateUrls.updateLastUpdatedDate(data.id),
             data: {
                 key: data.key,
                 value: moment().format('YYYY-MM-DD') + 'T00:00:00Z'

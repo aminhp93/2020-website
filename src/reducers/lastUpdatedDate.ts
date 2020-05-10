@@ -6,16 +6,16 @@ import LastUpdatedDateService from '../services/lastUpdatedDate';
 
 const lastUpdatedDateSlice = createSlice({
     name: 'lastUpdatedDate',
-    initialState: '',
+    initialState: {},
     reducers: {
-        udpateLastUpdatedDateSuccess: (state, { payload }) => {
+        updateLastUpdatedDateSuccess: (state, { payload }) => {
             return payload
         },
     },
 });
 
 export const {
-    udpateLastUpdatedDateSuccess,
+    updateLastUpdatedDateSuccess,
 } = lastUpdatedDateSlice.actions;
 
 export default lastUpdatedDateSlice.reducer;
@@ -24,14 +24,15 @@ export const getLastUpdatedDate = (): ThunkActionType => async (
     dispatch: DispatchType
 ) => {
     const response = await LastUpdatedDateService.getLastUpdatedDate();
-    dispatch(udpateLastUpdatedDateSuccess(response.data.value));
+    dispatch(updateLastUpdatedDateSuccess(response.data));
 };
 
-export const udpateLastUpdatedDate = (data: any): ThunkActionType => async (
+export const updateLastUpdatedDate = (data: any): ThunkActionType => async (
     dispatch: DispatchType
 ) => {
+    console.log(33, data)
     const response = await LastUpdatedDateService.updateLastUpdatedDate(data);
-    dispatch(udpateLastUpdatedDateSuccess(response.data.value));
+    dispatch(updateLastUpdatedDateSuccess(response.data));
 };
 
 

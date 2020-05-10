@@ -8,12 +8,11 @@ import { DatePicker, Tabs, Table, Button, Spin } from 'antd';
 import {
     getHistoricalQuotesUrl,
     getHistoricalQuotesUpdateUrl,
-    getConfigRetrieveUpdateDeleteUrl
 } from '../utils/request';
 
 import { IStock } from '../types'
 import { formatNumber } from '../utils/all'
-
+import { updateLastUpdatedDate } from '../reducers/lastUpdatedDate';
 
 const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
@@ -21,14 +20,14 @@ const { TabPane } = Tabs;
 interface IProps {
     selectedSymbol: string,
     stocks: IStock,
-    lastUpdatedDate: string
+    lastUpdatedDate: any,
+    updateLastUpdatedDate: any,
 }
 
 interface IState {
     HistoricalQuotesArray: any,
     startDate: string,
     endDate: string,
-    lastUpdatedDate: string,
     loading: boolean,
 }
 
@@ -39,7 +38,6 @@ class Price extends React.Component<IProps, IState> {
             HistoricalQuotesArray: [],
             startDate: moment().add(-7, 'days').format('YYYY-MM-DD'),
             endDate: moment().format('YYYY-MM-DD'),
-            lastUpdatedDate: '',
             loading: false,
         }
     }
@@ -108,7 +106,7 @@ class Price extends React.Component<IProps, IState> {
 
     udpateHistoricalQuotesPartial = (start, count, startDate, endDate) => {
         let listPromises = [];
-        const arr = cloneDeep(this.props.stocks);
+        const arr = cloneDeep(Object.values(this.props.stocks));
         const arr1 = arr.slice(start, count)
         arr1.map(item => {
             item.Symbol && listPromises.push(
@@ -127,50 +125,37 @@ class Price extends React.Component<IProps, IState> {
             })
     }
 
-    updateLastUpdatedDate = (obj) => {
-        axios({
-            url: getConfigRetrieveUpdateDeleteUrl(obj.id),
-            method: 'put',
-            data: {
-                key: obj.key,
-                value: moment().format('YYYY-MM-DD') + 'T00:00:00Z'
-            }
-        })
-            .then(response => {
-                console.log(response)
-                if (response.data) {
-                    this.setState({
-                        lastUpdatedDate: response.data.value
-                    })
-                }
-            })
-            .catch(error => {
-                console.log(error)
-            })
-    }
-
     udpateHistoricalQuotesDaily = async () => {
-        this.setState({ loading: true })
+
         const { lastUpdatedDate } = this.props;
+        const lastUpdatedDateValue = lastUpdatedDate.value
         const todayDate = moment().format('YYYY-MM-DD');
-        if (!lastUpdatedDate || lastUpdatedDate === todayDate) return;
-        const startDate = moment(lastUpdatedDate).add(1, 'days').format('YYYY-MM-DD');
+        const next1Day = moment(lastUpdatedDateValue).add(1, 'days').format('YYYY-MM-DD');
+        const next2Day = moment(lastUpdatedDateValue).add(2, 'days').format('YYYY-MM-DD');
+        if (
+            !lastUpdatedDateValue
+            || lastUpdatedDateValue === todayDate
+            || (moment(lastUpdatedDateValue).format('dddd') === 'Friday' && next1Day === todayDate)
+            || (moment(lastUpdatedDateValue).format('dddd') === 'Friday' && next2Day === todayDate)
+        ) return;
+
+        const startDate = next1Day;
         const endDate = todayDate;
+        this.setState({ loading: true })
         await this.udpateHistoricalQuotesPartial(0, 500, startDate, endDate);
         await this.udpateHistoricalQuotesPartial(500, 1000, startDate, endDate);
         await this.udpateHistoricalQuotesPartial(1000, 2000, startDate, endDate);
-        await this.updateLastUpdatedDate(lastUpdatedDate);
+        await this.props.updateLastUpdatedDate(lastUpdatedDate);
         this.setState({ loading: false })
     }
 
     render() {
-        const { HistoricalQuotesArray, lastUpdatedDate, startDate, endDate, loading } = this.state;
+        const { HistoricalQuotesArray, startDate, endDate, loading } = this.state;
         if (loading) return <Spin />
         return (
             <div>
                 <div>
                     <RangePicker defaultValue={[moment(startDate), moment(endDate)]} onChange={this.onChange} />
-                    <div>Last updated {lastUpdatedDate ? lastUpdatedDate : ''}</div>
                     <Button onClick={this.crawlData}>Xem</Button>
                     <Button onClick={this.udpateHistoricalQuotesDaily}>Update daily all</Button>
                 </div>
@@ -393,6 +378,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
+    updateLastUpdatedDate
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Price);
