@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, get } from 'lodash';
 import { Table, Button, Tabs, Radio, List } from 'antd';
 import {
     BarChart, Bar, XAxis, YAxis, Tooltip, Legend,
@@ -17,9 +17,10 @@ import {
     getLastestFinancialInfoUpdateUrl,
     getLastestFinancialReportsNameUpdateUrl,
     getLastestFinancialReportsValueUpdateUrl
-} from '../../utils/request';
-import { BILLION_UNIT } from '../../utils/unit';
-import { LATEST_FINANCIAL_REPORTS, formatNumber } from '../../utils/all'
+} from '../utils/request';
+import { BILLION_UNIT } from '../utils/unit';
+import { LATEST_FINANCIAL_REPORTS, formatNumber } from '../utils/all'
+import { IStock } from '../types'
 
 const { TabPane } = Tabs;
 
@@ -42,7 +43,22 @@ const TYPE_QUY = ["E1VFVN30", "FUCVREIT", "FUCTVGF1"]
 // 8: "2. Lãi trái phiếu được nhận "
 // 9: "E1VFVN30"
 
-class Financial extends React.Component {
+interface IProps {
+    selectedSymbol: string,
+    stocks: IStock,
+}
+
+interface IState {
+    YearlyFinancialInfoArray: any,
+    QuarterlyFinancialInfoArray: any,
+    LastestFinancialReportsArray: any,
+    isFinancialReports: boolean,
+    period: string,
+    lastestFinancialReportsType: string,
+    LastestFinancialInfoObj: any,
+}
+
+class Financial extends React.Component<IProps, IState> {
     constructor(props) {
         super(props);
         this.state = {
@@ -61,7 +77,7 @@ class Financial extends React.Component {
     }
 
     componentDidUpdate(preProps) {
-        if (this.props.Symbol !== preProps.Symbol) {
+        if (this.props.selectedSymbol !== preProps.selectedSymbol) {
             if (this.state.isFinancialReports) {
                 this.setState({
                     LastestFinancialReportsArray: []
@@ -74,14 +90,14 @@ class Financial extends React.Component {
     }
 
     crawlData = async () => {
-        const { Symbol: symbol } = this.props;
-        if (!symbol) return;
+        const { selectedSymbol } = this.props;
+        if (!selectedSymbol) return;
         let YearlyFinancialInfoArray = null;
         let QuarterlyFinancialInfoArray = null
         let LastestFinancialInfoObj = null
         await axios({
             method: 'get',
-            url: getYearlyFinancialInfoUrl(symbol)
+            url: getYearlyFinancialInfoUrl(selectedSymbol)
         })
             .then(response => {
                 if (response.data) {
@@ -92,7 +108,7 @@ class Financial extends React.Component {
 
         await axios({
             method: 'get',
-            url: getQuarterlyFinancialInfoUrl(symbol)
+            url: getQuarterlyFinancialInfoUrl(selectedSymbol)
         })
             .then(response => {
                 if (response.data) {
@@ -103,7 +119,7 @@ class Financial extends React.Component {
 
         await axios({
             method: 'get',
-            url: getLastestFinancialInfoUrl(symbol)
+            url: getLastestFinancialInfoUrl(selectedSymbol)
         })
             .then(response => {
                 if (response.data) {
@@ -122,10 +138,10 @@ class Financial extends React.Component {
     }
 
     getLastestFinancialReports = () => {
-        const { Symbol: symbol } = this.props;
+        const { selectedSymbol } = this.props;
         const { lastestFinancialReportsType } = this.state;
         let type_index = 1
-        if (!symbol) return;
+        if (!selectedSymbol) return;
         switch (lastestFinancialReportsType) {
             case LATEST_FINANCIAL_REPORTS.TYPE_1:
                 type_index = 1
@@ -146,7 +162,7 @@ class Financial extends React.Component {
         let year = 2020
         axios({
             method: 'get',
-            url: getLastestFinancialReportsUrl(symbol, type_index, year, quarter)
+            url: getLastestFinancialReportsUrl(selectedSymbol, type_index, year, quarter)
         })
             .then(response => {
                 if (response.data) {
@@ -198,7 +214,7 @@ class Financial extends React.Component {
         this.setState({
             isFinancialReports: true
         }, () => {
-            this.getLastestFinancialReports(LATEST_FINANCIAL_REPORTS.TYPE_2)
+            this.getLastestFinancialReports()
         })
     }
 
@@ -273,14 +289,14 @@ class Financial extends React.Component {
             })
             yearsArray.map(year => (
                 result.push({
-                    title: year,
-                    sorter: (a, b) => {
-                        if (a.Values && a.Values.length && b.Values && b.Values.length) {
-                            const data1 = a.Values.filter(item => item.Year === year)
-                            const data2 = b.Values.filter(item => item.Year === year)
-                            return data1[0].Value - data2[0].Value
-                        }
-                    },
+                    title: JSON.stringify(year),
+                    // sorter: (a, b) => {
+                    //     if (a.Values && a.Values.length && b.Values && b.Values.length) {
+                    //         const data1 = a.Values.filter(item => item.Year === year)
+                    //         const data2 = b.Values.filter(item => item.Year === year)
+                    //         return data1[0].Value - data2[0].Value
+                    //     }
+                    // },
                     render: (params) => {
                         if (params.Values && params.Values.length) {
                             const data = params.Values.filter(item => item.Year === year)
@@ -310,11 +326,11 @@ class Financial extends React.Component {
 
     handlePeriod = e => {
         this.setState({ period: e.target.value }, () => {
-            this.getLastestFinancialReports(this.state.lastestFinancialReportsType)
+            this.getLastestFinancialReports()
         });
     };
 
-    updateLatestFinancialInfo = (symbol, resolve) => {
+    updateLatestFinancialInfo = (symbol, resolve = null) => {
         if (!symbol) return
         axios({
             method: 'put',
@@ -334,7 +350,7 @@ class Financial extends React.Component {
 
     updateLatestFinancialInfoPartial = (start, count) => {
         let listPromises = [];
-        const arr = cloneDeep(this.props.AllStocks);
+        const arr = cloneDeep(this.props.stocks);
         arr.splice(start, count)
         arr.map(item => {
             item.Symbol && listPromises.push(
@@ -359,7 +375,7 @@ class Financial extends React.Component {
         await this.updateLatestFinancialInfoPartial(1000, 1000);
     }
 
-    updateYearlyFinancialInfo = (symbol, resolve) => {
+    updateYearlyFinancialInfo = (symbol, resolve = null) => {
         if (!symbol) return
         axios({
             method: 'put',
@@ -379,7 +395,7 @@ class Financial extends React.Component {
 
     updateYearlyFinancialInfoPartial = (start, count) => {
         let listPromises = [];
-        const arr = cloneDeep(this.props.AllStocks);
+        const arr = cloneDeep(this.props.stocks);
         arr.splice(start, count)
         arr.map(item => {
             item.Symbol && listPromises.push(
@@ -404,7 +420,7 @@ class Financial extends React.Component {
         await this.updateYearlyFinancialInfoPartial(1000, 1000);
     }
 
-    updateQuarterlyFinancialInfo = (symbol, resolve) => {
+    updateQuarterlyFinancialInfo = (symbol, resolve = null) => {
         if (!symbol) return
         axios({
             method: 'put',
@@ -424,7 +440,7 @@ class Financial extends React.Component {
 
     updateQuarterlyFinancialInfoPartial = (start, count) => {
         let listPromises = [];
-        const arr = cloneDeep(this.props.AllStocks);
+        const arr = cloneDeep(this.props.stocks);
         arr.splice(start, count)
         arr.map(item => {
             item.Symbol && listPromises.push(
@@ -477,7 +493,7 @@ class Financial extends React.Component {
         })
     }
 
-    updateLastestFinancialReportsValue = (symbol, resolve) => {
+    updateLastestFinancialReportsValue = (symbol, resolve = null) => {
         if (!symbol) return
         const { period } = this.state;
         axios({
@@ -547,7 +563,7 @@ class Financial extends React.Component {
 
     updateLastestFinancialReportsValuePartial = (start, count) => {
         let listPromises = [];
-        const arr = cloneDeep(this.props.AllStocks);
+        const arr = cloneDeep(this.props.stocks);
         const arr1 = arr.slice(start, count)
         arr1.map(item => {
             item.Symbol && listPromises.push(
@@ -612,7 +628,7 @@ class Financial extends React.Component {
 
     testPartial = (start, count) => {
         let listPromises = [];
-        const arr = cloneDeep(this.props.AllStocks);
+        const arr = cloneDeep(this.props.stocks);
         const arr1 = arr.slice(start, count)
         arr1.map(item => {
             item.Symbol && listPromises.push(
@@ -644,7 +660,7 @@ class Financial extends React.Component {
 
     // RENDER PART
 
-    renderRevenueTable = (isProfit) => {
+    renderRevenueTable = (isProfit = false) => {
         const columns = [
             {
                 title: 'Quarter',
@@ -683,7 +699,7 @@ class Financial extends React.Component {
         return <Table dataSource={mappeddata} columns={columns} pagination={false} />
     }
 
-    renderRevenueQuarterChart = (isProfit) => {
+    renderRevenueQuarterChart = (isProfit = false) => {
         const index = isProfit ? 'ProfitAfterTax_MRQ' : 'NetSales_MRQ'
         const { QuarterlyFinancialInfoArray } = this.state;
         const data = cloneDeep(QuarterlyFinancialInfoArray).map(item => {
@@ -716,7 +732,7 @@ class Financial extends React.Component {
         )
     }
 
-    renderRevenueYearChart = (isProfit) => {
+    renderRevenueYearChart = (isProfit = false) => {
         const index = isProfit ? 'ProfitAfterTax' : 'Sales'
         const { YearlyFinancialInfoArray } = this.state;
         const data = cloneDeep(YearlyFinancialInfoArray).map(item => {
@@ -951,7 +967,7 @@ class Financial extends React.Component {
 
     render() {
         const { period, isFinancialReports } = this.state;
-        // return <div onClick={this.testAll}>test</div>
+        const { selectedSymbol } = this.props;
         if (isFinancialReports) {
             return (
                 <div className="Financial bg-white">
@@ -965,7 +981,7 @@ class Financial extends React.Component {
                                 <Button onClick={this.updateLastestFinancialReportsNameAll}>LastestFinancialReportsName</Button>
                             </div>
                             <div>
-                                <Button onClick={() => this.updateLastestFinancialReportsValue(this.props.Symbol)}>LastestFinancialReportsValue</Button>
+                                <Button onClick={() => this.updateLastestFinancialReportsValue(selectedSymbol)}>LastestFinancialReportsValue</Button>
                                 <Button onClick={this.updateLastestFinancialReportsValueAll}>Update all</Button>
                                 {/* <Button onClick={() => this.updateLastestFinancialReportsValue('AAV')}>Update all</Button> */}
                             </div>
@@ -1008,11 +1024,11 @@ class Financial extends React.Component {
                             <div>
                                 <Button onClick={this.handleOpenFinancialReports}>Bao cao tai chinh</Button>
                                 <div>
-                                    <Button onClick={() => this.updateYearlyFinancialInfo(this.props.Symbol)}>YearlyFinancialInfo</Button>
+                                    <Button onClick={() => this.updateYearlyFinancialInfo(selectedSymbol)}>YearlyFinancialInfo</Button>
                                     <Button onClick={this.updateYearlyFinancialInfoAll}>Update all</Button>
                                 </div>
                                 <div>
-                                    <Button onClick={() => this.updateQuarterlyFinancialInfo(this.props.Symbol)}>QuarterlyFinancialInfo</Button>
+                                    <Button onClick={() => this.updateQuarterlyFinancialInfo(selectedSymbol)}>QuarterlyFinancialInfo</Button>
                                     <Button onClick={this.updateQuarterlyFinancialInfoAll}>Update all</Button>
                                 </div>
 
@@ -1042,7 +1058,7 @@ class Financial extends React.Component {
                 <div className="Financial-right-container bg-white">
                     <div className="header">
                         CHỈ TIÊU TÀI CHÍNH
-                        <Button onClick={() => this.updateLatestFinancialInfo(this.props.Symbol)}>update</Button>
+                        <Button onClick={() => this.updateLatestFinancialInfo(selectedSymbol)}>update</Button>
                         <Button onClick={this.updateLatestFinancialInfoAll}>update all </Button>
                     </div>
                     <div className="Financial-criteria">
@@ -1059,10 +1075,9 @@ class Financial extends React.Component {
 }
 
 const mapStateToProps = state => {
-    console.log(state);
     return {
-        Symbol: state.stock.Symbol,
-        AllStocks: state.stock.AllStocks,
+        selectedSymbol: get(state, 'selectedSymbol'),
+        stocks: get(state, 'stocks'),
     }
 }
 

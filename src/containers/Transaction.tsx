@@ -1,7 +1,7 @@
 import React from 'react';
 import { List, Tabs } from 'antd';
 
-import ChartTV from '../ChartTV/ChartTV';
+import ChartTV from './ChartTV/ChartTV';
 
 const { TabPane } = Tabs;
 

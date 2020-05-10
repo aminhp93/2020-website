@@ -8,7 +8,6 @@ import { DatePicker, Tabs, Table, Button, Spin } from 'antd';
 import {
     getHistoricalQuotesUrl,
     getHistoricalQuotesUpdateUrl,
-    getConfigGetCreateUrl,
     getConfigRetrieveUpdateDeleteUrl
 } from '../utils/request';
 
@@ -22,6 +21,7 @@ const { TabPane } = Tabs;
 interface IProps {
     selectedSymbol: string,
     stocks: IStock,
+    lastUpdatedDate: string
 }
 
 interface IState {
@@ -127,27 +127,6 @@ class Price extends React.Component<IProps, IState> {
             })
     }
 
-    getLastUpdatedDate = async () => {
-        let result = null;
-        await axios({
-            url: getConfigGetCreateUrl('LAST_UPDATED_HISTORICAL_QUOTES'),
-            method: 'get'
-        })
-            .then(response => {
-                console.log(response)
-                if (response.data) {
-                    result = response.data
-                    this.setState({
-                        lastUpdatedDate: result.value
-                    })
-                }
-            })
-            .catch(error => {
-                console.log(error)
-            })
-        return result
-    }
-
     updateLastUpdatedDate = (obj) => {
         axios({
             url: getConfigRetrieveUpdateDeleteUrl(obj.id),
@@ -172,11 +151,10 @@ class Price extends React.Component<IProps, IState> {
 
     udpateHistoricalQuotesDaily = async () => {
         this.setState({ loading: true })
-        const lastUpdatedDate = await this.getLastUpdatedDate();
+        const { lastUpdatedDate } = this.props;
         const todayDate = moment().format('YYYY-MM-DD');
-        if (!lastUpdatedDate || !lastUpdatedDate.value) return;
-        if (lastUpdatedDate.value === todayDate) return;
-        const startDate = moment(lastUpdatedDate.value).add(1, 'days').format('YYYY-MM-DD');
+        if (!lastUpdatedDate || lastUpdatedDate === todayDate) return;
+        const startDate = moment(lastUpdatedDate).add(1, 'days').format('YYYY-MM-DD');
         const endDate = todayDate;
         await this.udpateHistoricalQuotesPartial(0, 500, startDate, endDate);
         await this.udpateHistoricalQuotesPartial(500, 1000, startDate, endDate);
@@ -409,7 +387,8 @@ class Price extends React.Component<IProps, IState> {
 const mapStateToProps = state => {
     return {
         selectedSymbol: get(state, 'selectedSymbol'),
-        stocks: get(state, 'stocks')
+        stocks: get(state, 'stocks'),
+        lastUpdatedDate: get(state, 'lastUpdatedDate')
     }
 }
 

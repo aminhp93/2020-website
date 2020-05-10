@@ -20,21 +20,21 @@ import '../css/OverviewAnalysis.css';
 import '../css/MarketNews.css';
 import '../css/Note.css';
 
-import EquityAndDividends from './EquityAndDividends/EquityAndDividends';
-import Financial from './Financial/Financial';
-import News from './News/News';
+import EquityAndDividends from './EquityAndDividends';
+import Financial from './Financial';
+import News from './News';
 import Price from './Price';
-import Profile from './Profile/Profile';
-import Stakeholder from './Stakeholder/Stakeholder';
-import Technical from './Technical/Technical';
-import Transaction from './Transaction/Transaction';
+import Profile from './Profile';
+import Stakeholder from './Stakeholder';
+import Technical from './Technical';
+import Transaction from './Transaction';
 import Analysis from './Analysis/Analysis';
 import debounce from 'lodash/debounce';
 
 import { IStock } from '../types'
 import { fetchListStocks } from '../reducers/stocks';
 import { updateSelectedSymbolSuccess } from '../reducers/selectedSymbol';
-import { getLastUpdatedDate } from '../reducers/lastUdpatedDate';
+import { getLastUpdatedDate } from '../reducers/lastUpdatedDate';
 
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -194,7 +194,8 @@ const mapStateToProps = state => {
     console.log(state);
     return {
         selectedSymbol: get(state, 'selectedSymbol'),
-        stocks: get(state, 'stocks')
+        stocks: get(state, 'stocks'),
+        lastUpdatedDate: get(state, 'lastUpdatedDate')
     }
 
 }

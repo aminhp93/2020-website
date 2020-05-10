@@ -3,7 +3,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Table, Button } from 'antd';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, get } from 'lodash';
 
 import {
     getCompanyInfoUrl,
@@ -15,10 +15,12 @@ import {
     getSubCompaniesUpdateUrl,
     getCompanyOfficersUpdateUrl,
     getCompanyTransactionsUpdateUrl,
-} from '../../utils/request';
+} from '../utils/request';
 
-import { BILLION_UNIT } from '../../utils/unit';
-import { formatNumber } from '../../utils/all';
+import { BILLION_UNIT } from '../utils/unit';
+import { formatNumber } from '../utils/all';
+import { IStock } from '../types'
+
 
 const subCompaniesColumns = [
     {
@@ -43,7 +45,6 @@ const subCompaniesColumns = [
 const officersColumns = [
     {
         render: params => {
-            console.log(params)
             return `${params.Name} | ${params.Position}`
         }
     }
@@ -74,7 +75,20 @@ const companyTransactionsColumns = [
     },
 ]
 
-class Profile extends React.Component {
+interface IProps {
+    selectedSymbol: string,
+    stocks: IStock;
+}
+
+interface IState {
+    CompanyInfoObj: any,
+    LastestFinancialInfoObj: any,
+    CompanyTransactionsArray: any,
+    SubCompaniesArray: any,
+    CompanyOfficersArray: any,
+}
+
+class Profile extends React.Component<IProps, IState> {
     constructor(props) {
         super(props);
         this.state = {
@@ -92,17 +106,17 @@ class Profile extends React.Component {
 
     componentDidUpdate(preProps) {
         console.log('componentDidUpdate Profile', this.props, preProps)
-        if (this.props.Symbol !== preProps.Symbol) {
+        if (this.props.selectedSymbol !== preProps.selectedSymbol) {
             this.crawlData();
         }
     }
 
     crawlData = () => {
-        const { Symbol: symbol } = this.props;
-        if (!symbol) return
+        const { selectedSymbol } = this.props;
+        if (!selectedSymbol) return
         axios({
             method: 'get',
-            url: getCompanyInfoUrl(symbol)
+            url: getCompanyInfoUrl(selectedSymbol)
         })
             .then(response => {
                 if (response.data) {
@@ -115,7 +129,7 @@ class Profile extends React.Component {
 
         axios({
             method: 'get',
-            url: getLastestFinancialInfoUrl(symbol)
+            url: getLastestFinancialInfoUrl(selectedSymbol)
         })
             .then(response => {
                 if (response.data) {
@@ -128,7 +142,7 @@ class Profile extends React.Component {
 
         axios({
             method: 'get',
-            url: getSubCompaniesUrl(symbol),
+            url: getSubCompaniesUrl(selectedSymbol),
         })
             .then(response => {
                 if (response.data) {
@@ -141,7 +155,7 @@ class Profile extends React.Component {
 
         axios({
             method: 'get',
-            url: getCompanyOfficersUrl(symbol),
+            url: getCompanyOfficersUrl(selectedSymbol),
         })
             .then(response => {
                 if (response.data) {
@@ -155,7 +169,7 @@ class Profile extends React.Component {
 
         axios({
             method: 'get',
-            url: getCompanyTransactionsUrl(symbol)
+            url: getCompanyTransactionsUrl(selectedSymbol)
         })
             .then(response => {
                 if (response.data) {
@@ -167,7 +181,7 @@ class Profile extends React.Component {
             .catch(error => console.log(error))
     }
 
-    updateCompanyInfo = (symbol, resolve) => {
+    updateCompanyInfo = (symbol, resolve = null) => {
         if (!symbol) return;
         axios({
             method: 'put',
@@ -184,7 +198,7 @@ class Profile extends React.Component {
 
     updateCompanyInfoPartial = (start, count) => {
         let listPromises = [];
-        const arr = cloneDeep(this.props.AllStocks);
+        const arr = cloneDeep(this.props.stocks);
         arr.splice(start, count)
         arr.map(item => {
             item.Symbol && listPromises.push(
@@ -209,15 +223,7 @@ class Profile extends React.Component {
         await this.updateCompanyInfoPartial(1000, 1000);
     }
 
-    updateLastestFinancialInfo = () => {
-
-    }
-
-    updateLastestFinancialInfoAll = () => {
-
-    }
-
-    updateSubCompanies = (symbol, resolve) => {
+    updateSubCompanies = (symbol, resolve = null) => {
         if (!symbol) return;
         axios({
             method: 'put',
@@ -234,7 +240,7 @@ class Profile extends React.Component {
 
     updateSubCompaniesPartial = (start, count) => {
         let listPromises = [];
-        const arr = cloneDeep(this.props.AllStocks);
+        const arr = cloneDeep(this.props.stocks);
         arr.splice(start, count)
         arr.map(item => {
             item.Symbol && listPromises.push(
@@ -259,7 +265,7 @@ class Profile extends React.Component {
         await this.updateSubCompaniesPartial(1000, 1000);
     }
 
-    updateCompanyOfficers = (symbol, resolve) => {
+    updateCompanyOfficers = (symbol, resolve = null) => {
         if (!symbol) return;
         axios({
             method: 'put',
@@ -276,7 +282,7 @@ class Profile extends React.Component {
 
     updateCompanyOfficersPartial = (start, count) => {
         let listPromises = [];
-        const arr = cloneDeep(this.props.AllStocks);
+        const arr = cloneDeep(this.props.stocks);
         arr.splice(start, count)
         arr.map(item => {
             item.Symbol && listPromises.push(
@@ -301,7 +307,7 @@ class Profile extends React.Component {
         await this.updateCompanyOfficersPartial(1000, 1000);
     }
 
-    updateCompanyTransactions = (symbol, resolve) => {
+    updateCompanyTransactions = (symbol, resolve = null) => {
         if (!symbol) return;
         axios({
             method: 'put',
@@ -318,7 +324,7 @@ class Profile extends React.Component {
 
     updateCompanyTransactionsPartial = (start, count) => {
         let listPromises = [];
-        const arr = cloneDeep(this.props.AllStocks);
+        const arr = cloneDeep(this.props.stocks);
         arr.splice(start, count)
         arr.map(item => {
             item.Symbol && listPromises.push(
@@ -506,10 +512,8 @@ class Profile extends React.Component {
     }
 
     render() {
-        const {
-            CompanyInfoObj,
-        } = this.state;
-        const { Symbol: symbol } = this.props;
+        const { CompanyInfoObj } = this.state;
+        const { selectedSymbol } = this.props;
         const Overview = CompanyInfoObj.Overview || '';
 
         return <div className="Profile">
@@ -518,23 +522,19 @@ class Profile extends React.Component {
                     <div className="Profile-introduction-title header">
                         Gioi thieu
                         <div>
-                            <Button onClick={() => this.updateCompanyInfo(symbol)}>CompanyInfo</Button>
+                            <Button onClick={() => this.updateCompanyInfo(selectedSymbol)}>CompanyInfo</Button>
                             <Button onClick={this.updateCompanyInfoAll}>Update All</Button>
                         </div>
                         <div>
-                            <Button onClick={() => this.updateLastestFinancialInfo(symbol)}>LastestFinancialInfo</Button>
-                            <Button onClick={this.updateLastestFinancialInfoAll}>Update All</Button>
-                        </div>
-                        <div>
-                            <Button onClick={() => this.updateSubCompanies(symbol)}>SubCompanies</Button>
+                            <Button onClick={() => this.updateSubCompanies(selectedSymbol)}>SubCompanies</Button>
                             <Button onClick={this.updateSubCompaniesAll}>Update All</Button>
                         </div>
                         <div>
-                            <Button onClick={() => this.updateCompanyOfficers(symbol)}>CompanyOfficers</Button>
+                            <Button onClick={() => this.updateCompanyOfficers(selectedSymbol)}>CompanyOfficers</Button>
                             <Button onClick={this.updateCompanyOfficersAll}>Update All</Button>
                         </div>
                         <div>
-                            <Button onClick={() => this.updateCompanyTransactions(symbol)}>CompanyTransactions</Button>
+                            <Button onClick={() => this.updateCompanyTransactions(selectedSymbol)}>CompanyTransactions</Button>
                             <Button onClick={this.updateCompanyTransactionsAll}>Update All</Button>
                         </div>
                     </div>
@@ -600,10 +600,10 @@ class Profile extends React.Component {
 }
 
 const mapStateToProps = state => {
-    console.log(state);
     return {
-        Symbol: state.stock.Symbol,
-        AllStocks: state.stock.AllStocks,
+        selectedSymbol: get(state, 'selectedSymbol'),
+        stocks: get(state, 'stocks'),
+        lastUpdatedDate: get(state, 'lastUpdatedDate')
     }
 }
 

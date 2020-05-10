@@ -1,8 +1,9 @@
 import React from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
-
 import { Tabs, Table } from 'antd';
+import { get } from 'lodash';
+
 import {
     PieChart, Pie,
 } from 'recharts';
@@ -11,7 +12,7 @@ import {
     getMajorHoldersUrl,
     getMajorHolderTransactionsUrl,
     getMajorHolderTransactionsRangeUrl,
-} from '../../utils/request';
+} from '../utils/request';
 
 const { TabPane } = Tabs;
 
@@ -60,11 +61,23 @@ const data02 = [
     { name: 'D2', value: 50 },
 ];
 
-class Stakeholder extends React.Component {
+interface IProps {
+    selectedSymbol: string
+}
+
+interface IState {
+    MajorHoldersArray: any,
+    MajorHolderTransactionsArray: any,
+    MajorHolderTransactionsRangeArray: any
+}
+
+class Stakeholder extends React.Component<IProps, IState> {
     constructor(props) {
         super(props);
         this.state = {
             MajorHoldersArray: [],
+            MajorHolderTransactionsArray: [],
+            MajorHolderTransactionsRangeArray: []
         }
     }
 
@@ -74,17 +87,17 @@ class Stakeholder extends React.Component {
 
     componentDidUpdate(preProps) {
         console.log('componentDidUpdate Stakeholder', this.props, preProps)
-        if (this.props.Symbol !== preProps.Symbol) {
+        if (this.props.selectedSymbol !== preProps.selectedSymbol) {
             this.crawlData();
         }
     }
 
     crawlData = () => {
-        const { Symbol: symbol } = this.props;
-        if (!symbol) return;
+        const { selectedSymbol } = this.props;
+        if (!selectedSymbol) return;
         axios({
             method: 'get',
-            url: getMajorHoldersUrl(symbol)
+            url: getMajorHoldersUrl(selectedSymbol)
         })
             .then(response => {
                 if (response.data) {
@@ -97,7 +110,7 @@ class Stakeholder extends React.Component {
 
         axios({
             method: 'get',
-            url: getMajorHolderTransactionsUrl(symbol),
+            url: getMajorHolderTransactionsUrl(selectedSymbol),
         })
             .then(response => {
                 if (response.data) {
@@ -110,7 +123,7 @@ class Stakeholder extends React.Component {
 
         axios({
             method: 'get',
-            url: getMajorHolderTransactionsRangeUrl(symbol)
+            url: getMajorHolderTransactionsRangeUrl(selectedSymbol)
         })
             .then(response => {
                 if (response.data) {
@@ -128,7 +141,6 @@ class Stakeholder extends React.Component {
         } = this.state;
         const MajorIndividualHoldersArray = MajorHoldersArray.filter(i => !i.IsOrganization)
         const MajorOrganizationHoldersArray = MajorHoldersArray.filter(i => i.IsOrganization)
-        // return <div>Stack</div>
         return (
             <div className="Stakeholder">
                 <div className="Stakeholder-top-container">
@@ -171,7 +183,7 @@ class Stakeholder extends React.Component {
 const mapStateToProps = state => {
     console.log(state);
     return {
-        Symbol: state.stock.Symbol
+        selectedSymbol: get(state, 'selectedSymbol')
     }
 }
 

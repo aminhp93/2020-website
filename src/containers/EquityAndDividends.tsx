@@ -1,41 +1,48 @@
 import React from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
-
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts';
+import { get } from 'lodash';
 
 import {
     getEquityAndDividendsUrl,
-} from '../../utils/request';
+} from '../utils/request';
 
+interface IProps {
+    selectedSymbol: string,
+}
 
-class EquityAndDividends extends React.Component {
+interface IState {
+    EquityAndDividends: any,
+}
+
+class EquityAndDividends extends React.Component<IProps, IState> {
     constructor(props) {
         super(props);
         this.state = {
-            EquityAndDividendsArray: []
+            EquityAndDividends: []
         }
     }
 
     componentDidMount() {
-        this.crawlData(this.props.Symbol);
+        this.crawlData();
     }
 
     componentDidUpdate(preProps) {
         console.log('componentDidUpdate EquityAndDividends', this.props, preProps)
-        if (this.props.Symbol !== preProps.Symbol) {
+        if (this.props.selectedSymbol !== preProps.selectedSymbol) {
             this.crawlData();
         }
     }
 
     crawlData = () => {
-        const { Symbol: symbol } = this.props;
-        if (!symbol) return;
+        const { selectedSymbol } = this.props;
+        if (!selectedSymbol) return;
         axios({
             method: 'get',
-            url: getEquityAndDividendsUrl(symbol),
+            url: getEquityAndDividendsUrl(selectedSymbol),
         })
             .then(response => {
                 if (response.data) {
@@ -101,9 +108,8 @@ class EquityAndDividends extends React.Component {
 }
 
 const mapStateToProps = state => {
-    console.log(state);
     return {
-        Symbol: state.stock.Symbol
+        selectedSymbol: get(state, 'selectedSymbol'),
     }
 }
 

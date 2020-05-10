@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { ThunkActionType, DispatchType } from '../store';
 import LastUpdatedDateService from '../services/lastUpdatedDate';
 
-const stocksSlice = createSlice({
+const lastUpdatedDateSlice = createSlice({
     name: 'lastUpdatedDate',
     initialState: '',
     reducers: {
@@ -16,9 +16,9 @@ const stocksSlice = createSlice({
 
 export const {
     udpateLastUpdatedDateSuccess,
-} = stocksSlice.actions;
+} = lastUpdatedDateSlice.actions;
 
-export default stocksSlice.reducer;
+export default lastUpdatedDateSlice.reducer;
 
 export const getLastUpdatedDate = (): ThunkActionType => async (
     dispatch: DispatchType

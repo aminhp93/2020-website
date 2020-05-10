@@ -2,17 +2,30 @@ import React from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import ReactHtmlParser from 'react-html-parser';
-
 import { List, Avatar, Pagination, Modal } from 'antd';
+import { get } from 'lodash';
 
 import {
     getCompanyNewsUrl,
     getCompanyNewsCountUrl,
     getNewsContentUrl,
-} from '../../utils/request';
+} from '../utils/request';
+import { IStock, ICompanyNews } from '../types'
 
+interface IProps {
+    selectedSymbol: string,
+    stocks: IStock,
+    lastUpdatedDate: string
+}
 
-class News extends React.Component {
+interface IState {
+    CompanyNewsCountString: number,
+    CompanyNewsArray: [ICompanyNews?],
+    visible: boolean,
+    NewsContent: string
+}
+
+class News extends React.Component<IProps, IState> {
     constructor(props) {
         super(props);
         this.state = {
@@ -29,17 +42,17 @@ class News extends React.Component {
 
     componentDidUpdate(preProps) {
         console.log('componentDidUpdate News', this.props, preProps)
-        if (this.props.Symbol !== preProps.Symbol) {
+        if (this.props.selectedSymbol !== preProps.selectedSymbol) {
             this.crawlData();
         }
     }
 
     crawlData = () => {
-        const { Symbol: symbol } = this.props;
-        if (!symbol) return;
+        const { selectedSymbol } = this.props;
+        if (!selectedSymbol) return;
         axios({
             method: 'get',
-            url: getCompanyNewsCountUrl(symbol),
+            url: getCompanyNewsCountUrl(selectedSymbol),
         })
             .then(response => {
                 if (response.data) {
@@ -52,7 +65,7 @@ class News extends React.Component {
 
         axios({
             method: 'get',
-            url: getCompanyNewsUrl(symbol),
+            url: getCompanyNewsUrl(selectedSymbol),
         })
             .then(response => {
                 if (response.data) {
@@ -83,14 +96,12 @@ class News extends React.Component {
     };
 
     handleOk = e => {
-        console.log(e);
         this.setState({
             visible: false,
         });
     };
 
     handleCancel = e => {
-        console.log(e);
         this.setState({
             visible: false,
         });
@@ -150,9 +161,10 @@ class News extends React.Component {
 }
 
 const mapStateToProps = state => {
-    console.log(state);
     return {
-        Symbol: state.stock.Symbol
+        selectedSymbol: get(state, 'selectedSymbol'),
+        stocks: get(state, 'stocks'),
+        lastUpdatedDate: get(state, 'lastUpdatedDate')
     }
 }
 
