@@ -28,3 +28,11 @@ export const fetchListStocks = (): ThunkActionType => async (
     dispatch(fetchListStocksSuccess(data));
 };
 
+export const fetchNews = (data): ThunkActionType => async (
+    dispatch: DispatchType
+) => {
+    const { type, group, startIndex, count } = data;
+    console.log(data)
+    const response = await StockService.fetchNews(type, group, startIndex, count);
+    return response
+}

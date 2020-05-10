@@ -9,6 +9,12 @@ const StockService = {
             url: StockUrls.getListStocks,
         });
     },
+    fetchNews(type, group, startIndex, count) {
+        return request({
+            method: 'GET',
+            url: StockUrls.fetchNews(type, group, startIndex, count)
+        })
+    }
 
 };
 

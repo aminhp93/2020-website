@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Tabs, Select, Spin } from 'antd';
 import { connect } from 'react-redux';
-import { get } from 'lodash';
+import { get, debounce } from 'lodash';
 
 import 'antd/dist/antd.css';
 import '../css/index.css';
@@ -29,7 +29,7 @@ import Stakeholder from './Stakeholder';
 import Technical from './Technical';
 import Transaction from './Transaction';
 import Analysis from './Analysis/Analysis';
-import debounce from 'lodash/debounce';
+import MarketNews from './MarketNews';
 
 import { IStock } from '../types'
 import { fetchListStocks } from '../reducers/stocks';
@@ -142,7 +142,7 @@ class Stock extends React.Component<IProps, IState> {
                     <div className="App-navigation">
 
                         <div>
-                            <Tabs defaultActiveKey="1" tabPosition="left">
+                            <Tabs defaultActiveKey="3" tabPosition="left">
                                 <TabPane tab="OverallMarket1" key="1">
                                     <div className="App-content">
                                         <div>Content2</div>
@@ -178,6 +178,9 @@ class Stock extends React.Component<IProps, IState> {
                                 </TabPane>
                                 <TabPane tab="Analysis" key="2">
                                     <Analysis />
+                                </TabPane>
+                                <TabPane tab="News" key="3">
+                                    <MarketNews />
                                 </TabPane>
 
                             </Tabs>

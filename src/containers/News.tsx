@@ -15,7 +15,8 @@ import { IStock, ICompanyNews } from '../types'
 interface IProps {
     selectedSymbol: string,
     stocks: IStock,
-    lastUpdatedDate: string
+    lastUpdatedDate: string,
+    dataSource: [ICompanyNews?]
 }
 
 interface IState {
@@ -128,13 +129,14 @@ class News extends React.Component<IProps, IState> {
             CompanyNewsArray,
             NewsContent
         } = this.state;
+        const { dataSource } = this.props;
         return (
             <div>
                 <div>TIN TỨC</div>
                 <div>
                     <List
                         itemLayout="horizontal"
-                        dataSource={CompanyNewsArray}
+                        dataSource={dataSource}
                         renderItem={item => (
                             <List.Item>
                                 <List.Item.Meta
