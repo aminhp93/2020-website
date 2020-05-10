@@ -2,94 +2,83 @@ import React from 'react';
 
 import { Tabs, Select, Spin } from 'antd';
 import { connect } from 'react-redux';
+import { get } from 'lodash';
 
 import 'antd/dist/antd.css';
-import '../../css/index.css';
+import '../css/index.css';
 
-import '../../css/App.css';
-import '../../css/EquityAndDividends.css';
-import '../../css/Financial.css';
-import '../../css/News.css';
-import '../../css/Price.css';
-import '../../css/Profile.css';
-import '../../css/Stakeholder.css';
-import '../../css/Technical.css';
-import '../../css/Transaction.css';
-import '../../css/OverviewAnalysis.css';
-import '../../css/MarketNews.css';
-import '../../css/Note.css';
+import '../css/App.css';
+import '../css/EquityAndDividends.css';
+import '../css/Financial.css';
+import '../css/News.css';
+import '../css/Price.css';
+import '../css/Profile.css';
+import '../css/Stakeholder.css';
+import '../css/Technical.css';
+import '../css/Transaction.css';
+import '../css/OverviewAnalysis.css';
+import '../css/MarketNews.css';
+import '../css/Note.css';
 
-import EquityAndDividends from '../EquityAndDividends/EquityAndDividends';
-import Financial from '../Financial/Financial';
-import News from '../News/News';
-import Price from '../Price/Price';
-import Profile from '../Profile/Profile';
-import Stakeholder from '../Stakeholder/Stakeholder';
-import Technical from '../Technical/Technical';
-import Transaction from '../Transaction/Transaction';
-import Analysis from '../Analysis/Analysis';
+import EquityAndDividends from './EquityAndDividends/EquityAndDividends';
+import Financial from './Financial/Financial';
+import News from './News/News';
+import Price from './Price';
+import Profile from './Profile/Profile';
+import Stakeholder from './Stakeholder/Stakeholder';
+import Technical from './Technical/Technical';
+import Transaction from './Transaction/Transaction';
+import Analysis from './Analysis/Analysis';
 import debounce from 'lodash/debounce';
 
-import {
-    getMarketTradingStatistic
-} from '../../utils/request'
-
-// import {
-// setSymbol,
-// setAllStocks,
-// } from '../../actions/stock';
-import Axios from 'axios';
+import { IStock } from '../types'
+import { fetchListStocks } from '../reducers/stocks';
+import { updateSelectedSymbolSuccess } from '../reducers/selectedSymbol';
+import { getLastUpdatedDate } from '../reducers/lastUdpatedDate';
 
 const { TabPane } = Tabs;
 const { Option } = Select;
 
-class Stock extends React.Component {
+
+interface IProps {
+    selectedSymbol: string,
+    stocks: IStock,
+    lastUpdatedDate: string
+    updateSelectedSymbolSuccess: any,
+    fetchListStocks: any
+    getLastUpdatedDate: any;
+}
+
+interface IState {
+    data: any,
+    value: any,
+    fetching: boolean,
+    loading: boolean,
+}
+
+class Stock extends React.Component<IProps, IState> {
+    lastFetchId: any;
+
     constructor(props) {
         super(props);
         this.state = {
             data: [],
             value: [],
             fetching: false,
-            loading: false,
+            loading: true,
         }
         this.lastFetchId = 0;
         this.fetchUser = debounce(this.fetchUser, 800);
     }
 
-    componentDidMount() {
-        this.props.setSymbol('VND')
-        this.setState({
-            loading: true
-        })
-        Axios({
-            method: 'get',
-            url: getMarketTradingStatistic()
-        })
-            .then(response => {
-                console.log(response)
-                if (response.data) {
-                    this.props.setAllStocks(response.data)
-                    this.setState({
-                        loading: false
-                    })
-                }
-            })
-            .catch(error => {
-                console.log(error)
-                this.setState({
-                    loading: false
-                })
-            })
-        // Axios({
-        //     method: 'put',
-        //     url: 'http://localhost:8000/api/Data/Markets/TradingStatistic/'
-        // })
-        //     .then(response => {
-        //         console.log(response)
-        //     })
-        //     .catch(error => {
-        //         console.log(error)
-        //     })
+    async componentDidMount() {
+        try {
+            await this.props.getLastUpdatedDate()
+            await this.props.fetchListStocks()
+            this.setState({ loading: false })
+        } catch (error) {
+            this.setState({ loading: false })
+        }
     }
 
     handleChange = value => {
@@ -98,7 +87,7 @@ class Stock extends React.Component {
             data: [],
             fetching: false,
         }, () => {
-            value && value.length && this.props.setSymbol(value[0]['key']);
+            value && value.length && this.props.updateSelectedSymbolSuccess(value[0]['key']);
         });
     };
 
@@ -108,7 +97,7 @@ class Stock extends React.Component {
             data: [],
             fetching: true
         }, () => {
-            const filteredStocks = this.props.AllStocks.filter(item => {
+            const filteredStocks = Object.values(this.props.stocks).filter(item => {
                 return (item.Symbol || '').toLowerCase().includes((value || '').toLowerCase())
             })
             this.setState({
@@ -120,6 +109,7 @@ class Stock extends React.Component {
 
     render() {
         const { fetching, data, value, loading } = this.state;
+        const { selectedSymbol, lastUpdatedDate } = this.props;
         if (loading) return <Spin size='large' />
         return (
             <div className="App">
@@ -143,7 +133,8 @@ class Stock extends React.Component {
                         </Select>
                     </div>
                     <div className="App-header-symbol">
-                        Header - Current Symbol {this.props.Symbol}
+                        Header - Current Symbol {selectedSymbol}
+                        Last udpated {lastUpdatedDate}
                     </div>
 
                 </div>
@@ -202,15 +193,16 @@ class Stock extends React.Component {
 const mapStateToProps = state => {
     console.log(state);
     return {
-        // Symbol: state.stock.Symbol,
-        // AllStocks: state.stock.AllStocks,
+        selectedSymbol: get(state, 'selectedSymbol'),
+        stocks: get(state, 'stocks')
     }
 
 }
 
 const mapDispatchToProps = {
-    // setSymbol,
-    // setAllStocks
+    getLastUpdatedDate,
+    fetchListStocks,
+    updateSelectedSymbolSuccess
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Stock);

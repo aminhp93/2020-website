@@ -12,13 +12,13 @@ export const store = configureStore({
 })
 
 // @ts-ignore
-if (module.hot) {
-    // @ts-ignore
-    module.hot.accept('reducers', () => {
-        const newRootReducer = require('reducers').default
-        store.replaceReducer(newRootReducer)
-    })
-}
+// if (module.hot) {
+//     // @ts-ignore
+//     module.hot.accept('reducers', () => {
+//         const newRootReducer = require('reducers').default
+//         store.replaceReducer(newRootReducer)
+//     })
+// }
 
 export const dispatch = store.dispatch.bind(store)
 

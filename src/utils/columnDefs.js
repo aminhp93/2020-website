@@ -1,3 +1,6 @@
+import React from 'react';
+import moment from 'moment';
+
 import { BILLION_UNIT } from './unit';
 import {
     mapColorPriceChange,
@@ -5,6 +8,7 @@ import {
     mapArrayToKeyValue,
     mapDataTwoDate
 } from './all';
+
 
 export function getYearlyFinancialInfoColumnDefs() {
     return [
@@ -181,3 +185,198 @@ export function getQuarterlyFinancialInfoColumnDefs() {
     }
     return result
 }
+
+export const HistoricalQuotesPastPriceColumns = [
+    {
+        title: 'NGÀY',
+        render: params => {
+            return moment(params.Date).format('YYYY-MM-DD')
+        }
+    },
+    {
+        title: 'THAY ĐỔI',
+        align: 'right',
+        render: params => {
+            const content = ((params.PriceClose - params.PriceBasic) / 1000).toFixed(2)
+            let className = '';
+            if (content > 0) {
+                className = 'green';
+            } else if (content < 0) {
+                className = 'red';
+            }
+            return <div className={className}>{content}</div>
+        }
+    },
+    {
+        title: '%',
+        align: 'right',
+        render: params => {
+            const content = ((params.PriceClose - params.PriceOpen) * 100 / (params.PriceOpen)).toFixed(2)
+            let className = '';
+            if (content > 0) {
+                className = 'green';
+            } else if (content < 0) {
+                className = 'red';
+            }
+            return <div className={className}>{content}</div>
+        }
+    },
+    {
+        title: 'MỞ CỬA',
+        align: 'right',
+        render: params => {
+            return (params.PriceOpen / 1000).toFixed(2)
+        }
+    },
+    {
+        title: 'CAO NHẤT',
+        align: 'right',
+        render: params => {
+            return (params.PriceHigh / 1000).toFixed(2)
+        }
+    },
+    {
+        title: 'THẤP NHẤT',
+        align: 'right',
+        render: params => {
+            return (params.PriceLow / 1000).toFixed(2)
+        }
+    },
+    {
+        title: 'ĐÓNG CỬA',
+        align: 'right',
+        render: params => {
+            return (params.PriceClose / 1000).toFixed(2)
+        }
+    },
+    {
+        title: 'TRUNG BÌNH',
+        align: 'right',
+        render: params => {
+            return (params.PriceAverage / 1000).toFixed(2)
+        }
+    },
+    {
+        title: 'ĐÓNG CỬA ĐC',
+        align: 'right',
+        render: params => {
+            return (params.AdjClose / 1000).toFixed(2)
+        }
+    },
+    {
+        title: 'KHỐI LƯỢNG',
+        align: 'right',
+        render: params => {
+            return formatNumber(params.Volume)
+        }
+    }
+]
+
+export const HistoricalQuotesForeignTradeColumns = [
+    {
+        title: 'NGÀY',
+        render: params => {
+            return moment(params.Date).format('YYYY-MM-DD')
+        }
+    },
+    {
+        title: 'ROOM NN',
+        align: 'right',
+        render: params => {
+            return formatNumber(params.CurrentForeignRoom)
+        }
+    },
+    {
+        title: 'KL MUA',
+        align: 'right',
+        render: params => {
+            return formatNumber(params.BuyForeignQuantity)
+        }
+    },
+    {
+        title: 'KL BÁN',
+        align: 'right',
+        render: params => {
+            return formatNumber(params.SellForeignQuantity)
+        }
+    },
+    {
+        title: 'MUA-BÁN',
+        align: 'right',
+        render: params => {
+            return formatNumber(params.BuyForeignQuantity - params.SellForeignQuantity)
+        }
+    },
+    {
+        title: 'GT MUA',
+        align: 'right',
+        render: params => {
+            return formatNumber(params.BuyForeignValue)
+        }
+    },
+    {
+        title: 'GT BÁN',
+        align: 'right',
+        render: params => {
+            return formatNumber(params.SellForeignValue)
+        }
+    },
+    {
+        title: 'MUA-BÁN',
+        align: 'right',
+        render: params => {
+            return formatNumber(params.BuyForeignValue - params.SellForeignValue)
+        }
+    }
+]
+
+export const HistoricalQuotesSupplyDemandColumns = [
+    {
+        title: 'NGÀY',
+        render: params => {
+            return moment(params.Date).format('YYYY-MM-DD')
+        }
+    },
+    {
+        title: 'SL ĐẶT MUA',
+        align: 'right',
+        render: params => {
+            return formatNumber(params.BuyCount)
+        }
+    },
+    {
+        title: 'KL ĐẶT MUA',
+        align: 'right',
+        render: params => {
+            return formatNumber(params.BuyQuantity)
+        }
+    },
+    {
+        title: 'SL ĐẶT BÁN',
+        align: 'right',
+        render: params => {
+            return formatNumber(params.SellCount)
+        }
+    },
+    {
+        title: 'KL ĐẶT BÁN',
+        align: 'right',
+        render: params => {
+            return formatNumber(params.SellQuantity)
+        }
+    },
+    {
+        title: 'KL KHỚP',
+        align: 'right',
+        render: params => {
+            return formatNumber(params.Volume)
+        }
+    },
+    {
+        title: 'GT KHỚP (1000 VND)',
+        align: 'right',
+        render: params => {
+            return formatNumber(params.TotalValue)
+        }
+    }
+]

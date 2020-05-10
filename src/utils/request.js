@@ -1,3 +1,35 @@
+
+import axios from 'axios';
+import { notification } from 'antd';
+
+const headers = {
+    'Content-Type': 'application/json',
+};
+
+const client = axios.create({
+    headers
+});
+
+const request = (options) => {
+    const onSuccess = (res) => res;
+    const onError = (err) => {
+        notification.error({
+            message: 'Error',
+            description: String(err),
+            placement: 'bottomLeft',
+            duration: 5,
+        });
+    }
+
+    return client(options)
+        .then(onSuccess)
+        .catch(onError);
+}
+
+
+export default request
+
+
 export const host_2020_webapp = 'http://3.88.254.14/'
 export const host_2020_server = 'http://18.207.193.124'
 export const localhost = 'http://localhost:8000'

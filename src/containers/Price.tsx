@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, get } from 'lodash';
 import moment from 'moment';
 import { DatePicker, Tabs, Table, Button, Spin } from 'antd';
 
@@ -10,209 +10,32 @@ import {
     getHistoricalQuotesUpdateUrl,
     getConfigGetCreateUrl,
     getConfigRetrieveUpdateDeleteUrl
-} from '../../utils/request';
-import { formatNumber } from '../../utils/all';
+} from '../utils/request';
+import {
+    HistoricalQuotesPastPriceColumns,
+    HistoricalQuotesForeignTradeColumns,
+    HistoricalQuotesSupplyDemandColumns
+} from '../utils/columnDefs';
+import { IStock } from '../types'
 
 
 const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
 
-const HistoricalQuotesPastPriceColumns = [
-    {
-        title: 'NGÀY',
-        render: params => {
-            return moment(params.Date).format('YYYY-MM-DD')
-        }
-    },
-    {
-        title: 'THAY ĐỔI',
-        align: 'right',
-        render: params => {
-            const content = ((params.PriceClose - params.PriceBasic) / 1000).toFixed(2)
-            let className = '';
-            if (content > 0) {
-                className = 'green';
-            } else if (content < 0) {
-                className = 'red';
-            }
-            return <div className={className}>{content}</div>
-        }
-    },
-    {
-        title: '%',
-        align: 'right',
-        render: params => {
-            const content = ((params.PriceClose - params.PriceOpen) * 100 / (params.PriceOpen)).toFixed(2)
-            let className = '';
-            if (content > 0) {
-                className = 'green';
-            } else if (content < 0) {
-                className = 'red';
-            }
-            return <div className={className}>{content}</div>
-        }
-    },
-    {
-        title: 'MỞ CỬA',
-        align: 'right',
-        render: params => {
-            return (params.PriceOpen / 1000).toFixed(2)
-        }
-    },
-    {
-        title: 'CAO NHẤT',
-        align: 'right',
-        render: params => {
-            return (params.PriceHigh / 1000).toFixed(2)
-        }
-    },
-    {
-        title: 'THẤP NHẤT',
-        align: 'right',
-        render: params => {
-            return (params.PriceLow / 1000).toFixed(2)
-        }
-    },
-    {
-        title: 'ĐÓNG CỬA',
-        align: 'right',
-        render: params => {
-            return (params.PriceClose / 1000).toFixed(2)
-        }
-    },
-    {
-        title: 'TRUNG BÌNH',
-        align: 'right',
-        render: params => {
-            return (params.PriceAverage / 1000).toFixed(2)
-        }
-    },
-    {
-        title: 'ĐÓNG CỬA ĐC',
-        align: 'right',
-        render: params => {
-            return (params.AdjClose / 1000).toFixed(2)
-        }
-    },
-    {
-        title: 'KHỐI LƯỢNG',
-        align: 'right',
-        render: params => {
-            return formatNumber(params.Volume)
-        }
-    }
-]
+interface IProps {
+    selectedSymbol: string,
+    stocks: IStock,
+}
 
-const HistoricalQuotesForeignTradeColumns = [
-    {
-        title: 'NGÀY',
-        render: params => {
-            return moment(params.Date).format('YYYY-MM-DD')
-        }
-    },
-    {
-        title: 'ROOM NN',
-        align: 'right',
-        render: params => {
-            return formatNumber(params.CurrentForeignRoom)
-        }
-    },
-    {
-        title: 'KL MUA',
-        align: 'right',
-        render: params => {
-            return formatNumber(params.BuyForeignQuantity)
-        }
-    },
-    {
-        title: 'KL BÁN',
-        align: 'right',
-        render: params => {
-            return formatNumber(params.SellForeignQuantity)
-        }
-    },
-    {
-        title: 'MUA-BÁN',
-        align: 'right',
-        render: params => {
-            return formatNumber(params.BuyForeignQuantity - params.SellForeignQuantity)
-        }
-    },
-    {
-        title: 'GT MUA',
-        align: 'right',
-        render: params => {
-            return formatNumber(params.BuyForeignValue)
-        }
-    },
-    {
-        title: 'GT BÁN',
-        align: 'right',
-        render: params => {
-            return formatNumber(params.SellForeignValue)
-        }
-    },
-    {
-        title: 'MUA-BÁN',
-        align: 'right',
-        render: params => {
-            return formatNumber(params.BuyForeignValue - params.SellForeignValue)
-        }
-    }
-]
+interface IState {
+    HistoricalQuotesArray: any,
+    startDate: string,
+    endDate: string,
+    lastUpdatedDate: string,
+    loading: boolean,
+}
 
-const HistoricalQuotesSupplyDemandColumns = [
-    {
-        title: 'NGÀY',
-        render: params => {
-            return moment(params.Date).format('YYYY-MM-DD')
-        }
-    },
-    {
-        title: 'SL ĐẶT MUA',
-        align: 'right',
-        render: params => {
-            return formatNumber(params.BuyCount)
-        }
-    },
-    {
-        title: 'KL ĐẶT MUA',
-        align: 'right',
-        render: params => {
-            return formatNumber(params.BuyQuantity)
-        }
-    },
-    {
-        title: 'SL ĐẶT BÁN',
-        align: 'right',
-        render: params => {
-            return formatNumber(params.SellCount)
-        }
-    },
-    {
-        title: 'KL ĐẶT BÁN',
-        align: 'right',
-        render: params => {
-            return formatNumber(params.SellQuantity)
-        }
-    },
-    {
-        title: 'KL KHỚP',
-        align: 'right',
-        render: params => {
-            return formatNumber(params.Volume)
-        }
-    },
-    {
-        title: 'GT KHỚP (1000 VND)',
-        align: 'right',
-        render: params => {
-            return formatNumber(params.TotalValue)
-        }
-    }
-]
-
-class Price extends React.Component {
+class Price extends React.Component<IProps, IState> {
     constructor(props) {
         super(props);
         this.state = {
@@ -225,24 +48,23 @@ class Price extends React.Component {
     }
 
     componentDidMount() {
-        this.getLastUpdatedDate()
         this.crawlData();
     }
 
     componentDidUpdate(preProps) {
         console.log('componentDidUpdate Price', this.props, preProps)
-        if (this.props.Symbol !== preProps.Symbol) {
+        if (this.props.selectedSymbol !== preProps.selectedSymbol) {
             this.crawlData();
         }
     }
 
     crawlData = () => {
         const { startDate, endDate } = this.state;
-        const { Symbol: symbol } = this.props;
-        if (!symbol || !startDate || !endDate) return;
+        const { selectedSymbol } = this.props;
+        if (!selectedSymbol || !startDate || !endDate) return;
         axios({
             method: 'get',
-            url: getHistoricalQuotesUrl(symbol, startDate, endDate),
+            url: getHistoricalQuotesUrl(selectedSymbol, startDate, endDate),
         })
             .then(response => {
                 if (response.data) {
@@ -289,7 +111,7 @@ class Price extends React.Component {
 
     udpateHistoricalQuotesPartial = (start, count, startDate, endDate) => {
         let listPromises = [];
-        const arr = cloneDeep(this.props.AllStocks);
+        const arr = cloneDeep(this.props.stocks);
         const arr1 = arr.slice(start, count)
         arr1.map(item => {
             item.Symbol && listPromises.push(
@@ -306,12 +128,6 @@ class Price extends React.Component {
             .catch(error => {
                 console.log(error)
             })
-    }
-
-    udpateHistoricalQuotesAll = async () => {
-        await this.udpateHistoricalQuotesPartial(0, 500);
-        await this.udpateHistoricalQuotesPartial(500, 1000);
-        await this.udpateHistoricalQuotesPartial(1000, 2000);
     }
 
     getLastUpdatedDate = async () => {
@@ -381,8 +197,6 @@ class Price extends React.Component {
                     <RangePicker defaultValue={[moment(startDate), moment(endDate)]} onChange={this.onChange} />
                     <div>Last updated {lastUpdatedDate ? lastUpdatedDate : ''}</div>
                     <Button onClick={this.crawlData}>Xem</Button>
-                    {/* <Button onClick={() => this.udpateHistoricalQuotes(this.props.Symbol)}>Update</Button> */}
-                    {/* <Button onClick={this.udpateHistoricalQuotesAll}>Update all</Button> */}
                     <Button onClick={this.udpateHistoricalQuotesDaily}>Update daily all</Button>
                 </div>
                 <div>
@@ -406,10 +220,9 @@ class Price extends React.Component {
 
 
 const mapStateToProps = state => {
-    console.log(state);
     return {
-        Symbol: state.stock.Symbol,
-        AllStocks: state.stock.AllStocks,
+        selectedSymbol: get(state, 'selectedSymbol'),
+        stocks: get(state, 'stocks')
     }
 }
 

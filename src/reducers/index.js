@@ -1,9 +1,13 @@
 import { combineReducers } from "redux";
-import stock from './stock.ts';
 
+import stocks from './stocks';
+import selectedSymbol from './selectedSymbol';
+import lastUdpatedDate from './lastUdpatedDate';
 
 const rootReducer = combineReducers({
-    stock,
+    stocks,
+    selectedSymbol,
+    lastUdpatedDate
 })
 
 export default rootReducer
