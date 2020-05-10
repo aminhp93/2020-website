@@ -11,12 +11,9 @@ import {
     getConfigGetCreateUrl,
     getConfigRetrieveUpdateDeleteUrl
 } from '../utils/request';
-import {
-    HistoricalQuotesPastPriceColumns,
-    HistoricalQuotesForeignTradeColumns,
-    HistoricalQuotesSupplyDemandColumns
-} from '../utils/columnDefs';
+
 import { IStock } from '../types'
+import { formatNumber } from '../utils/all'
 
 
 const { RangePicker } = DatePicker;
@@ -202,13 +199,203 @@ class Price extends React.Component<IProps, IState> {
                 <div>
                     <Tabs defaultActiveKey="1">
                         <TabPane tab="Giá quá khứ" key="1">
-                            <Table dataSource={HistoricalQuotesArray} columns={HistoricalQuotesPastPriceColumns} size='small' />
+                            <Table dataSource={HistoricalQuotesArray} columns={[
+                                {
+                                    title: 'NGÀY',
+                                    render: params => {
+                                        return moment(params.Date).format('YYYY-MM-DD')
+                                    }
+                                },
+                                {
+                                    title: 'THAY ĐỔI',
+                                    align: 'right',
+                                    render: params => {
+                                        const content = Number(((params.PriceClose - params.PriceBasic) / 1000).toFixed(2))
+                                        let className = '';
+                                        if (content > 0) {
+                                            className = 'green';
+                                        } else if (content < 0) {
+                                            className = 'red';
+                                        }
+                                        return <div className={className}>{content}</div>
+                                    }
+                                },
+                                {
+                                    title: '%',
+                                    align: 'right',
+                                    render: params => {
+                                        const content = Number(((params.PriceClose - params.PriceOpen) * 100 / (params.PriceOpen)).toFixed(2))
+                                        let className = '';
+                                        if (content > 0) {
+                                            className = 'green';
+                                        } else if (content < 0) {
+                                            className = 'red';
+                                        }
+                                        return <div className={className}>{content}</div>
+                                    }
+                                },
+                                {
+                                    title: 'MỞ CỬA',
+                                    align: 'right',
+                                    render: params => {
+                                        return (params.PriceOpen / 1000).toFixed(2)
+                                    }
+                                },
+                                {
+                                    title: 'CAO NHẤT',
+                                    align: 'right',
+                                    render: params => {
+                                        return (params.PriceHigh / 1000).toFixed(2)
+                                    }
+                                },
+                                {
+                                    title: 'THẤP NHẤT',
+                                    align: 'right',
+                                    render: params => {
+                                        return (params.PriceLow / 1000).toFixed(2)
+                                    }
+                                },
+                                {
+                                    title: 'ĐÓNG CỬA',
+                                    align: 'right',
+                                    render: params => {
+                                        return (params.PriceClose / 1000).toFixed(2)
+                                    }
+                                },
+                                {
+                                    title: 'TRUNG BÌNH',
+                                    align: 'right',
+                                    render: params => {
+                                        return (params.PriceAverage / 1000).toFixed(2)
+                                    }
+                                },
+                                {
+                                    title: 'ĐÓNG CỬA ĐC',
+                                    align: 'right',
+                                    render: params => {
+                                        return (params.AdjClose / 1000).toFixed(2)
+                                    }
+                                },
+                                {
+                                    title: 'KHỐI LƯỢNG',
+                                    align: 'right',
+                                    render: params => {
+                                        return formatNumber(params.Volume)
+                                    }
+                                }
+                            ]
+                            } size='small' />
                         </TabPane>
                         <TabPane tab="Giao dịch NĐTNN" key="2">
-                            <Table dataSource={HistoricalQuotesArray} columns={HistoricalQuotesForeignTradeColumns} size='small' />
+                            <Table dataSource={HistoricalQuotesArray} columns={[
+                                {
+                                    title: 'NGÀY',
+                                    render: params => {
+                                        return moment(params.Date).format('YYYY-MM-DD')
+                                    }
+                                },
+                                {
+                                    title: 'ROOM NN',
+                                    align: 'right',
+                                    render: params => {
+                                        return formatNumber(params.CurrentForeignRoom)
+                                    }
+                                },
+                                {
+                                    title: 'KL MUA',
+                                    align: 'right',
+                                    render: params => {
+                                        return formatNumber(params.BuyForeignQuantity)
+                                    }
+                                },
+                                {
+                                    title: 'KL BÁN',
+                                    align: 'right',
+                                    render: params => {
+                                        return formatNumber(params.SellForeignQuantity)
+                                    }
+                                },
+                                {
+                                    title: 'MUA-BÁN',
+                                    align: 'right',
+                                    render: params => {
+                                        return formatNumber(params.BuyForeignQuantity - params.SellForeignQuantity)
+                                    }
+                                },
+                                {
+                                    title: 'GT MUA',
+                                    align: 'right',
+                                    render: params => {
+                                        return formatNumber(params.BuyForeignValue)
+                                    }
+                                },
+                                {
+                                    title: 'GT BÁN',
+                                    align: 'right',
+                                    render: params => {
+                                        return formatNumber(params.SellForeignValue)
+                                    }
+                                },
+                                {
+                                    title: 'MUA-BÁN',
+                                    align: 'right',
+                                    render: params => {
+                                        return formatNumber(params.BuyForeignValue - params.SellForeignValue)
+                                    }
+                                }
+                            ]} size='small' />
                         </TabPane>
                         <TabPane tab="Cung cầu" key="3">
-                            <Table dataSource={HistoricalQuotesArray} columns={HistoricalQuotesSupplyDemandColumns} size='small' />
+                            <Table dataSource={HistoricalQuotesArray} columns={[
+                                {
+                                    title: 'NGÀY',
+                                    render: params => {
+                                        return moment(params.Date).format('YYYY-MM-DD')
+                                    }
+                                },
+                                {
+                                    title: 'SL ĐẶT MUA',
+                                    align: 'right',
+                                    render: params => {
+                                        return formatNumber(params.BuyCount)
+                                    }
+                                },
+                                {
+                                    title: 'KL ĐẶT MUA',
+                                    align: 'right',
+                                    render: params => {
+                                        return formatNumber(params.BuyQuantity)
+                                    }
+                                },
+                                {
+                                    title: 'SL ĐẶT BÁN',
+                                    align: 'right',
+                                    render: params => {
+                                        return formatNumber(params.SellCount)
+                                    }
+                                },
+                                {
+                                    title: 'KL ĐẶT BÁN',
+                                    align: 'right',
+                                    render: params => {
+                                        return formatNumber(params.SellQuantity)
+                                    }
+                                },
+                                {
+                                    title: 'KL KHỚP',
+                                    align: 'right',
+                                    render: params => {
+                                        return formatNumber(params.Volume)
+                                    }
+                                },
+                                {
+                                    title: 'GT KHỚP (1000 VND)',
+                                    align: 'right',
+                                    render: params => {
+                                        return formatNumber(params.TotalValue)
+                                    }
+                                }
+                            ]} size='small' />
                         </TabPane>
                     </Tabs>
                 </div>
