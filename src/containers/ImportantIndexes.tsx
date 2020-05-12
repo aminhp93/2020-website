@@ -176,6 +176,21 @@ class ImportantIndexes extends React.Component<IProps, IState> {
                         <div>{`LNST / DT > 15%: Huong loi tu loi the canh tranh dai han, <10%: canh tranh khoc liet, loi the canh tranh thap`}</div>
                         <div>{`Ty suat LNST tren tai san (ROA) = Loi nhuan sau thue / Tong tai san binh quan`}</div>
                         <div>{`Ty suat LNST tren VCSH (ROE) = Loi nhuan sau thue / VCSH binh quan`}</div>
+                        <div>{`Cach 1: Lua chon co phieu qua toc do tang truong`}</div>
+                        <div>{`VN: MWG ROE > 40%, tang truong kep 53%`}</div>
+                        <div>{`Toc do tang truong = ROE * Ty le tai dau tu`}</div>
+                        <div>{`Cach 2: Danh gia kha nang tao gia tri cho co dong`}</div>
+                        <div>{`ROE < Ke (chi phi su dung VCSH) ==> Hoat dong kem hieu qua. VD: MWG ROE = 38.7%, Ke = 9.6%`}</div>
+                        <div>{`Cach 3: Tim DN co loi the canh tranh ben vung`}</div>
+                        <div>{`VD: cp Vinh Hoan: cung la xuat khau ca tra, nhung xuat khau sang thi truong My ==> gia > 50% so voi thi truong khac ==> loi the canh tranh ben vung`}</div>
+                        <div>{`Bonus: Mo hinh Dupont: ROE = Ty suat loi nhuan rong * Vong quay tai san * Don bay tai chinh`}</div>
+                        <div>{`Ty suat LN rong = LNST / Doanh thu`}</div>
+                        <div>{`Vong quay tai san = Doanh thu / Tong tai san`}</div>
+                        <div>{`Vong quay tai san tang ==> DN ngay cang thu duoc nhieu doanh thu tu tai san san co`}</div>
+                        <div>{`Don bay tai chinh = Tong tai san / VCSH`}</div>
+                        <div>{`Don bay tai chinh tang ==> DN dang vay no nhieu de thuc day hoat dong san xuat kinh doanh`}</div>
+                        <div>{`VD: Ton Hoa Sen, he so don bay tai chinh cao, vong quay tai san giam `}</div>
+                        <div>{`VD: Hoa Phat, he so don bay tai chinh giam, vong quay tai san tang, LNST tang`}</div>
                         <div>{`Thu nhap 1 co phan thuong (EPS) = (LNST - co tuc co dong uu dai)/So co phan thuong luu hanh`}</div>
                         <br />
                         <div>{`Tip2: Su dung EPS de danh gia chat luong loi nhuan tang truong qua cac thoi ky`}</div>
