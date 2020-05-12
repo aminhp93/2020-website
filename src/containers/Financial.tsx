@@ -300,8 +300,8 @@ class Financial extends React.Component<IProps, IState> {
                     render: (params) => {
                         if (params.Values && params.Values.length) {
                             const data = params.Values.filter(item => item.Year === year)
-                            const returnValue = data.length && (data[0].Value / BILLION_UNIT).toFixed(2)
-                            return returnValue !== '0.00' ? returnValue : ''
+                            const returnValue = data.length && (data[0].Value / BILLION_UNIT).toFixed(0)
+                            return returnValue !== '0' ? returnValue : ''
                         }
                     }
                 })
@@ -313,7 +313,7 @@ class Financial extends React.Component<IProps, IState> {
                     render: (params) => {
                         if (params.Values && params.Values.length) {
                             const data = params.Values.filter(item => item.Year === quarterItem.Year && item.Quarter === quarterItem.Quarter)
-                            return data.length && (data[0].Value / BILLION_UNIT).toFixed(2)
+                            return data.length && (data[0].Value / BILLION_UNIT).toFixed(0)
                         }
                     }
                 })

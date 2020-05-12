@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const selectedSymbolSlice = createSlice({
     name: 'selectedSymbol',
-    initialState: '',
+    initialState: 'VNM',
     reducers: {
         updateSelectedSymbolSuccess: (state, { payload }) => {
             return payload

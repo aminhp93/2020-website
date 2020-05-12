@@ -3,6 +3,7 @@ import React from 'react';
 import { Tabs, Select, Spin } from 'antd';
 import { connect } from 'react-redux';
 import { get, debounce } from 'lodash';
+import moment from 'moment';
 
 import 'antd/dist/antd.css';
 import '../css/index.css';
@@ -30,6 +31,7 @@ import Technical from './Technical';
 import Transaction from './Transaction';
 import Analysis from './Analysis/Analysis';
 import MarketNews from './MarketNews';
+import ImportantIndexes from './ImportantIndexes';
 
 import { IStock } from '../types'
 import { fetchListStocks } from '../reducers/stocks';
@@ -133,8 +135,8 @@ class Stock extends React.Component<IProps, IState> {
                         </Select>
                     </div>
                     <div className="App-header-symbol">
-                        Header - Current Symbol {selectedSymbol}
-                        Last udpated {lastUpdatedDate.value}
+                        {selectedSymbol || 'No symbol selected'} |
+                        Last udpated: {moment(lastUpdatedDate.value).format('YYYY-MM-DD')}
                     </div>
 
                 </div>
@@ -142,12 +144,12 @@ class Stock extends React.Component<IProps, IState> {
                     <div className="App-navigation">
 
                         <div>
-                            <Tabs defaultActiveKey="3" tabPosition="left">
+                            <Tabs defaultActiveKey="1" tabPosition="left">
                                 <TabPane tab="OverallMarket1" key="1">
                                     <div className="App-content">
                                         <div>Content2</div>
                                         <div>
-                                            <Tabs defaultActiveKey="6">
+                                            <Tabs defaultActiveKey="9">
                                                 <TabPane tab="Transaction" key="1">
                                                     <Transaction />
                                                 </TabPane>
@@ -171,6 +173,9 @@ class Stock extends React.Component<IProps, IState> {
                                                 </TabPane>
                                                 <TabPane tab="Technical" key="8">
                                                     <Technical />
+                                                </TabPane>
+                                                <TabPane tab="Technical" key="9">
+                                                    <ImportantIndexes />
                                                 </TabPane>
                                             </Tabs>
                                         </div>
