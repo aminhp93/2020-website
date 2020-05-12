@@ -175,6 +175,12 @@ class ImportantIndexes extends React.Component<IProps, IState> {
                         <div>{`Ty suat loi nhuan tren doanh thu (ROS) = Loi nhuan sau thue/Doanh thu thuan`}</div>
                         <div>{`LNST / DT > 15%: Huong loi tu loi the canh tranh dai han, <10%: canh tranh khoc liet, loi the canh tranh thap`}</div>
                         <div>{`Ty suat LNST tren tai san (ROA) = Loi nhuan sau thue / Tong tai san binh quan`}</div>
+                        <div>{`VD: NTP: ROE: 17%, ROA: 9%, BMP: ROE: 17%, ROA: 15%`}</div>
+                        <div>{`==> NTP dang tang su dung no vay de tai tro hoat dong san xuat kinh doanh`}</div>
+                        <div>{`==> ROE / ROA ==> co cau tai chinh DN`}</div>
+                        <div>{`ROE / ROA = Tong tai san binh quan / VCSH binh quan = He so don bay tai chinh`}</div>
+                        <div>{`He so don bay tai chinh cao ==> DN tang su dung no vay `}</div>
+                        <div>{`VD: VCS: ROE/ROA giam 3.04 - 2.50 - 1.86 - 1.60 ==> tich cuc tra no vay, giam rui ro tai chinh`}</div>
                         <div>{`Ty suat LNST tren VCSH (ROE) = Loi nhuan sau thue / VCSH binh quan`}</div>
                         <div>{`Cach 1: Lua chon co phieu qua toc do tang truong`}</div>
                         <div>{`VN: MWG ROE > 40%, tang truong kep 53%`}</div>
