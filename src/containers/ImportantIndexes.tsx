@@ -104,7 +104,7 @@ class ImportantIndexes extends React.Component<IProps, IState> {
             <div>
                 <div>6 nhom chi so co Ban</div>
                 <Tabs defaultActiveKey='1'>
-                    <TabPane tab="1. Nhom chi so phan anh kha nang thanh toan" key="1">
+                    <TabPane tab="1. kha nang thanh toan" key="1">
                         <div>{`1. Ty le thanh toan hien hanh = Tai san ngan han / No ngan han`}</div>
                         <div>{`< 1 ==> kha nang thanh toan yeu`}</div>
                         <div>{`> 1 ==> chua chac da tot, doanh nghiep chua su dung tai san hieu qua`}</div>
@@ -136,20 +136,65 @@ class ImportantIndexes extends React.Component<IProps, IState> {
                             </div>
                         </div>
                     </TabPane>
-                    <TabPane tab="2. Nhom chi so phan anh co cau tai san - nguon von" key="2">
-
+                    <TabPane tab="2. co cau tai san - nguon von" key="2">
+                        <div>{`Ty le no vay/VCSH`}</div>
+                        <div>{`Ty le No vay dai han/VCSH`}</div>
+                        <div>{`Ty le no ngan han/VCSH`}</div>
+                        <div>{`Ty le no vay/VCSH > 150% ==> Doanh nghiep thuong xuyen phai tra no vay, lieu dong tien doanh nghiep du tra no goc + lai`}</div>
+                        <div>{`Ty suat loi nhuan tao ra tu nguon von vay > Chi phi lai vay(Lai suat)`}</div>
+                        <div>{`Nha dau tu danh gia cao CP tang truong ==> Ban lanh dao danh doi gia tri co phan cua co dong lay su tang truong ==> loi nhuan tren von dau tu thap hon chi phi von DN huy dong duoc`}</div>
+                        <div>{`Loi nhuan DN tang truong hang nam nhung gia tri cua co dong dang bi bao mon`}</div>
+                        <div>{`Co the danh gia tang truong tot: ROCE (ty suat loi nhuan/tong von huy dong) > WACC (chi phi su dung von binh quan)`}</div>
                     </TabPane>
-                    <TabPane tab="3. Nhom chi so hieu suat hoat dong" key="3">
-
+                    <TabPane tab="3. hieu suat hoat dong" key="3">
+                        <div>{`So vong quay hang ton kho = Gia von hang ban / Hang ton kho binh quan`}</div>
+                        <div>{`Phu thuoc vao dac diem DN: thong thuong so vong quay hang ton kho lon ==> to chuc + quan ly hang ton kho tot, DN rut ngan thoi gian kinh doanh, giam luong von bo vao hang ton kho`}</div>
+                        <div>{`So vong quay hang ton kho thap ==> DN du tru qua nhieu vat tu ==> u dong hang ton kho, tinh hinh tieu thu san pham cua DN khong kha quan`}</div>
+                        <div>{`So ngay 1 vong quay hang ton kho = 360/vong quay hang ton kho`}</div>
+                        <div>{`LUU Y: chi su dung voi DN san xuat, thuong mai hang hoa, co ty trong hang ton kho tren tai san cao`}</div>
+                        <div>{`LUU Y: chi so sanh DN cung nganh, co ban chat luu kho hang hoa tuong dong`}</div>
+                        <div>{`So vong quay phai thu khach hang = DN ban hang/Phai thu khach hang binh quan`}</div>
+                        <div>{`Vong quay cang nhieu ==> DN phai thu hoi cac khoan phai thu de chuyen hoa tien mat cang nhanh ==> suc khoe + hieu qua kinh doanh cua DN, DN khong bi khach hang chiem dung qua nhieu von`}</div>
+                        <div>{`Ky thu tien khach hang binh quan = 360 / vong quay phai thu khach hang`}</div>
+                        <div>{`Sau bao lau tu khi ban hang DN thu duoc tien ban hang, phu thuoc nhieu vao chinh sach ban hang + to chuc cua DN`}</div>
+                        <div>{`So vong quay phai tra nguoi ban = Gia von hang ban / Phai tra nguoi ban binh quan`}</div>
+                        <div>{`So ngay phai tra nguoi ban binh quan = 360 / so vong quay phai tra nguoi ban`}</div>
+                        <div>{`So ngay phai tra nguoi ban cang cao cang tot, DN co nhieu thoi gian dung tien vao hoat dong kinh doanh`}</div>
+                        <br />
+                        <div>{`Tip 1: Vong quay tien mat`}</div>
+                        <div>{`Vong quay tien mat = So ngya 1 vong quay hang ton kho + Ky thu tien khach hang binh quan - so ngay phai tra nguoi ban binh quan`}</div>
+                        <div>{`Vong quay tien mat cang thap ==> DN su dung tien cang tot, so sanh DN trong cung nganh, cung linh vuc`}</div>
+                        <div>{`So sanh voi xu huong vong quay tien mat trong qua khu (3-5 nam)`}</div>
+                        <div>{`Dau hieu tich cuc khi vong quay tien mat giam dan`}</div>
+                        <div>{`Vong quay tai san (Vong quay toan bo von) = Doanh thu thuan/Tong tai san binh quan`}</div>
+                        <div>{`Warrent buffet thich DN co vong quay tai san cao ==> co the tao ra dong tien tang truong cho co dong ma khong can dau tu lien tuc vao tai san qua nhieu`}</div>
                     </TabPane>
-                    <TabPane tab="4. Nhom chi so hieu qua hoat dong" key="4">
-
+                    <TabPane tab="4. hieu qua hoat dong" key="4">
+                        <div>{`Bien loi nhuan gop =  Loi nhuan gop / Doanh thu thuan`}</div>
+                        <div>{`Bien LNG > 30%: Loi the canh tranh ben vung, < 10%: khong co loi the canh tranh`}</div>
+                        <div>{`Ty suat loi nhuan tren doanh thu (ROS) = Loi nhuan sau thue/Doanh thu thuan`}</div>
+                        <div>{`LNST / DT > 15%: Huong loi tu loi the canh tranh dai han, <10%: canh tranh khoc liet, loi the canh tranh thap`}</div>
+                        <div>{`Ty suat LNST tren tai san (ROA) = Loi nhuan sau thue / Tong tai san binh quan`}</div>
+                        <div>{`Ty suat LNST tren VCSH (ROE) = Loi nhuan sau thue / VCSH binh quan`}</div>
+                        <div>{`Thu nhap 1 co phan thuong (EPS) = (LNST - co tuc co dong uu dai)/So co phan thuong luu hanh`}</div>
+                        <br />
+                        <div>{`Tip2: Su dung EPS de danh gia chat luong loi nhuan tang truong qua cac thoi ky`}</div>
+                        <div>{`%EPS = (EPS1 - EPS0) / EPS0`}</div>
                     </TabPane>
-                    <TabPane tab="5. Nhom chi so phan phoi loi nhuan" key="5">
-
+                    <TabPane tab="5. phan phoi loi nhuan" key="5">
+                        <div>{`Ty le chi tra co tuc = Co tuc 1 co phan / EPS`}</div>
+                        <br />
+                        <div>{`Tip 3: Ty le chi tra co tuc bao nhieu la hop ly?`}</div>
+                        <div>{`1. DN duoc bo sung nguon von cho hoat dong kinh doanh`}</div>
+                        <div>{`2. DN dam bao giu vung duoc ty suat loi nhuan tren von (ROE)`}</div>
+                        <div>{`Ty suat co tuc = Co tuc 1 co phan / Gia thi truong 1 co phan`}</div>
                     </TabPane>
-                    <TabPane tab="6. Nhom chi so gia thi truong" key="6">
-
+                    <TabPane tab="6. gia thi truong" key="6">
+                        <div>{`P/E = Gia thi truong / EPS`}</div>
+                        <div>{`Nha dau tu hay thi truong san sang tra bao nhieu de lay 1 dong thu nhap cua DN`}</div>
+                        <div>{`P/B = Gia thi truong / Gia tri so sach 1 co phan thuong`}</div>
+                        <div>{`Moi quan he P/B vs ROE`}</div>
+                        <div>{`Anh huong P/B: ty suat loi nhuan / VCSH (ROE) ==> ROE cang cao, P/B cang lon ==> tim DN co ROE cao nhung P/B thap so voi toan nganh`}</div>
                     </TabPane>
                 </Tabs>
             </div>
