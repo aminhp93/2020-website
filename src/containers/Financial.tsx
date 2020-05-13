@@ -978,11 +978,11 @@ class Financial extends React.Component<IProps, IState> {
                         <div>
                             <Button onClick={this.handleCloseFinancialReports}>Chi tieu tai chinh</Button>
                             <div>
-                                <Button onClick={this.updateLastestFinancialReportsNameAll}>LastestFinancialReportsName</Button>
+                                <Button disabled={true} onClick={this.updateLastestFinancialReportsNameAll}>LastestFinancialReportsName</Button>
                             </div>
                             <div>
-                                <Button onClick={() => this.updateLastestFinancialReportsValue(selectedSymbol)}>LastestFinancialReportsValue</Button>
-                                <Button onClick={this.updateLastestFinancialReportsValueAll}>Update all</Button>
+                                <Button disabled={true} onClick={() => this.updateLastestFinancialReportsValue(selectedSymbol)}>LastestFinancialReportsValue</Button>
+                                <Button disabled={true} onClick={this.updateLastestFinancialReportsValueAll}>Update all</Button>
                                 {/* <Button onClick={() => this.updateLastestFinancialReportsValue('AAV')}>Update all</Button> */}
                             </div>
                         </div>
@@ -1024,12 +1024,12 @@ class Financial extends React.Component<IProps, IState> {
                             <div>
                                 <Button onClick={this.handleOpenFinancialReports}>Bao cao tai chinh</Button>
                                 <div>
-                                    <Button onClick={() => this.updateYearlyFinancialInfo(selectedSymbol)}>YearlyFinancialInfo</Button>
-                                    <Button onClick={this.updateYearlyFinancialInfoAll}>Update all</Button>
+                                    <Button disabled={true} onClick={() => this.updateYearlyFinancialInfo(selectedSymbol)}>YearlyFinancialInfo</Button>
+                                    <Button disabled={true} onClick={this.updateYearlyFinancialInfoAll}>Update all</Button>
                                 </div>
                                 <div>
-                                    <Button onClick={() => this.updateQuarterlyFinancialInfo(selectedSymbol)}>QuarterlyFinancialInfo</Button>
-                                    <Button onClick={this.updateQuarterlyFinancialInfoAll}>Update all</Button>
+                                    <Button disabled={true} onClick={() => this.updateQuarterlyFinancialInfo(selectedSymbol)}>QuarterlyFinancialInfo</Button>
+                                    <Button disabled={true} onClick={this.updateQuarterlyFinancialInfoAll}>Update all</Button>
                                 </div>
 
                             </div>
@@ -1058,8 +1058,8 @@ class Financial extends React.Component<IProps, IState> {
                 <div className="Financial-right-container bg-white">
                     <div className="header">
                         CHỈ TIÊU TÀI CHÍNH
-                        <Button onClick={() => this.updateLatestFinancialInfo(selectedSymbol)}>update</Button>
-                        <Button onClick={this.updateLatestFinancialInfoAll}>update all </Button>
+                        <Button disabled={true} onClick={() => this.updateLatestFinancialInfo(selectedSymbol)}>update</Button>
+                        <Button disabled={true} onClick={this.updateLatestFinancialInfoAll}>update all </Button>
                     </div>
                     <div className="Financial-criteria">
                         {this.renderEvaluation()}

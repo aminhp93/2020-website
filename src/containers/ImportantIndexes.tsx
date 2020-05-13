@@ -5,6 +5,15 @@ import { List, Avatar, Pagination, Modal, Tabs } from 'antd';
 import { AgGridReact } from '@ag-grid-community/react';
 import { AllCommunityModules } from '@ag-grid-community/all-modules';
 
+
+import { BILLION_UNIT } from '../utils/unit';
+import {
+    getYearlyFinancialInfo,
+    getQuarterlyFinancialInfo,
+    getLastestFinancialInfo,
+    getLastestFinancialReports
+} from '../reducers/stocks';
+
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-alpine.css';
 
@@ -12,7 +21,11 @@ const { TabPane } = Tabs;
 
 
 interface IProps {
-
+    selectedSymbol: string,
+    getYearlyFinancialInfo: any,
+    getQuarterlyFinancialInfo: any,
+    getLastestFinancialInfo: any,
+    getLastestFinancialReports: any,
 }
 
 interface IState {
@@ -36,65 +49,87 @@ class ImportantIndexes extends React.Component<IProps, IState> {
                 filter: true,
                 sortable: true,
             },
-            rowData: [
-            ]
+            rowData: []
+        }
+    }
+
+
+    componentDidUpdate(preProps) {
+        if (this.props.selectedSymbol !== preProps.selectedSymbol) {
+            this.crawlData();
         }
     }
 
     getColumnDefs = () => {
-        // [
-        //     {
-        //         headerName: 'Ty le thanh toan hien hanh',
-        //         field: 'tyLeThanhToanHienHanh',
-        //     },
-        //     {
-        //         headerName: 'Ty le thanh toan nhanh',
-        //         field: 'tyLeThanhToanNhanh',
-        //     },
-        //     {
-        //         headerName: 'Ty le thanh toan tuc thoi',
-        //         field: 'tyLeThanhToanTucThoi',
-        //     },
-        //     {
-        //         headerName: 'Ty le thanh toan lai vay',
-        //         field: 'tyLeThanhToanLaiVay',
-        //     },
-        // ]
         const yearsArray = [2014, 2015, 2016, 2017, 2018, 2019]
         let result = [{
-            headerName: 'Title',
+            headerName: 'Name',
             cellRenderer: (params) => {
-                return params.Name
+                return params.data.Name
             }
         }]
         yearsArray.map(year => (
             result.push({
                 headerName: JSON.stringify(year),
                 cellRenderer: (params) => {
-                    return 123
+                    console.log(params.data)
+                    if (params.data.Values && params.data.Values.length) {
+                        const data = params.data.Values.filter(item => item.Year === year)
+                        const returnValue = data.length && (data[0].Value / 1).toFixed(0)
+                        return returnValue !== '0' ? returnValue : ''
+                    }
                 }
             })
         ))
         return result
     }
 
-    crawData = () => {
-        this.setState({
-            rowData: [
-                {
-                    Date: ''
-                },
-                {
-                    Date: ''
-                }
-            ]
+    mapData = (data) => {
+        const taiSanNganHan = data.filter(i => i.ID === 101)[0]
+        const noNganHan = data.filter(i => i.ID === 30101)[0]
+        const yearsArray = [2014, 2015, 2016, 2017, 2018, 2019]
+
+        let tyLeThanhToanHienHanhValues = [];
+        yearsArray.map(i => {
+            const taiSanNganHanValue = taiSanNganHan && taiSanNganHan.Values && taiSanNganHan.Values.filter(j => j.Year === i)[0].Value
+            const noNganHanValue = noNganHan && noNganHan.Values && noNganHan.Values.filter(j => j.Year === i)[0].Value
+            tyLeThanhToanHienHanhValues.push({
+                Year: i,
+                Quarter: 0,
+                Value: (taiSanNganHanValue && noNganHanValue) ? taiSanNganHanValue / noNganHanValue : null
+            })
         })
+
+        const tyLeThanhToanHienHanh = {
+            ID: "tyLeThanhToanHienHanh",
+            Name: "tyLeThanhToanHienHanh",
+            Values: tyLeThanhToanHienHanhValues
+        }
+        data.push(tyLeThanhToanHienHanh)
+        data = data.filter(i => [101, 30101, 'tyLeThanhToanHienHanh'].includes(i.ID))
+        return data
+    }
+
+    crawlData = async () => {
+        // await this.props.getYearlyFinancialInfo()
+        // await this.props.getQuarterlyFinancialInfo()
+        // await this.props.getLastestFinancialInfo()
+        const data = {
+            financialType: 1,
+            year: 2020,
+            quarter: 0
+        }
+        const res = await this.props.getLastestFinancialReports(data)
+        console.log(res)
+        const rowData = this.mapData(res.data)
+        console.log(rowData)
+        this.setState({ rowData })
     }
 
     onGridReady = params => {
         this.gridApi = params.api;
         this.gridColumnApi = params.columnApi;
-        this.crawData();
+        this.crawlData();
     };
 
     render() {
@@ -224,7 +259,6 @@ class ImportantIndexes extends React.Component<IProps, IState> {
 }
 
 const mapStateToProps = state => {
-    console.log(state);
     return {
         selectedSymbol: get(state, 'selectedSymbol'),
         stocks: get(state, 'stocks'),
@@ -234,8 +268,10 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-
-
+    getYearlyFinancialInfo,
+    getQuarterlyFinancialInfo,
+    getLastestFinancialInfo,
+    getLastestFinancialReports
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ImportantIndexes);

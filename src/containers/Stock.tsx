@@ -174,7 +174,7 @@ class Stock extends React.Component<IProps, IState> {
                                                 <TabPane tab="Technical" key="8">
                                                     <Technical />
                                                 </TabPane>
-                                                <TabPane tab="Technical" key="9">
+                                                <TabPane tab="ImportantIndexes" key="9">
                                                     <ImportantIndexes />
                                                 </TabPane>
                                             </Tabs>
