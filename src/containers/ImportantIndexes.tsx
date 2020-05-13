@@ -213,6 +213,30 @@ class ImportantIndexes extends React.Component<IProps, IState> {
                     <TabPane tab="6. gia thi truong" key="6">
                         <div>{`P/E = Gia thi truong / EPS`}</div>
                         <div>{`Nha dau tu hay thi truong san sang tra bao nhieu de lay 1 dong thu nhap cua DN`}</div>
+                        <div>{`P/E = Price / EPS`}</div>
+                        <div>{`EPS: Current | Trailing (4 quy gan nhat) | Forward`}</div>
+                        <div>{`EPS co ban | EPS pha loang (diluted)`}</div>
+                        <div>{`EPS truoc thu nhap khac | EPS sau thu nhap khac`}</div>
+                        <div>{`VD: P/E = 81.95 ==> de duoc 1 dong loi nhuan ban phai tra 81.95 dong`}</div>
+                        <div>{`Chu y 1: Ky vong tang truong ve loi nhuan cua DN la bao nhieu?`}</div>
+                        <div>{`Chu y 2: Rui ro cua DN la gi?`}</div>
+                        <div>{`Chy y 3: Cach ma DN tang truong co hieu qua va ben vung?`}</div>
+                        <div>{`==> San sang tra DN co P/E cao neu toc do tang truong cao + loi the canh tranh ben vung || DN co loi the doc quyen + bien loi nhuan gop cao. VD: VNM, ACV, VCR`}</div>
+                        <div>{`==> P/E cao co the do EPS thap, DN kinh doanh kem hieu qua`}</div>
+                        <div>{`==> P/E thap co the do DN thu duoc khoan loi nhuan bat thuong do thanh ly tai san hoac ban cong ty con (khong den tu hoat dong kinh doanh) ==> chi duy tri trong ngan han, co phieu khong duoc coi la re`}</div>
+                        <div>{`5 cach su dung`}</div>
+                        <div>{`Cach 1: so sanh ty le P/E trung binh trong qua khu`}</div>
+                        <div>{`==> co phieu co dang re hon so voi chinh no trong qua khu hay khong?`}</div>
+                        <div>{`==> thong ke P/E hang quy trong 5 nam`}</div>
+                        <div>{`==> tinh trung binh = AVERAGE, gia tri do lech chuan = STDEV`}</div>
+                        <div>{`Cach 2: so sanh ty le P/E cua cac co phieu khac cung nganh (quy mo, chat luong, muc do rui ro)`}</div>
+                        <div>{`==> Investing.com, Financial, Ratio, https://www.investing.com/equities/vietnam-dairy-products-jsc-ratios`}</div>
+                        <div>{`Cach 3: so sanh ty le P/E cua cac co phieu khac cung nganh + cung khu vuc`}</div>
+                        <div>{`VD: VNM: tieu chi: P/E < 30, MarketCap > 100k ty VND, EPS > 1000, cac quoc gia: Trung quoc, hong kong, thai lan, singapore, philippin, indonesia `}</div>
+                        <div>{`Cach 4: ket hop vs ROE so sanh vs P/E cua ac co phieu khac cung nganh`}</div>
+                        <div>{`Cach 5: so sanh vs ty le P/E cua toan bo thi truong`}</div>
+                        <div>{`https://www.bloomberg.com/quote/VNINDEX:IND`}</div>
+                        <br />
                         <div>{`P/B = Gia thi truong / Gia tri so sach 1 co phan thuong`}</div>
                         <div>{`Moi quan he P/B vs ROE`}</div>
                         <div>{`Anh huong P/B: ty suat loi nhuan / VCSH (ROE) ==> ROE cang cao, P/B cang lon ==> tim DN co ROE cao nhung P/B thap so voi toan nganh`}</div>
