@@ -76,7 +76,7 @@ class ImportantIndexes extends React.Component<IProps, IState> {
                     console.log(params.data)
                     if (params.data.Values && params.data.Values.length) {
                         const data = params.data.Values.filter(item => item.Year === year)
-                        const returnValue = data.length && (data[0].Value / 1).toFixed(0)
+                        const returnValue = data.length && data[0].Value
                         return returnValue !== '0' ? returnValue : ''
                     }
                 }
@@ -198,7 +198,7 @@ class ImportantIndexes extends React.Component<IProps, IState> {
         return (
             <div>
                 <div>6 nhom chi so co Ban</div>
-                <Tabs defaultActiveKey='1'>
+                <Tabs defaultActiveKey='2'>
                     <TabPane tab="1. kha nang thanh toan" key="1">
                         <div>{`1. Ty le thanh toan hien hanh = Tai san ngan han / No ngan han`}</div>
                         <div>{`< 1 ==> kha nang thanh toan yeu`}</div>
@@ -213,25 +213,6 @@ class ImportantIndexes extends React.Component<IProps, IState> {
                         <br />
                         <div>{`4. Kha nang thanh toan lai vay = Loi nhuan truoc lai vay (EBIT) / lai vay phai tra`}</div>
                         <div>{`https://www.youtube.com/watch?v=0v4n3p7b0MY`}</div>
-
-                        <div style={{ width: '100%', height: '100%' }}>
-                            <div
-                                id="myGrid"
-                                style={{
-                                    height: '500px',
-                                }}
-                                className="ag-theme-alpine"
-                            >
-                                <AgGridReact
-                                    modules={modules}
-                                    columnDefs={columnDefs}
-                                    defaultColDef={defaultColDef}
-                                    onGridReady={this.onGridReady}
-                                    rowData={rowData}
-                                    onFirstDataRendered={params => params.api.sizeColumnsToFit()}
-                                />
-                            </div>
-                        </div>
                     </TabPane>
                     <TabPane tab="2. co cau tai san - nguon von" key="2">
                         <div>{`Ty le no vay/VCSH`}</div>
@@ -242,6 +223,7 @@ class ImportantIndexes extends React.Component<IProps, IState> {
                         <div>{`Nha dau tu danh gia cao CP tang truong ==> Ban lanh dao danh doi gia tri co phan cua co dong lay su tang truong ==> loi nhuan tren von dau tu thap hon chi phi von DN huy dong duoc`}</div>
                         <div>{`Loi nhuan DN tang truong hang nam nhung gia tri cua co dong dang bi bao mon`}</div>
                         <div>{`Co the danh gia tang truong tot: ROCE (ty suat loi nhuan/tong von huy dong) > WACC (chi phi su dung von binh quan)`}</div>
+
                     </TabPane>
                     <TabPane tab="3. hieu suat hoat dong" key="3">
                         <div>{`So vong quay hang ton kho = Gia von hang ban / Hang ton kho binh quan`}</div>
@@ -339,6 +321,24 @@ class ImportantIndexes extends React.Component<IProps, IState> {
                         <div>{`Anh huong P/B: ty suat loi nhuan / VCSH (ROE) ==> ROE cang cao, P/B cang lon ==> tim DN co ROE cao nhung P/B thap so voi toan nganh`}</div>
                     </TabPane>
                 </Tabs>
+                <div style={{ width: '100%', height: '100%' }}>
+                    <div
+                        id="myGrid"
+                        style={{
+                            height: '500px',
+                        }}
+                        className="ag-theme-alpine"
+                    >
+                        <AgGridReact
+                            modules={modules}
+                            columnDefs={columnDefs}
+                            defaultColDef={defaultColDef}
+                            onGridReady={this.onGridReady}
+                            rowData={rowData}
+                            onFirstDataRendered={params => params.api.sizeColumnsToFit()}
+                        />
+                    </div>
+                </div>
             </div>
         )
     }

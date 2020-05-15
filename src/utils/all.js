@@ -76,6 +76,10 @@ export const mapDataImportantIndexes = (dataType1, dataType2) => {
     const tienVsTuongDuongTien = dataType1.filter(i => i.ID === 10101)[0]
     const loiNhuanTruocThue = dataType2.filter(i => i.ID === 15)[0]
     const chiPhiLayVay = dataType2.filter(i => i.ID === 701)[0]
+    const noVay = dataType1.filter(i => i.ID === 301)[0]
+    const noVayDaiHan = dataType1.filter(i => i.ID === 30102)[0]
+    const noVayNganHan = dataType1.filter(i => i.ID === 30101)[0]
+    const VCSH = dataType1.filter(i => i.ID === 302)[0]
 
 
     const yearsArray = [2014, 2015, 2016, 2017, 2018, 2019]
@@ -84,6 +88,9 @@ export const mapDataImportantIndexes = (dataType1, dataType2) => {
     let tyLeThanhToanNhanhValues = [];
     let tyLeThanhToanTucThoiValues = [];
     let khaNangThanhToanLaiVayValues = [];
+    let tyLeNoVay_VCSHValues = []
+    let tyLeNovayDaiHan_VCSHValues = []
+    let tyLeNoVayNganHan_VCSHValues = []
 
     yearsArray.map(i => {
         const taiSanNganHanValue = taiSanNganHan && taiSanNganHan.Values && taiSanNganHan.Values.filter(j => j.Year === i)[0].Value
@@ -92,6 +99,10 @@ export const mapDataImportantIndexes = (dataType1, dataType2) => {
         const tienVsTuongDuongTienValue = tienVsTuongDuongTien && tienVsTuongDuongTien.Values && tienVsTuongDuongTien.Values.filter(j => j.Year === i)[0].Value
         const loiNhuanTruocThueValue = loiNhuanTruocThue && loiNhuanTruocThue.Values && loiNhuanTruocThue.Values.filter(j => j.Year === i)[0].Value
         const chiPhiLayVayValue = chiPhiLayVay && chiPhiLayVay.Values && chiPhiLayVay.Values.filter(j => j.Year === i)[0].Value
+        const noVayValue = noVay && noVay.Values && noVay.Values.filter(j => j.Year === i)[0].Value
+        const noVayDaiHanValue = noVayDaiHan && noVayDaiHan.Values && noVayDaiHan.Values.filter(j => j.Year === i)[0].Value
+        const noVayNganHanValue = noVayNganHan && noVayNganHan.Values && noVayNganHan.Values.filter(j => j.Year === i)[0].Value
+        const VCSHValue = VCSH && VCSH.Values && VCSH.Values.filter(j => j.Year === i)[0].Value
 
         tyLeThanhToanHienHanhValues.push({
             Year: i,
@@ -117,9 +128,28 @@ export const mapDataImportantIndexes = (dataType1, dataType2) => {
             Quarter: 0,
             Value: (loiNhuanTruocThueValue && chiPhiLayVayValue) ? (loiNhuanTruocThueValue + chiPhiLayVayValue) / chiPhiLayVayValue : null
         })
+
+        tyLeNoVay_VCSHValues.push({
+            Year: i,
+            Quarter: 0,
+            Value: (noVayValue && VCSHValue) ? noVayValue / VCSHValue : null
+        })
+
+
+        tyLeNovayDaiHan_VCSHValues.push({
+            Year: i,
+            Quarter: 0,
+            Value: (noVayDaiHanValue && VCSHValue) ? noVayDaiHanValue / VCSHValue : null
+        })
+
+        tyLeNoVayNganHan_VCSHValues.push({
+            Year: i,
+            Quarter: 0,
+            Value: (noVayNganHanValue && VCSHValue) ? noVayNganHanValue / VCSHValue : null
+        })
     })
 
-
+    // INDEX 1
     result.push(taiSanNganHan)
     result.push(noNganHan)
     result.push({
@@ -153,7 +183,30 @@ export const mapDataImportantIndexes = (dataType1, dataType2) => {
         Values: khaNangThanhToanLaiVayValues
     })
 
+    // INDEX 2
+    result.push(loiNhuanTruocThue)
+    result.push(VCSH)
+    result.push({
+        ID: "tyLeNoVay_VCSH",
+        Name: "tyLeNoVay_VCSH",
+        Values: tyLeNoVay_VCSHValues
+    })
 
+    result.push(noVayDaiHan)
+    result.push(VCSH)
+    result.push({
+        ID: "tyLeNovayDaiHan_VCSH",
+        Name: "tyLeNovayDaiHan_VCSH",
+        Values: tyLeNovayDaiHan_VCSHValues
+    })
+
+    result.push(noVayNganHan)
+    result.push(VCSH)
+    result.push({
+        ID: "tyLeNoVayNganHan_VCSH",
+        Name: "tyLeNoVayNganHan_VCSH",
+        Values: tyLeNoVayNganHan_VCSHValues
+    })
 
     return result
 }
