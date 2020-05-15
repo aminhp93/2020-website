@@ -65,3 +65,95 @@ export function mapDataTwoDate(data1, data2, allStocks) {
 
 export const arrayToKeyValue = (array, key = 'id') =>
     Object.fromEntries(array.map(item => [item[key], item]))
+
+export const mapDataImportantIndexes = (dataType1, dataType2) => {
+    if (!dataType1 || !dataType2) return []
+    let result = []
+
+    const taiSanNganHan = dataType1.filter(i => i.ID === 101)[0]
+    const noNganHan = dataType1.filter(i => i.ID === 30101)[0]
+    const hangTonKho = dataType1.filter(i => i.ID === 10104)[0]
+    const tienVsTuongDuongTien = dataType1.filter(i => i.ID === 10101)[0]
+    const loiNhuanTruocThue = dataType2.filter(i => i.ID === 15)[0]
+    const chiPhiLayVay = dataType2.filter(i => i.ID === 701)[0]
+
+
+    const yearsArray = [2014, 2015, 2016, 2017, 2018, 2019]
+
+    let tyLeThanhToanHienHanhValues = [];
+    let tyLeThanhToanNhanhValues = [];
+    let tyLeThanhToanTucThoiValues = [];
+    let khaNangThanhToanLaiVayValues = [];
+
+    yearsArray.map(i => {
+        const taiSanNganHanValue = taiSanNganHan && taiSanNganHan.Values && taiSanNganHan.Values.filter(j => j.Year === i)[0].Value
+        const noNganHanValue = noNganHan && noNganHan.Values && noNganHan.Values.filter(j => j.Year === i)[0].Value
+        const hangTonKhoValue = hangTonKho && hangTonKho.Values && hangTonKho.Values.filter(j => j.Year === i)[0].Value
+        const tienVsTuongDuongTienValue = tienVsTuongDuongTien && tienVsTuongDuongTien.Values && tienVsTuongDuongTien.Values.filter(j => j.Year === i)[0].Value
+        const loiNhuanTruocThueValue = loiNhuanTruocThue && loiNhuanTruocThue.Values && loiNhuanTruocThue.Values.filter(j => j.Year === i)[0].Value
+        const chiPhiLayVayValue = chiPhiLayVay && chiPhiLayVay.Values && chiPhiLayVay.Values.filter(j => j.Year === i)[0].Value
+
+        tyLeThanhToanHienHanhValues.push({
+            Year: i,
+            Quarter: 0,
+            Value: (taiSanNganHanValue && noNganHanValue) ? taiSanNganHanValue / noNganHanValue : null
+        })
+
+
+        tyLeThanhToanNhanhValues.push({
+            Year: i,
+            Quarter: 0,
+            Value: (taiSanNganHanValue && noNganHanValue && hangTonKhoValue) ? (taiSanNganHanValue - hangTonKhoValue) / noNganHanValue : null
+        })
+
+        tyLeThanhToanTucThoiValues.push({
+            Year: i,
+            Quarter: 0,
+            Value: (tienVsTuongDuongTienValue && noNganHanValue) ? tienVsTuongDuongTienValue / noNganHanValue : null
+        })
+
+        khaNangThanhToanLaiVayValues.push({
+            Year: i,
+            Quarter: 0,
+            Value: (loiNhuanTruocThueValue && chiPhiLayVayValue) ? (loiNhuanTruocThueValue + chiPhiLayVayValue) / chiPhiLayVayValue : null
+        })
+    })
+
+
+    result.push(taiSanNganHan)
+    result.push(noNganHan)
+    result.push({
+        ID: "tyLeThanhToanHienHanh",
+        Name: "tyLeThanhToanHienHanh",
+        Values: tyLeThanhToanHienHanhValues
+    })
+
+    result.push(taiSanNganHan)
+    result.push(noNganHan)
+    result.push({
+        ID: "tyLeThanhToanNhanh",
+        Name: "tyLeThanhToanNhanh",
+        Values: tyLeThanhToanNhanhValues
+    })
+
+    result.push(taiSanNganHan)
+    result.push(noNganHan)
+    result.push({
+        ID: "tyLeThanhToanTucThoi",
+        Name: "tyLeThanhToanTucThoi",
+        Values: tyLeThanhToanTucThoiValues
+    })
+
+
+    result.push(taiSanNganHan)
+    result.push(noNganHan)
+    result.push({
+        ID: "khaNangThanhToanLaiVay",
+        Name: "khaNangThanhToanLaiVay",
+        Values: khaNangThanhToanLaiVayValues
+    })
+
+
+
+    return result
+}

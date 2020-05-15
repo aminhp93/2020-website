@@ -7,6 +7,7 @@ import { AllCommunityModules } from '@ag-grid-community/all-modules';
 
 
 import { BILLION_UNIT } from '../utils/unit';
+import { mapDataImportantIndexes } from '../utils/all';
 import {
     getYearlyFinancialInfo,
     getQuarterlyFinancialInfo,
@@ -84,44 +85,24 @@ class ImportantIndexes extends React.Component<IProps, IState> {
         return result
     }
 
-    mapData = (data) => {
-        const taiSanNganHan = data.filter(i => i.ID === 101)[0]
-        const noNganHan = data.filter(i => i.ID === 30101)[0]
-        const yearsArray = [2014, 2015, 2016, 2017, 2018, 2019]
-
-        let tyLeThanhToanHienHanhValues = [];
-        yearsArray.map(i => {
-            const taiSanNganHanValue = taiSanNganHan && taiSanNganHan.Values && taiSanNganHan.Values.filter(j => j.Year === i)[0].Value
-            const noNganHanValue = noNganHan && noNganHan.Values && noNganHan.Values.filter(j => j.Year === i)[0].Value
-            tyLeThanhToanHienHanhValues.push({
-                Year: i,
-                Quarter: 0,
-                Value: (taiSanNganHanValue && noNganHanValue) ? taiSanNganHanValue / noNganHanValue : null
-            })
-        })
-
-        const tyLeThanhToanHienHanh = {
-            ID: "tyLeThanhToanHienHanh",
-            Name: "tyLeThanhToanHienHanh",
-            Values: tyLeThanhToanHienHanhValues
-        }
-        data.push(tyLeThanhToanHienHanh)
-        data = data.filter(i => [101, 30101, 'tyLeThanhToanHienHanh'].includes(i.ID))
-        return data
-    }
-
     crawlData = async () => {
         // await this.props.getYearlyFinancialInfo()
         // await this.props.getQuarterlyFinancialInfo()
         // await this.props.getLastestFinancialInfo()
-        const data = {
+        const dataType1 = {
             financialType: 1,
             year: 2020,
             quarter: 0
         }
-        const res = await this.props.getLastestFinancialReports(data)
-        console.log(res)
-        const rowData = this.mapData(res.data)
+        const dataType2 = {
+            financialType: 2,
+            year: 2020,
+            quarter: 0
+        }
+        const res1 = await this.props.getLastestFinancialReports(dataType1)
+        const res2 = await this.props.getLastestFinancialReports(dataType2)
+        console.log(res1, res2)
+        const rowData = mapDataImportantIndexes(res1.data, res2.data)
         console.log(rowData)
         this.setState({ rowData })
     }
@@ -132,24 +113,46 @@ class ImportantIndexes extends React.Component<IProps, IState> {
         this.crawlData();
     };
 
-    // Tai san ngan han:                            2 - 101
-    // Hang ton kho:                                2 - 10104
+    // #1
+
+    // Ty le thanh toan hien hanh = Tai san ngan han / No ngan han 
+    // Tai san ngan han                             2 - 101
     // No ngan han                                  2 - 30101
 
-    // Tien vs tuong duong tien                     2 - 10101
+    // Ty le thanh toan nhanh = (Tai san ngan han - Hang ton kho) / No ngan han
+    // Tai san ngan han                             2 - 101
+    // Hang ton kho                                 2 - 10104
+    // No ngan han                                  2 - 30101
 
+    // Ty le thanh toan tuc thoi = Tien vs tuong duong tien / No ngan han
+    // Tien vs tuong duong tien                     2 - 10101
+    // No ngan han                                  2 - 30101
+
+    // Kha nang thanh toan lai vay
     // Loi nhuan truoc lai vay (EBIT) 
     // = Loi nhuan truoc thue + chi phi lai vay     1 - 15 + 701
     // Lai vay phai tra                             1 - 701
 
-    // VCSH                                         2 - 302
+    // #2
+
+    // Ty le no vay / VCSH
     // No vay                                       2 - 301
+    // VCSH                                         2 - 302
+
+    // Ty le no vay dai han / VCSH
     // No vay dai han                               2 - 30102
+    // VCSH                                         2 - 302
+
+    // Te le no ngan han / VCSH
     // No ngan han                                  2 - 30101
+    // VCSH                                         2 - 302
 
     // ROCE: ty suat loi nhuan / tong von huy dong  2 - 
     // WACC: chi phi su dung von binh quan          2 - 
 
+    // #3
+
+    // So vong quay hang ton kho
     // Gia von hang ban
     // Hang ton kho binh quan
 
@@ -186,10 +189,6 @@ class ImportantIndexes extends React.Component<IProps, IState> {
     // VCSH binh quan
 
     // 
-
-
-
-
 
 
 
