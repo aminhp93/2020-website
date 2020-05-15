@@ -76,7 +76,7 @@ class ImportantIndexes extends React.Component<IProps, IState> {
                     console.log(params.data)
                     if (params.data.Values && params.data.Values.length) {
                         const data = params.data.Values.filter(item => item.Year === year)
-                        const returnValue = data.length && (data[0].Value / 1).toFixed(0)
+                        const returnValue = data.length && data[0].Value
                         return returnValue !== '0' ? returnValue : ''
                     }
                 }
@@ -116,79 +116,112 @@ class ImportantIndexes extends React.Component<IProps, IState> {
     // #1
 
     // Ty le thanh toan hien hanh = Tai san ngan han / No ngan han 
-    // Tai san ngan han                             2 - 101
-    // No ngan han                                  2 - 30101
+    // Tai san ngan han                             1 - 101
+    // No ngan han                                  1 - 30101
 
     // Ty le thanh toan nhanh = (Tai san ngan han - Hang ton kho) / No ngan han
-    // Tai san ngan han                             2 - 101
-    // Hang ton kho                                 2 - 10104
-    // No ngan han                                  2 - 30101
+    // Tai san ngan han                             1 - 101
+    // Hang ton kho                                 1 - 10104
+    // No ngan han                                  1 - 30101
 
     // Ty le thanh toan tuc thoi = Tien vs tuong duong tien / No ngan han
-    // Tien vs tuong duong tien                     2 - 10101
-    // No ngan han                                  2 - 30101
+    // Tien vs tuong duong tien                     1 - 10101
+    // No ngan han                                  1 - 30101
 
     // Kha nang thanh toan lai vay
     // Loi nhuan truoc lai vay (EBIT) 
-    // = Loi nhuan truoc thue + chi phi lai vay     1 - 15 + 701
-    // Lai vay phai tra                             1 - 701
+    // = Loi nhuan truoc thue + chi phi lai vay     2 - 15 + 701
+    // Lai vay phai tra                             2 - 701
 
     // #2
 
     // Ty le no vay / VCSH
-    // No vay                                       2 - 301
-    // VCSH                                         2 - 302
+    // No vay                                       1 - 301
+    // VCSH                                         1 - 302
 
     // Ty le no vay dai han / VCSH
-    // No vay dai han                               2 - 30102
-    // VCSH                                         2 - 302
+    // No vay dai han                               1 - 30102
+    // VCSH                                         1 - 302
 
     // Te le no ngan han / VCSH
-    // No ngan han                                  2 - 30101
-    // VCSH                                         2 - 302
+    // No ngan han                                  1 - 30101
+    // VCSH                                         1 - 302
 
-    // ROCE: ty suat loi nhuan / tong von huy dong  2 - 
-    // WACC: chi phi su dung von binh quan          2 - 
+    // ROCE: ty suat loi nhuan / tong von huy dong  1 - 
+    // WACC: chi phi su dung von binh quan          1 - 
 
     // #3
 
-    // So vong quay hang ton kho
-    // Gia von hang ban
-    // Hang ton kho binh quan
+    // So vong quay hang ton kho = Gia von hang ban / Hang ton kho binh quan
+    // Gia von hang ban                             1 - 4
+    // Hang ton kho binh quan                       2 - 10104
 
-    // Doanh thu ban hang
-    // Phai thu khach hang binh quan
-    // Phai tra nguoi ban binh quan
+    // So vong quay phai thu khach hang = Doanh thu ban hang / Phai thu khach hang binh quan                         
+    // Doanh thu ban hang                           1 - 3
+    // Phai thu khach hang binh quan                2 - 1010301 + 1020101
+    // Phải thu ngắn hạn của khách hàng             2 - 1010301
+    // Phải thu dài hạn của khách hàng              2 - 1020101
 
-    // Vong quay tien mat
-    // So ngay 1 vong quay hang ton kho
-    // Ky thu tien khach hang binh quan
-    // So ngay phai tra nguoi ban binh quan
+    // So vong quay phai tra nguoi ban = Gia von hang ban / Phai tra nguoi ban binh quan
+    // Gia von hang ban                             1 - 4
+    // Phai tra nguoi ban binh quan                 2 - 3010103 + 3010201
+    // Phải trả người bán ngắn hạn                  2 - 3010103
+    // Phải trả người bán dài hạn                   2 - 3010201
 
-    // Vong quay tai san
-    // Doanh thu thuan
-    // Tong tai san binh quan
+    // Vong quay tien mat = So ngay 1 vong quay hang ton kho + Ky thu tien khach hang binh quan + So ngay phai tra nguoi ban binh quan
+    // So ngay 1 vong quay hang ton kho = 360 / vong quay hang ton kho
+    // Ky thu tien khach hang binh quan = 360 / vong quay phai thu khach hang
+    // So ngay phai tra nguoi ban binh quan = 360 / so vong quay phai tra nguoi ban
+
+    // Vong quay tai san = Doanh thu thuan / Tong tai san binh quan
+    // Doanh thu thuan                              1 - 3
+    // Tong tai san binh quan                       2 - 2
 
     // 4. 
-    // Bien loi nhuan gop
-    // Loi nhuan gop
-    // Doanh thu thuan
+    // Bien loi nhuan gop = Loi nhuan gop / Doanh thu thuan
+    // Loi nhuan gop                                1 - 15
+    // Doanh thu thuan                              1 - 3
 
-    // Ty suat loi nhuan tren doanh thu - ROS
-    // Loi nhuan sau thue
-    // Doanh thu thuan
+    // Ty suat loi nhuan tren doanh thu - ROS = LNST / Doanh thu thuan 
+    // LNST                                         1 - 19
+    // Doanh thu thuan                              1 - 3
 
-    // Ty suat LNST tren tai san - ROA
-    // LNST
-    // Tong tai san binh quan
+    // Ty suat LNST tren tai san - ROA = LNST / Tong tai san binh quan
+    // LNST                                         1 - 19
+    // Tong tai san binh quan                       2 - 2
 
-    // He so don ban tai chinh
 
-    // Ty suat LNST tren VCSH - ROE
-    // LNST
-    // VCSH binh quan
+    // Ty suat LNST tren VCSH - ROE = LNST / VCSH
+    // LNST                                         1 - 19
+    // VCSH                                         1 - 302
 
-    // 
+    // He so don ban tai chinh = ROE / ROA 
+
+    // Dupont: ROE = Ty suat loi nhuan rong * Vong quay tai san * Don bay tai chinh
+    // Ty suat LN rong = LNST / Doanh thu
+    // Vong quay tai san = Doanh thu / Tong tai san
+    // Don bay tai chinh = Tong tai san / VCSH
+
+    // Thu nhap 1 co phan thuong (EPS) = (LNST - co tuc co dong uu dai) / So co phan thuong luu hanh
+    // LNST                                         1 - 19
+    // co tuc co dong uu dai                        1 - 
+    // So co phan thuong luu hanh                   1 - 
+
+    // #5
+
+    // Ty le chi tra co tuc = co tuc 1 co phan / EPS
+    // co tuc 1 co phan
+    // EPS
+
+    // Ty suat co tuc = co tuc 1 co phan / gia thi truong 1 co phan
+    // co tuc 1 co phan
+    // gia thi truong 1 co phan
+
+    // #6
+
+    // P/E = gia thi truong / EPS
+
+    // P/B = gia thi truong / gia tri so sach 1 co phan thuong
 
 
 
@@ -198,7 +231,7 @@ class ImportantIndexes extends React.Component<IProps, IState> {
         return (
             <div>
                 <div>6 nhom chi so co Ban</div>
-                <Tabs defaultActiveKey='1'>
+                <Tabs defaultActiveKey='2'>
                     <TabPane tab="1. kha nang thanh toan" key="1">
                         <div>{`1. Ty le thanh toan hien hanh = Tai san ngan han / No ngan han`}</div>
                         <div>{`< 1 ==> kha nang thanh toan yeu`}</div>
@@ -213,25 +246,6 @@ class ImportantIndexes extends React.Component<IProps, IState> {
                         <br />
                         <div>{`4. Kha nang thanh toan lai vay = Loi nhuan truoc lai vay (EBIT) / lai vay phai tra`}</div>
                         <div>{`https://www.youtube.com/watch?v=0v4n3p7b0MY`}</div>
-
-                        <div style={{ width: '100%', height: '100%' }}>
-                            <div
-                                id="myGrid"
-                                style={{
-                                    height: '500px',
-                                }}
-                                className="ag-theme-alpine"
-                            >
-                                <AgGridReact
-                                    modules={modules}
-                                    columnDefs={columnDefs}
-                                    defaultColDef={defaultColDef}
-                                    onGridReady={this.onGridReady}
-                                    rowData={rowData}
-                                    onFirstDataRendered={params => params.api.sizeColumnsToFit()}
-                                />
-                            </div>
-                        </div>
                     </TabPane>
                     <TabPane tab="2. co cau tai san - nguon von" key="2">
                         <div>{`Ty le no vay/VCSH`}</div>
@@ -242,6 +256,7 @@ class ImportantIndexes extends React.Component<IProps, IState> {
                         <div>{`Nha dau tu danh gia cao CP tang truong ==> Ban lanh dao danh doi gia tri co phan cua co dong lay su tang truong ==> loi nhuan tren von dau tu thap hon chi phi von DN huy dong duoc`}</div>
                         <div>{`Loi nhuan DN tang truong hang nam nhung gia tri cua co dong dang bi bao mon`}</div>
                         <div>{`Co the danh gia tang truong tot: ROCE (ty suat loi nhuan/tong von huy dong) > WACC (chi phi su dung von binh quan)`}</div>
+
                     </TabPane>
                     <TabPane tab="3. hieu suat hoat dong" key="3">
                         <div>{`So vong quay hang ton kho = Gia von hang ban / Hang ton kho binh quan`}</div>
@@ -339,6 +354,24 @@ class ImportantIndexes extends React.Component<IProps, IState> {
                         <div>{`Anh huong P/B: ty suat loi nhuan / VCSH (ROE) ==> ROE cang cao, P/B cang lon ==> tim DN co ROE cao nhung P/B thap so voi toan nganh`}</div>
                     </TabPane>
                 </Tabs>
+                <div style={{ width: '100%', height: '100%' }}>
+                    <div
+                        id="myGrid"
+                        style={{
+                            height: '500px',
+                        }}
+                        className="ag-theme-alpine"
+                    >
+                        <AgGridReact
+                            modules={modules}
+                            columnDefs={columnDefs}
+                            defaultColDef={defaultColDef}
+                            onGridReady={this.onGridReady}
+                            rowData={rowData}
+                            onFirstDataRendered={params => params.api.sizeColumnsToFit()}
+                        />
+                    </div>
+                </div>
             </div>
         )
     }
