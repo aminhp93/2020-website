@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import { DatePicker, Button, Modal, Input } from 'antd';
-import { debounce } from 'lodash';
+import { debounce, get } from 'lodash';
 
 import {
     BarChartOutlined,
@@ -23,27 +23,44 @@ import {
     getStockScanUrl
 } from '../utils/request';
 
-// import {
-// setSymbol,
-// } from '../../actions/stock';
 import axios from 'axios';
 
 import { AgGridReact } from '@ag-grid-community/react';
-import { AllCommunityModules } from '@ag-grid-community/all-modules';
 import { AllModules } from '@ag-grid-enterprise/all-modules';
 
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-alpine.css';
 import ChartTV from './ChartTV/ChartTV';
 import Profile from './Profile';
+import { IStock } from '../types'
 
 const { RangePicker } = DatePicker;
 
+interface IProps {
+    selectedSymbol: string,
+    stocks: IStock,
+}
 
-class Analysis5 extends React.Component {
+interface IState {
+    modules: any,
+    columnDefs: any,
+    defaultColDef: any,
+    rowData: any,
+    visibleChart: boolean,
+    visibleInfo: boolean,
+    symbol: string,
+    startDate: string,
+    endDate: string,
+}
+
+class Analysis5 extends React.Component<IProps, IState> {
+    gridApi: any;
+    gridColumnApi: any;
+
     constructor(props) {
         super(props);
         this.state = {
+            symbol: '',
             modules: AllModules,
             columnDefs: [
                 {
@@ -74,7 +91,7 @@ class Analysis5 extends React.Component {
                     align: 'right',
                     cellRenderer: params => {
                         const div = document.createElement("div");
-                        div.innerText = Number(params.data.ICBCode)
+                        div.innerText = params.data.ICBCode
                         return div
                     }
                 },
@@ -233,7 +250,6 @@ class Analysis5 extends React.Component {
                 flex: 1,
                 filter: true,
                 sortable: true,
-                flex: 1,
                 minWidth: 100,
                 enableValue: true,
                 enableRowGroup: true,
@@ -248,10 +264,10 @@ class Analysis5 extends React.Component {
         this.scan = debounce(this.scan, 300);
     }
 
-    crawData = async (startDate, endDate) => {
+    crawData = async (startDate = '', endDate = '') => {
         this.gridApi.showLoadingOverlay();
 
-        const { AllStocks } = this.props;
+        const { stocks } = this.props;
         let data1 = [];
         let data2 = []
         let lastUpdatedDate = '';
@@ -295,7 +311,7 @@ class Analysis5 extends React.Component {
                 console.log(error)
             })
 
-        let mappedData = mapDataTwoDate(data1, data2, mapArrayToKeyValue(AllStocks));
+        let mappedData = mapDataTwoDate(data1, data2, mapArrayToKeyValue(Object.values(stocks)));
         if (!mappedData.length) return;
         let data = mappedData.filter(item => item.TodayCapital > 5 && item.PriceChange > 1).sort((a, b) => b.TodayCapital - a.TodayCapital)
         await axios({
@@ -472,15 +488,12 @@ class Analysis5 extends React.Component {
                         visible={visibleChart}
                         onOk={this.handleOk}
                         onCancel={this.handleCancel}
-                        header={null}
                         footer={null}
                         width={1500}
                     >
                         <div className="chartTV-container">
                             <ChartTV symbol={this.state.symbol} />
                         </div>
-
-
                     </Modal>
                     : null}
                 {visibleInfo
@@ -499,10 +512,9 @@ class Analysis5 extends React.Component {
 }
 
 const mapStateToProps = state => {
-    console.log(state);
     return {
-        Symbol: state.stock.Symbol,
-        AllStocks: state.stock.AllStocks,
+        selectedSymbol: get(state, 'selectedSymbol'),
+        stocks: get(state, 'stocks'),
     }
 }
 

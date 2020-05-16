@@ -1,13 +1,13 @@
 import React from 'react';
 import { Tabs } from 'antd';
 
-import OverviewAnalysis from './Analysis/OverviewAnalysis';
+import OverviewAnalysis from './OverviewAnalysis';
 import Analysis1 from './Analysis1';
 import Analysis2 from './Analysis2';
 import Analysis3 from './Analysis3';
 import Analysis4 from './Analysis4';
 import Analysis5 from './Analysis5';
-import MarketNews from './Analysis/MarketNews';
+import MarketNews from './MarketNews';
 
 
 const { TabPane } = Tabs;

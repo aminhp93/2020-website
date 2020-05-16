@@ -3,9 +3,6 @@ import { connect } from 'react-redux';
 import { DatePicker, Button } from 'antd';
 import moment from 'moment';
 import axios from 'axios';
-import {
-    BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
-} from 'recharts';
 import { AgGridReact } from '@ag-grid-community/react';
 import { AllCommunityModules } from '@ag-grid-community/all-modules';
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
@@ -23,11 +20,6 @@ import {
     getStockFilter,
     getCompanyInfoUrl
 } from '../utils/request';
-
-// import {
-// setSymbol,
-// } from '../../actions/stock';
-
 import AnalysisComponent from '../components/Analysis';
 import { IStock } from '../types'
 
@@ -42,7 +34,6 @@ interface IProps {
 interface IState {
     startDate: any,
     endDate: any,
-    dataChart: any,
     modules: any,
     columnDefs: any,
     defaultColDef: any,
@@ -162,7 +153,6 @@ class Analysis2 extends React.Component<IProps, IState> {
             rowData: [],
             startDate: '',
             endDate: '',
-            dataChart: []
         }
     }
 
@@ -239,7 +229,6 @@ class Analysis2 extends React.Component<IProps, IState> {
         if (!mappedData.length) return;
 
         const rowData = mappedData.sort((a, b) => b.MarketCap - a.MarketCap).slice(0, 10);
-        const dataChart = [];
         for (let i = 0; i < rowData.length; i++) {
             let item = {
                 stock: rowData[i].Stock,
@@ -247,21 +236,18 @@ class Analysis2 extends React.Component<IProps, IState> {
             item[startDate ? startDate : moment(lastUpdatedDate).add(-1, 'days').format('YYYY-MM-DD') + 'T00:00:00Z'] = rowData[i].YesterdayPriceClose
             item[endDate ? endDate : lastUpdatedDate] = rowData[i].PriceClose
 
-            dataChart.push(item)
         }
-        console.log(dataChart, rowData)
+        console.log(rowData)
 
         if (startDate) {
             this.setState({
                 rowData,
-                dataChart
             })
         } else {
             this.setState({
                 rowData,
                 startDate: moment(lastUpdatedDate).add(-1, 'days').format('YYYY-MM-DD') + 'T00:00:00Z',
                 endDate: lastUpdatedDate,
-                dataChart
             })
         }
     }
@@ -282,7 +268,7 @@ class Analysis2 extends React.Component<IProps, IState> {
 
     render() {
         const {
-            startDate, endDate, dataChart,
+            startDate, endDate,
             modules, columnDefs, defaultColDef,
             rowData
         } = this.state;
