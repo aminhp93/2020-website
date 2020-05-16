@@ -6,6 +6,7 @@ import { Table, Button, Tabs, Radio, List } from 'antd';
 import {
     BarChart, Bar, XAxis, YAxis, Tooltip, Legend,
 } from 'recharts';
+import { v4 as uuidv4 } from 'uuid';
 
 import {
     getYearlyFinancialInfoUrl,
@@ -626,38 +627,6 @@ class Financial extends React.Component<IProps, IState> {
             })
     }
 
-    testPartial = (start, count) => {
-        let listPromises = [];
-        const arr = cloneDeep(this.props.stocks);
-        const arr1 = arr.slice(start, count)
-        arr1.map(item => {
-            item.Symbol && listPromises.push(
-                new Promise(resolve => {
-                    this.test(item.Symbol, resolve);
-                })
-            );
-        });
-
-        return Promise.all(listPromises)
-            .then(response => {
-                console.log(response)
-            })
-            .catch(error => {
-                console.log(error)
-            })
-    }
-
-    testAll = async () => {
-        await this.testPartial(0, 300);
-        await this.testPartial(300, 600);
-        await this.testPartial(600, 900);
-        await this.testPartial(900, 1200);
-        await this.testPartial(1200, 1500);
-        await this.testPartial(1500, 1800);
-        console.log(583, xxx)
-    }
-
-
     // RENDER PART
 
     renderRevenueTable = (isProfit = false) => {
@@ -797,7 +766,7 @@ class Financial extends React.Component<IProps, IState> {
                     bordered
                     dataSource={dataEvaluation}
                     renderItem={item => (
-                        <List.Item>
+                        <List.Item key={uuidv4()}>
                             <div className="row">
                                 <div>{item.title}</div>
                                 <div>{item.detail}</div>
@@ -838,7 +807,7 @@ class Financial extends React.Component<IProps, IState> {
                     bordered
                     dataSource={dataFinancialPower}
                     renderItem={item => (
-                        <List.Item>
+                        <List.Item key={uuidv4()}>
                             <div className="row">
                                 <div>{item.title}</div>
                                 <div>{item.detail}</div>
@@ -875,7 +844,7 @@ class Financial extends React.Component<IProps, IState> {
                     bordered
                     dataSource={dataRunningAbility}
                     renderItem={item => (
-                        <List.Item>
+                        <List.Item key={uuidv4()}>
                             <div className="row">
                                 <div>{item.title}</div>
                                 <div>{item.detail}</div>
@@ -916,7 +885,7 @@ class Financial extends React.Component<IProps, IState> {
                     bordered
                     dataSource={dataMakeProfitAbility}
                     renderItem={item => (
-                        <List.Item>
+                        <List.Item key={uuidv4()}>
                             <div className="row">
                                 <div>{item.title}</div>
                                 <div>{item.detail}</div>
@@ -953,7 +922,7 @@ class Financial extends React.Component<IProps, IState> {
                     bordered
                     dataSource={dataManagement}
                     renderItem={item => (
-                        <List.Item>
+                        <List.Item key={uuidv4()}>
                             <div className="row">
                                 <div>{item.title}</div>
                                 <div>{item.detail}</div>

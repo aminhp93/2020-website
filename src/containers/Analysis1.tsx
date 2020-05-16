@@ -1,27 +1,26 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
-import { DatePicker, Button, Modal, Input } from 'antd';
-import { debounce } from 'lodash';
-
+import { DatePicker, Button, Modal } from 'antd';
 import {
     BarChartOutlined,
     InfoCircleOutlined
 } from '@ant-design/icons';
 import moment from 'moment';
+import { get } from 'lodash';
+
 import {
     mapColorPriceChange,
     formatNumber,
     mapArrayToKeyValue,
     mapDataTwoDate
-} from '../../utils/all';
+} from '../utils/all';
 import {
     getConfigGetCreateUrl,
     getStockFilter,
     getCompanyInfoFilterUrl,
-    getLastestFinancialInfoFilterUrl,
-    getStockScanUrl
-} from '../../utils/request';
+    getLastestFinancialInfoFilterUrl
+} from '../utils/request';
 
 // import {
 // setSymbol,
@@ -30,21 +29,41 @@ import axios from 'axios';
 
 import { AgGridReact } from '@ag-grid-community/react';
 import { AllCommunityModules } from '@ag-grid-community/all-modules';
-import { AllModules } from '@ag-grid-enterprise/all-modules';
-
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-alpine.css';
-import ChartTV from '../ChartTV/ChartTV';
-import Profile from '../Profile';
+import ChartTV from './ChartTV/ChartTV';
+import Profile from './Profile';
+
+import { IStock } from '../types';
 
 const { RangePicker } = DatePicker;
 
 
-class Analysis5 extends React.Component {
+interface IProps {
+    stocks: IStock,
+    lastUpdatedDate: any,
+}
+
+interface IState {
+    symbol: any,
+    modules: any,
+    columnDefs: any,
+    defaultColDef: any,
+    rowData: any,
+    startDate: any,
+    endDate: any,
+    visibleChart: any,
+    visibleInfo: any,
+}
+
+class Analysis1 extends React.Component<IProps, IState> {
+    gridApi: any;
+    gridColumnApi: any;
+
     constructor(props) {
         super(props);
         this.state = {
-            modules: AllModules,
+            modules: AllCommunityModules,
             columnDefs: [
                 {
                     headerName: 'Stock',
@@ -74,7 +93,7 @@ class Analysis5 extends React.Component {
                     align: 'right',
                     cellRenderer: params => {
                         const div = document.createElement("div");
-                        div.innerText = Number(params.data.ICBCode)
+                        div.innerText = params.data.ICBCode
                         return div
                     }
                 },
@@ -227,51 +246,34 @@ class Analysis5 extends React.Component {
                         return div
                     }
                 },
-
             ],
             defaultColDef: {
                 flex: 1,
                 filter: true,
                 sortable: true,
-                flex: 1,
-                minWidth: 100,
-                enableValue: true,
-                enableRowGroup: true,
-                enablePivot: true,
             },
             rowData: [],
             startDate: '',
             endDate: '',
             visibleChart: false,
             visibleInfo: false,
+            symbol: '',
         }
-        this.scan = debounce(this.scan, 300);
     }
 
-    crawData = async (startDate, endDate) => {
-        this.gridApi.showLoadingOverlay();
+    crawData = async (startDate = '', endDate = '') => {
+        const { stocks, lastUpdatedDate } = this.props;
+        if (!lastUpdatedDate.value) return
 
-        const { AllStocks } = this.props;
         let data1 = [];
         let data2 = []
-        let lastUpdatedDate = '';
-        await axios({
-            url: getConfigGetCreateUrl('LAST_UPDATED_HISTORICAL_QUOTES'),
-            method: 'get'
-        })
-            .then(response => {
-                lastUpdatedDate = response.data.value
-            })
-            .catch(error => {
-                console.log(error)
-            })
-        if (!lastUpdatedDate) return
+        this.gridApi.showLoadingOverlay();
 
         await axios({
             url: getStockFilter(),
             method: 'post',
             data: {
-                Date: endDate ? endDate : lastUpdatedDate
+                Date: endDate ? endDate : lastUpdatedDate.value
             }
         })
             .then(response => {
@@ -285,7 +287,7 @@ class Analysis5 extends React.Component {
             url: getStockFilter(),
             method: 'post',
             data: {
-                Date: startDate ? startDate : moment(lastUpdatedDate).add(-1, 'days').format('YYYY-MM-DD') + 'T00:00:00Z'
+                Date: startDate ? startDate : moment(lastUpdatedDate.value).add(-1, 'days').format('YYYY-MM-DD') + 'T00:00:00Z'
             }
         })
             .then(response => {
@@ -295,7 +297,7 @@ class Analysis5 extends React.Component {
                 console.log(error)
             })
 
-        let mappedData = mapDataTwoDate(data1, data2, mapArrayToKeyValue(AllStocks));
+        let mappedData = mapDataTwoDate(data1, data2, mapArrayToKeyValue(Object.values(stocks)));
         if (!mappedData.length) return;
         let data = mappedData.filter(item => item.TodayCapital > 5 && item.PriceChange > 1).sort((a, b) => b.TodayCapital - a.TodayCapital)
         await axios({
@@ -352,8 +354,8 @@ class Analysis5 extends React.Component {
         } else {
             dataSetState = {
                 rowData: data,
-                startDate: moment(lastUpdatedDate).add(-1, 'days').format('YYYY-MM-DD') + 'T00:00:00Z',
-                endDate: lastUpdatedDate
+                startDate: moment(lastUpdatedDate.value).add(-1, 'days').format('YYYY-MM-DD') + 'T00:00:00Z',
+                endDate: lastUpdatedDate.value
             }
         }
 
@@ -389,60 +391,19 @@ class Analysis5 extends React.Component {
         });
     };
 
-    scan = () => {
-        console.log(this.state)
-        axios({
-            url: getStockScanUrl(),
-            method: 'post',
-            data: this.state
-        })
-            .then(response => {
-                console.log(response)
-            })
-            .catch(error => {
-                console.log(error)
-            })
-    }
-
-    changeInput = (e, index) => {
-        const data = {};
-        data[index] = e.target.value;
-        this.setState(data, () => this.scan());
-    }
-
     render() {
         const { startDate, endDate, rowData,
             modules, columnDefs, defaultColDef,
-            visibleChart, visibleInfo
+            visibleChart, visibleInfo,
+            symbol
         } = this.state;
         return (
             <div>
                 <div>
-                    <div>
-                        <div className="flex">
-                            <Input addonBefore="Symbol" onChange={(e) => this.changeInput(e, 'Symbol')} />
-                            <Input addonBefore="ICBCode" onChange={(e) => this.changeInput(e, 'ICBCode')} />
-                            <Input addonBefore="Price" onChange={(e) => this.changeInput(e, 'Price')} />
-                            <Input addonBefore="%ChangePrice" onChange={(e) => this.changeInput(e, 'ChangePrice')} />
-                            <Input addonBefore="TodayCapital" onChange={(e) => this.changeInput(e, 'TodayCapital')} />
-                        </div>
-                        <div className="flex">
-                            <Input addonBefore="%Volume" onChange={(e) => this.changeInput(e, 'ChangeVolume')} />
-                            <Input addonBefore="ROE" onChange={(e) => this.changeInput(e, 'ROE')} />
-                            <Input addonBefore="EPS" onChange={(e) => this.changeInput(e, 'EPS')} />
-                            <Input addonBefore="TT EPS" onChange={(e) => this.changeInput(e, 'ChangeEPS')} />
-                            <Input addonBefore="TT LNST nam" onChange={(e) => this.changeInput(e, 'ChangeYearlyProfit')} />
-                        </div>
-                        <div className="flex">
-                            <Input addonBefore="Buy Foreigner" onChange={(e) => this.changeInput(e, 'BuyForeigner')} />
-                            <Input addonBefore="Sell Foreigner" onChange={(e) => this.changeInput(e, 'SellForeinger')} />
-                            <Input addonBefore="None" onChange={(e) => this.changeInput(e, 'None')} />
-                            <Input addonBefore="None" onChange={(e) => this.changeInput(e, 'None')} />
-                            <Input addonBefore="None" onChange={(e) => this.changeInput(e, 'None')} />
-                        </div>
-
-
-                    </div>
+                    <h1>
+                        Danh sach nhung co phieu trong ngay MarketCap > 5 ty, ChangePrice > 1%
+                    </h1>
+                    <h2>TONG CP: {rowData.length}</h2>
                 </div>
                 <RangePicker onChange={this.onChange} value={startDate ? [moment(startDate), moment(endDate)] : []} />
                 <Button onClick={() => this.crawData(startDate, endDate)}>Xem</Button>
@@ -460,7 +421,6 @@ class Analysis5 extends React.Component {
                             defaultColDef={defaultColDef}
                             onGridReady={this.onGridReady}
                             rowData={rowData}
-                            sideBar={true}
                             onFirstDataRendered={params => params.api.sizeColumnsToFit()}
                         />
                     </div>
@@ -472,12 +432,11 @@ class Analysis5 extends React.Component {
                         visible={visibleChart}
                         onOk={this.handleOk}
                         onCancel={this.handleCancel}
-                        header={null}
                         footer={null}
                         width={1500}
                     >
                         <div className="chartTV-container">
-                            <ChartTV symbol={this.state.symbol} />
+                            <ChartTV symbol={symbol} />
                         </div>
 
 
@@ -499,16 +458,13 @@ class Analysis5 extends React.Component {
 }
 
 const mapStateToProps = state => {
-    console.log(state);
     return {
-        Symbol: state.stock.Symbol,
-        AllStocks: state.stock.AllStocks,
+        stocks: get(state, 'stocks'),
+        lastUpdatedDate: get(state, 'lastUpdatedDate') || {},
     }
 }
 
 const mapDispatchToProps = {
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Analysis5);
-
-
+export default connect(mapStateToProps, mapDispatchToProps)(Analysis1);

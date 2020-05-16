@@ -1,5 +1,6 @@
 import React from 'react';
 import { List } from 'antd';
+import { v4 as uuidv4 } from 'uuid';
 
 const data = [
     {
@@ -87,12 +88,12 @@ class OverviewAnalysis extends React.Component {
                     bordered
                     dataSource={data}
                     renderItem={item => (
-                        <List.Item>
+                        <List.Item key={uuidv4()}>
                             <div className="OverviewAnalysis-item">
-                                <li className='OverviewAnalysis-title'>{item.title}</li>
+                                <div className='OverviewAnalysis-title'>{item.title}</div>
                                 {
                                     item.detail && item.detail.map(i => {
-                                        return <li>{i}</li>
+                                        return <div key={uuidv4()}>{i}</div>
                                     })
                                 }
                             </div>

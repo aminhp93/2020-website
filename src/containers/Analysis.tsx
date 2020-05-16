@@ -1,18 +1,22 @@
 import React from 'react';
 import { Tabs } from 'antd';
 
-import OverviewAnalysis from './OverviewAnalysis';
+import OverviewAnalysis from './Analysis/OverviewAnalysis';
 import Analysis1 from './Analysis1';
 import Analysis2 from './Analysis2';
 import Analysis3 from './Analysis3';
 import Analysis4 from './Analysis4';
 import Analysis5 from './Analysis5';
-import MarketNews from './MarketNews';
+import MarketNews from './Analysis/MarketNews';
 
 
 const { TabPane } = Tabs;
 
-class Analysis extends React.Component {
+interface IProps { }
+
+interface IState { }
+
+class Analysis extends React.Component<IProps, IState> {
     render() {
         return (
             <div className="Analysis">

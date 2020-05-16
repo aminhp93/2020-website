@@ -29,7 +29,7 @@ import Profile from './Profile';
 import Stakeholder from './Stakeholder';
 import Technical from './Technical';
 import Transaction from './Transaction';
-import Analysis from './Analysis/Analysis';
+import Analysis from './Analysis';
 import MarketNews from './MarketNews';
 import ImportantIndexes from './ImportantIndexes';
 
@@ -147,7 +147,6 @@ class Stock extends React.Component<IProps, IState> {
                             <Tabs defaultActiveKey="1" tabPosition="left">
                                 <TabPane tab="OverallMarket1" key="1">
                                     <div className="App-content">
-                                        <div>Content2</div>
                                         <div>
                                             <Tabs defaultActiveKey="9">
                                                 <TabPane tab="Transaction" key="1">

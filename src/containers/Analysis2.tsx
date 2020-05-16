@@ -10,29 +10,49 @@ import { AgGridReact } from '@ag-grid-community/react';
 import { AllCommunityModules } from '@ag-grid-community/all-modules';
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-alpine.css';
+import { get } from 'lodash';
 
 import {
     mapColorPriceChange,
     formatNumber,
     mapArrayToKeyValue,
     mapDataTwoDate
-} from '../../utils/all';
+} from '../utils/all';
 import {
     getConfigGetCreateUrl,
     getStockFilter,
     getCompanyInfoUrl
-} from '../../utils/request';
+} from '../utils/request';
 
 // import {
 // setSymbol,
 // } from '../../actions/stock';
 
-import AnalysisComponent from '../../components/Analysis';
+import AnalysisComponent from '../components/Analysis';
+import { IStock } from '../types'
+
 
 const { RangePicker } = DatePicker;
 
+interface IProps {
+    selectedSymbol: string,
+    stocks: IStock,
+}
 
-class Analysis2 extends React.Component {
+interface IState {
+    startDate: any,
+    endDate: any,
+    dataChart: any,
+    modules: any,
+    columnDefs: any,
+    defaultColDef: any,
+    rowData: any,
+}
+
+class Analysis2 extends React.Component<IProps, IState> {
+    gridApi: any;
+    gridColumnApi: any;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -142,6 +162,7 @@ class Analysis2 extends React.Component {
             rowData: [],
             startDate: '',
             endDate: '',
+            dataChart: []
         }
     }
 
@@ -151,19 +172,19 @@ class Analysis2 extends React.Component {
 
     componentDidUpdate(preProps) {
         console.log('componentDidUpdate Analysis2', this.props, preProps)
-        if (this.props.Symbol !== preProps.Symbol) {
+        if (this.props.selectedSymbol !== preProps.selectedSymbol) {
             this.crawData();
         }
     }
 
-    crawData = async (startDate, endDate) => {
-        const { AllStocks, Symbol: symbol } = this.props;
+    crawData = async (startDate = '', endDate = '') => {
+        const { stocks, selectedSymbol } = this.props;
         let data1 = [];
         let data2 = []
         let lastUpdatedDate = '';
-        let CompanyInfoObj = {}
+        let CompanyInfoObj = null
         await axios({
-            url: getCompanyInfoUrl(symbol),
+            url: getCompanyInfoUrl(selectedSymbol),
             method: 'get',
         })
             .then(response => {
@@ -182,7 +203,7 @@ class Analysis2 extends React.Component {
             .catch(error => {
                 console.log(error)
             })
-        if (!lastUpdatedDate || !CompanyInfoObj.ICBCode) return
+        if (!lastUpdatedDate || !CompanyInfoObj) return
 
         await axios({
             url: getStockFilter(),
@@ -214,7 +235,7 @@ class Analysis2 extends React.Component {
                 console.log(error)
             })
 
-        let mappedData = mapDataTwoDate(data1, data2, mapArrayToKeyValue(AllStocks));
+        let mappedData = mapDataTwoDate(data1, data2, mapArrayToKeyValue(stocks));
         if (!mappedData.length) return;
 
         const rowData = mappedData.sort((a, b) => b.MarketCap - a.MarketCap).slice(0, 10);
@@ -260,8 +281,12 @@ class Analysis2 extends React.Component {
     }
 
     render() {
-        const { startDate, endDate, dataChart } = this.state;
-        const { AllStocks } = this.props;
+        const {
+            startDate, endDate, dataChart,
+            modules, columnDefs, defaultColDef,
+            rowData
+        } = this.state;
+        const { stocks } = this.props;
         return (
             <div>
                 <div>
@@ -280,11 +305,11 @@ class Analysis2 extends React.Component {
                         className="ag-theme-alpine"
                     >
                         <AgGridReact
-                            modules={this.state.modules}
-                            columnDefs={this.state.columnDefs}
-                            defaultColDef={this.state.defaultColDef}
+                            modules={modules}
+                            columnDefs={columnDefs}
+                            defaultColDef={defaultColDef}
                             onGridReady={this.onGridReady}
-                            rowData={this.state.rowData}
+                            rowData={rowData}
                             onFirstDataRendered={params => params.api.sizeColumnsToFit()}
                         />
                     </div>
@@ -292,21 +317,21 @@ class Analysis2 extends React.Component {
                 <div className="flex">
                     {
                         ['VND', 'VCB', 'PVD'].map(item => {
-                            return <AnalysisComponent symbol={item} AllStocks={AllStocks} startDate={startDate} endDate={endDate} />
+                            return <AnalysisComponent symbol={item} AllStocks={stocks} startDate={startDate} endDate={endDate} />
                         })
                     }
                 </div>
                 <div className="flex">
                     {
                         ['VNM', 'FPT', 'VIC'].map(item => {
-                            return <AnalysisComponent symbol={item} AllStocks={AllStocks} startDate={startDate} endDate={endDate} />
+                            return <AnalysisComponent symbol={item} AllStocks={stocks} startDate={startDate} endDate={endDate} />
                         })
                     }
                 </div>
                 <div className="flex">
                     {
                         ['VJC', 'HPG', 'ROS'].map(item => {
-                            return <AnalysisComponent symbol={item} AllStocks={AllStocks} startDate={startDate} endDate={endDate} />
+                            return <AnalysisComponent symbol={item} AllStocks={stocks} startDate={startDate} endDate={endDate} />
                         })
                     }
                 </div>
@@ -316,10 +341,9 @@ class Analysis2 extends React.Component {
 }
 
 const mapStateToProps = state => {
-    console.log(state);
     return {
-        Symbol: state.stock.Symbol,
-        AllStocks: state.stock.AllStocks,
+        selectedSymbol: get(state, 'selectedSymbol'),
+        stocks: get(state, 'stocks'),
     }
 }
 

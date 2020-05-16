@@ -16,27 +16,28 @@ import {
     formatNumber,
     mapArrayToKeyValue,
     mapDataTwoDate
-} from '../../utils/all';
-import { BILLION_UNIT } from '../../utils/unit';
+} from '../utils/all';
+import { BILLION_UNIT } from '../utils/unit';
 import {
     getYearlyFinancialInfoColumnDefs,
     getQuarterlyFinancialInfoColumnDefs
-} from '../../utils/columnDefs';
+} from '../utils/columnDefs';
 import {
+    getCompanyInfoUrl,
     getYearlyFinancialInfoFilterUrl,
     getQuarterlyFinancialInfoFilterUrl
-} from '../../utils/request';
+} from '../utils/request';
 
 // import {
 // setSymbol,
 // } from '../../actions/stock';
 
-import AnalysisComponent from '../../components/Analysis';
+import AnalysisComponent from '../components/Analysis';
 
 const { RangePicker } = DatePicker;
 
 
-class Analysis4 extends React.Component {
+class Analysis3 extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -56,13 +57,13 @@ class Analysis4 extends React.Component {
     }
 
     componentDidUpdate(preProps) {
-        console.log('componentDidUpdate Analysis4', this.props, preProps)
+        console.log('componentDidUpdate Analysis3', this.props, preProps)
         if (this.props.Symbol !== preProps.Symbol) {
             this.crawData();
         }
     }
 
-    crawData = () => {
+    crawData = async () => {
         const { AllStocksObj, Symbol: symbol } = this.props;
         // axios({
         //     method: 'post',
@@ -85,35 +86,40 @@ class Analysis4 extends React.Component {
         //     .catch(error => {
         //         console.log(error)
         //     })
-        axios({
-            method: 'post',
-            url: getQuarterlyFinancialInfoFilterUrl(),
-            data: {
-                symbol
-            }
+        let result = '';
+        let CompanyInfoObj = {}
+        await axios({
+            url: getCompanyInfoUrl(symbol),
+            method: 'get',
         })
             .then(response => {
-                console.log(response)
-                let data = response.data.map(item => {
-                    item.Stock = AllStocksObj[item.Stock].Symbol
-                    return item
-                }).sort((a, b) => {
-                    if (a.Year < b.Year) return 1
-                    if (a.Year > b.Year) return -1
-                    if (a.Quarter < b.Quarter) return 1
-                    if (a.Quarter > b.Quarter) return -1
-                    return 0
-                })
-                console.log(data)
-                this.setState({
-                    columnDefs: getQuarterlyFinancialInfoColumnDefs(),
-                    rowData: data
-                })
-
+                CompanyInfoObj = response.data
             })
             .catch(error => {
                 console.log(error)
             })
+        if (!CompanyInfoObj.ICBCode) return
+
+        await axios({
+            method: 'post',
+            url: getQuarterlyFinancialInfoFilterUrl(),
+            data: {
+                ICBCode: CompanyInfoObj.ICBCode,
+            }
+        })
+            .then(response => {
+                result = response
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        this.setState({
+            columnDefs: getQuarterlyFinancialInfoColumnDefs(),
+            rowData: result.data.filter(item => item.Year === 2019 && item.Quarter === 4).map(item => {
+                item.Stock = AllStocksObj[item.Stock].Symbol
+                return item
+            }).sort((a, b) => b.TotalAssets_MRQ - a.TotalAssets_MRQ)
+        })
     }
 
     onGridReady = params => {
@@ -160,4 +166,4 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Analysis4);
+export default connect(mapStateToProps, mapDispatchToProps)(Analysis3);
