@@ -1,12 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { get } from 'lodash';
-import { List, Avatar, Pagination, Modal, Tabs } from 'antd';
+import { Tabs } from 'antd';
 import { AgGridReact } from '@ag-grid-community/react';
 import { AllCommunityModules } from '@ag-grid-community/all-modules';
 
 
-import { BILLION_UNIT } from '../utils/unit';
 import { mapDataImportantIndexes } from '../utils/all';
 import {
     getYearlyFinancialInfo,
@@ -77,7 +76,7 @@ class ImportantIndexes extends React.Component<IProps, IState> {
                     if (params.data.Values && params.data.Values.length) {
                         const data = params.data.Values.filter(item => item.Year === year)
                         const returnValue = data.length && data[0].Value
-                        return returnValue !== '0' ? returnValue : ''
+                        return returnValue
                     }
                 }
             })
@@ -147,23 +146,28 @@ class ImportantIndexes extends React.Component<IProps, IState> {
     // No ngan han                                  1 - 30101
     // VCSH                                         1 - 302
 
-    // ROCE: ty suat loi nhuan / tong von huy dong  1 - 
+    // ROCE = Profit before interset and taxation / Capital Employed
+    // Profit before interset and taxation          2 - 15
+    // Capital Employed = Tong tai san - no ngan han
+    // Tong tai san                                 1 - 1
+    // No ngan han                                  1 - 30101
+
     // WACC: chi phi su dung von binh quan          1 - 
 
     // #3
 
-    // So vong quay hang ton kho = Gia von hang ban / Hang ton kho binh quan
-    // Gia von hang ban                             1 - 4
+    // So vong quay hang ton kho = tong Cong Nguon Von / Hang ton kho binh quan
+    // tong Cong Nguon Von                          1 - 4
     // Hang ton kho binh quan                       2 - 10104
 
-    // So vong quay phai thu khach hang = Doanh thu ban hang / Phai thu khach hang binh quan                         
-    // Doanh thu ban hang                           1 - 3
+    // So vong quay phai thu khach hang = doanh Thu Thuan / Phai thu khach hang binh quan                         
+    // doanh Thu Thuan                              1 - 3
     // Phai thu khach hang binh quan                2 - 1010301 + 1020101
     // Phải thu ngắn hạn của khách hàng             2 - 1010301
     // Phải thu dài hạn của khách hàng              2 - 1020101
 
-    // So vong quay phai tra nguoi ban = Gia von hang ban / Phai tra nguoi ban binh quan
-    // Gia von hang ban                             1 - 4
+    // So vong quay phai tra nguoi ban = tong Cong Nguon Von / Phai tra nguoi ban binh quan
+    // tong Cong Nguon Von                          1 - 4
     // Phai tra nguoi ban binh quan                 2 - 3010103 + 3010201
     // Phải trả người bán ngắn hạn                  2 - 3010103
     // Phải trả người bán dài hạn                   2 - 3010201
@@ -175,7 +179,7 @@ class ImportantIndexes extends React.Component<IProps, IState> {
 
     // Vong quay tai san = Doanh thu thuan / Tong tai san binh quan
     // Doanh thu thuan                              1 - 3
-    // Tong tai san binh quan                       2 - 2
+    // Tong cong tai san                            2 - 2
 
     // 4. 
     // Bien loi nhuan gop = Loi nhuan gop / Doanh thu thuan
@@ -188,7 +192,7 @@ class ImportantIndexes extends React.Component<IProps, IState> {
 
     // Ty suat LNST tren tai san - ROA = LNST / Tong tai san binh quan
     // LNST                                         1 - 19
-    // Tong tai san binh quan                       2 - 2
+    // Tong cong tai san                            2 - 2
 
 
     // Ty suat LNST tren VCSH - ROE = LNST / VCSH
@@ -231,7 +235,7 @@ class ImportantIndexes extends React.Component<IProps, IState> {
         return (
             <div>
                 <div>6 nhom chi so co Ban</div>
-                <Tabs defaultActiveKey='2'>
+                <Tabs defaultActiveKey='3'>
                     <TabPane tab="1. kha nang thanh toan" key="1">
                         <div>{`1. Ty le thanh toan hien hanh = Tai san ngan han / No ngan han`}</div>
                         <div>{`< 1 ==> kha nang thanh toan yeu`}</div>
