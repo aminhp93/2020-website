@@ -5,7 +5,7 @@ import { Tabs } from 'antd';
 import { AgGridReact } from '@ag-grid-community/react';
 import { AllCommunityModules } from '@ag-grid-community/all-modules';
 
-
+import { BILLION_UNIT } from '../utils/unit';
 import { mapDataImportantIndexes } from '../utils/all';
 import {
     getYearlyFinancialInfo,
@@ -76,7 +76,13 @@ class ImportantIndexes extends React.Component<IProps, IState> {
                     if (params.data.Values && params.data.Values.length) {
                         const data = params.data.Values.filter(item => item.Year === year)
                         const returnValue = data.length && data[0].Value
-                        return returnValue
+                        if (returnValue < 1000) {
+                            return returnValue.toFixed(1)
+                        } else if (returnValue > BILLION_UNIT) {
+                            return (returnValue / BILLION_UNIT).toFixed(0)
+                        } else {
+                            return returnValue
+                        }
                     }
                 }
             })
@@ -235,7 +241,7 @@ class ImportantIndexes extends React.Component<IProps, IState> {
         return (
             <div>
                 <div>6 nhom chi so co Ban</div>
-                <Tabs defaultActiveKey='3'>
+                <Tabs defaultActiveKey='1'>
                     <TabPane tab="1. kha nang thanh toan" key="1">
                         <div>{`1. Ty le thanh toan hien hanh = Tai san ngan han / No ngan han`}</div>
                         <div>{`< 1 ==> kha nang thanh toan yeu`}</div>
@@ -376,6 +382,7 @@ class ImportantIndexes extends React.Component<IProps, IState> {
                         />
                     </div>
                 </div>
+                <div style={{ height: '100px' }}>Footer</div>
             </div>
         )
     }

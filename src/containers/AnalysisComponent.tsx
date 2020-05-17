@@ -1,9 +1,11 @@
 import React from 'react';
 import moment from 'moment';
 import axios from 'axios';
+import { connect } from 'react-redux';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts';
+import { get } from 'lodash';
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-alpine.css';
 
@@ -16,9 +18,21 @@ import {
     getStockFilter,
     getCompanyInfoUrl
 } from '../utils/request';
+import { IStock } from '../types'
 
+interface IProps {
+    startDate: string,
+    endDate: string,
+    stocks: IStock,
+    symbol: any,
+    lastUpdatedDate: any,
+}
 
-class Analysis extends React.Component {
+interface IState {
+    dataChart: any
+}
+
+class Analysis extends React.Component<IProps, IState> {
     constructor(props) {
         super(props);
         this.state = {
@@ -38,11 +52,11 @@ class Analysis extends React.Component {
     }
 
     crawData = async () => {
-        const { AllStocks, symbol, startDate, endDate } = this.props;
+        const { stocks, symbol, startDate, endDate, lastUpdatedDate } = this.props;
         let data1 = [];
         let data2 = []
-        let lastUpdatedDate = '';
-        let CompanyInfoObj = {}
+        let CompanyInfoObj = null
+
         await axios({
             url: getCompanyInfoUrl(symbol),
             method: 'get',
@@ -53,17 +67,8 @@ class Analysis extends React.Component {
             .catch(error => {
                 console.log(error)
             })
-        await axios({
-            url: getConfigGetCreateUrl('LAST_UPDATED_HISTORICAL_QUOTES'),
-            method: 'get'
-        })
-            .then(response => {
-                lastUpdatedDate = response.data.value
-            })
-            .catch(error => {
-                console.log(error)
-            })
-        if (!lastUpdatedDate || !CompanyInfoObj.ICBCode) return
+
+        if (!lastUpdatedDate.value || !CompanyInfoObj) return
 
         await axios({
             url: getStockFilter(),
@@ -95,7 +100,7 @@ class Analysis extends React.Component {
                 console.log(error)
             })
 
-        let mappedData = mapDataTwoDate(data1, data2, mapArrayToKeyValue(AllStocks));
+        let mappedData = mapDataTwoDate(data1, data2, mapArrayToKeyValue(Object.values(stocks)));
         if (!mappedData.length) return;
 
         const rowData = mappedData.sort((a, b) => b.MarketCap - a.MarketCap).slice(0, 10);
@@ -148,4 +153,15 @@ class Analysis extends React.Component {
     }
 }
 
-export default Analysis;
+const mapStateToProps = state => {
+    return {
+        selectedSymbol: get(state, 'selectedSymbol'),
+        stocks: get(state, 'stocks'),
+        lastUpdatedDate: get(state, 'lastUpdatedDate') || {},
+    }
+}
+
+const mapDispatchToProps = {
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Analysis);

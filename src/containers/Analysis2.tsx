@@ -20,7 +20,7 @@ import {
     getStockFilter,
     getCompanyInfoUrl
 } from '../utils/request';
-import AnalysisComponent from '../components/Analysis';
+import AnalysisComponent from './AnalysisComponent';
 import { IStock } from '../types'
 
 
@@ -225,7 +225,7 @@ class Analysis2 extends React.Component<IProps, IState> {
                 console.log(error)
             })
 
-        let mappedData = mapDataTwoDate(data1, data2, mapArrayToKeyValue(stocks));
+        let mappedData = mapDataTwoDate(data1, data2, mapArrayToKeyValue(Object.values(stocks)));
         if (!mappedData.length) return;
 
         const rowData = mappedData.sort((a, b) => b.MarketCap - a.MarketCap).slice(0, 10);
@@ -303,21 +303,21 @@ class Analysis2 extends React.Component<IProps, IState> {
                 <div className="flex">
                     {
                         ['VND', 'VCB', 'PVD'].map(item => {
-                            return <AnalysisComponent symbol={item} AllStocks={stocks} startDate={startDate} endDate={endDate} />
+                            return <AnalysisComponent symbol={item} startDate={startDate} endDate={endDate} />
                         })
                     }
                 </div>
                 <div className="flex">
                     {
                         ['VNM', 'FPT', 'VIC'].map(item => {
-                            return <AnalysisComponent symbol={item} AllStocks={stocks} startDate={startDate} endDate={endDate} />
+                            return <AnalysisComponent symbol={item} startDate={startDate} endDate={endDate} />
                         })
                     }
                 </div>
                 <div className="flex">
                     {
                         ['VJC', 'HPG', 'ROS'].map(item => {
-                            return <AnalysisComponent symbol={item} AllStocks={stocks} startDate={startDate} endDate={endDate} />
+                            return <AnalysisComponent symbol={item} startDate={startDate} endDate={endDate} />
                         })
                     }
                 </div>
