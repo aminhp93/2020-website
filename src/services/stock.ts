@@ -38,7 +38,13 @@ const StockService = {
             method: 'GET',
             url: StockUrls.getLastestFinancialReports(selectedSymbol, financialType, year, quarter)
         })
-    }
+    },
+    getHistoricalQuotes(selectedSymbol, startDate, endDate) {
+        return request({
+            method: 'GET',
+            url: StockUrls.getHistoricalQuotes(selectedSymbol, startDate, endDate)
+        })
+    },
 
 };
 

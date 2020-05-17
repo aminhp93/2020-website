@@ -1,5 +1,6 @@
 import { keyBy } from 'lodash';
 import { createSlice } from '@reduxjs/toolkit';
+import moment from 'moment';
 
 import { ThunkActionType } from '../store';
 import StockService from '../services/stock';
@@ -71,5 +72,16 @@ export const getLastestFinancialReports = (data: any): ThunkActionType => async 
     const { selectedSymbol } = getStoreValue();
     const { financialType, year, quarter } = data;
     const response = await StockService.getLastestFinancialReports(selectedSymbol, financialType, year, quarter)
+    return response
+}
+
+export const getHistoricalQuotes = (data: any): ThunkActionType => async (
+    dispatch,
+    getStoreValue
+) => {
+    const { selectedSymbol, lastUpdatedDate } = getStoreValue();
+    const endDate = moment(lastUpdatedDate.value).format('YYYY-MM-DD');
+    const startDate = moment(lastUpdatedDate.value).add(-30, 'days').format('YYYY-MM-DD');
+    const response = await StockService.getHistoricalQuotes(selectedSymbol, startDate, endDate)
     return response
 }

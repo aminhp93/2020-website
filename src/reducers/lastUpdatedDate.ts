@@ -6,7 +6,7 @@ import LastUpdatedDateService from '../services/lastUpdatedDate';
 
 const lastUpdatedDateSlice = createSlice({
     name: 'lastUpdatedDate',
-    initialState: {},
+    initialState: null,
     reducers: {
         updateLastUpdatedDateSuccess: (state, { payload }) => {
             return payload

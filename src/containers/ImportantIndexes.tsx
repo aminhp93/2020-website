@@ -11,7 +11,8 @@ import {
     getYearlyFinancialInfo,
     getQuarterlyFinancialInfo,
     getLastestFinancialInfo,
-    getLastestFinancialReports
+    getLastestFinancialReports,
+    getHistoricalQuotes
 } from '../reducers/stocks';
 
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
@@ -26,6 +27,7 @@ interface IProps {
     getQuarterlyFinancialInfo: any,
     getLastestFinancialInfo: any,
     getLastestFinancialReports: any,
+    getHistoricalQuotes: any,
 }
 
 interface IState {
@@ -105,10 +107,11 @@ class ImportantIndexes extends React.Component<IProps, IState> {
         const res1 = await this.props.getLastestFinancialReports(dataType1)
         const res2 = await this.props.getLastestFinancialReports(dataType2)
         const res3 = await this.props.getYearlyFinancialInfo()
+        const res4 = await this.props.getHistoricalQuotes()
         // const res4 = await this.props.getQuarterlyFinancialInfo()
         // const res5 = await this.props.getLastestFinancialInfo()
         console.log(res1, res2, res3)
-        const rowData = mapDataImportantIndexes(res1.data, res2.data, res3.data)
+        const rowData = mapDataImportantIndexes(res1.data, res2.data, res3.data, res4.data)
         this.setState({ rowData })
     }
 
@@ -308,16 +311,20 @@ class ImportantIndexes extends React.Component<IProps, IState> {
                     <TabPane tab="4. hieu qua hoat dong" key="4">
                         <div>{`Bien loi nhuan gop =  Loi nhuan gop / Doanh thu thuan`}</div>
                         <div>{`Bien LNG > 30%: Loi the canh tranh ben vung, < 10%: khong co loi the canh tranh`}</div>
+                        <br />
                         <div>{`Ty suat loi nhuan tren doanh thu (ROS) = Loi nhuan sau thue/Doanh thu thuan`}</div>
                         <div>{`LNST / DT > 15%: Huong loi tu loi the canh tranh dai han, <10%: canh tranh khoc liet, loi the canh tranh thap`}</div>
+                        <br />
                         <div>{`Ty suat LNST tren tai san (ROA) = Loi nhuan sau thue / Tong tai san binh quan`}</div>
                         <div>{`VD: NTP: ROE: 17%, ROA: 9%, BMP: ROE: 17%, ROA: 15%`}</div>
                         <div>{`==> NTP dang tang su dung no vay de tai tro hoat dong san xuat kinh doanh`}</div>
                         <div>{`==> ROE / ROA ==> co cau tai chinh DN`}</div>
+                        <br />
                         <div>{`ROE / ROA = Tong tai san binh quan / VCSH binh quan = He so don bay tai chinh`}</div>
                         <div>{`He so don bay tai chinh cao ==> DN tang su dung no vay `}</div>
                         <div>{`VD: VCS: ROE/ROA giam 3.04 - 2.50 - 1.86 - 1.60 ==> tich cuc tra no vay, giam rui ro tai chinh`}</div>
                         <div>{`Ty suat LNST tren VCSH (ROE) = Loi nhuan sau thue / VCSH binh quan`}</div>
+                        <br />
                         <div>{`Cach 1: Lua chon co phieu qua toc do tang truong`}</div>
                         <div>{`VN: MWG ROE > 40%, tang truong kep 53%`}</div>
                         <div>{`Toc do tang truong = ROE * Ty le tai dau tu`}</div>
@@ -325,6 +332,7 @@ class ImportantIndexes extends React.Component<IProps, IState> {
                         <div>{`ROE < Ke (chi phi su dung VCSH) ==> Hoat dong kem hieu qua. VD: MWG ROE = 38.7%, Ke = 9.6%`}</div>
                         <div>{`Cach 3: Tim DN co loi the canh tranh ben vung`}</div>
                         <div>{`VD: cp Vinh Hoan: cung la xuat khau ca tra, nhung xuat khau sang thi truong My ==> gia > 50% so voi thi truong khac ==> loi the canh tranh ben vung`}</div>
+                        <br />
                         <div>{`Bonus: Mo hinh Dupont: ROE = Ty suat loi nhuan rong * Vong quay tai san * Don bay tai chinh`}</div>
                         <div>{`Ty suat LN rong = LNST / Doanh thu`}</div>
                         <div>{`Vong quay tai san = Doanh thu / Tong tai san`}</div>
@@ -414,7 +422,8 @@ const mapDispatchToProps = {
     getYearlyFinancialInfo,
     getQuarterlyFinancialInfo,
     getLastestFinancialInfo,
-    getLastestFinancialReports
+    getLastestFinancialReports,
+    getHistoricalQuotes
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ImportantIndexes);
