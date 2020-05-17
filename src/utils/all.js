@@ -91,10 +91,32 @@ export const mapDataImportantIndexes = (dataType1, dataType2, dataType3, dataTyp
     const loiNhuanGop = dataType1.filter(i => i.ID === 15)[0]
     const LNST = dataType1.filter(i => i.ID === 19)[0]
     const PriceClose = dataType4[0].PriceClose
-    const PB = dataType5.PB
-    const DilutedPE = dataType5.DilutedPE
 
-    const yearsArray = [2014, 2015, 2016, 2017, 2018, 2019]
+    // GET DIRECT INDEX
+    const {
+        PE,
+        PS,
+        PB,
+        EPS,
+        QuickRatio,
+        CurrentRatio,
+        TotalDebtOverEquity,
+        TotalDebtOverAssets,
+        TotalAssetsTurnover,
+        InventoryTurnover,
+        ReceivablesTurnover,
+        GrossMargin,
+        OperatingMargin,
+        EBITMargin,
+        NetProfitMargin,
+        ROA,
+        ROE,
+        ROIC,
+        DilutedEPS,
+        DilutedPE
+    } = dataType5
+
+    const yearsArray = [2014, 2015, 2016, 2017, 2018, 2019, 'Current']
 
     // INDEX 1
     let tyLeThanhToanHienHanhValues = [];
@@ -126,25 +148,25 @@ export const mapDataImportantIndexes = (dataType1, dataType2, dataType3, dataTyp
     let PBValues = []
 
     yearsArray.map(i => {
-        const taiSanNganHanValue = taiSanNganHan && taiSanNganHan.Values && taiSanNganHan.Values.filter(j => j.Year === i)[0].Value
-        const noNganHanValue = noNganHan && noNganHan.Values && noNganHan.Values.filter(j => j.Year === i)[0].Value
-        const hangTonKhoValue = hangTonKho && hangTonKho.Values && hangTonKho.Values.filter(j => j.Year === i)[0].Value
-        const tienVsTuongDuongTienValue = tienVsTuongDuongTien && tienVsTuongDuongTien.Values && tienVsTuongDuongTien.Values.filter(j => j.Year === i)[0].Value
-        const loiNhuanTruocThueValue = loiNhuanTruocThue && loiNhuanTruocThue.Values && loiNhuanTruocThue.Values.filter(j => j.Year === i)[0].Value
-        const chiPhiLayVayValue = chiPhiLayVay && chiPhiLayVay.Values && chiPhiLayVay.Values.filter(j => j.Year === i)[0].Value
-        const noVayValue = noVay && noVay.Values && noVay.Values.filter(j => j.Year === i)[0].Value
-        const noVayDaiHanValue = noVayDaiHan && noVayDaiHan.Values && noVayDaiHan.Values.filter(j => j.Year === i)[0].Value
-        const noVayNganHanValue = noVayNganHan && noVayNganHan.Values && noVayNganHan.Values.filter(j => j.Year === i)[0].Value
-        const VCSHValue = VCSH && VCSH.Values && VCSH.Values.filter(j => j.Year === i)[0].Value
-        const tongCongNguonVonValue = tongCongNguonVon && tongCongNguonVon.Values && tongCongNguonVon.Values.filter(j => j.Year === i)[0].Value
-        const doanhThuThuanValue = doanhThuThuan && doanhThuThuan.Values && doanhThuThuan.Values.filter(j => j.Year === i)[0].Value
-        const phaiThuNganHanKhachHangValue = phaiThuNganHanKhachHang && phaiThuNganHanKhachHang.Values && phaiThuNganHanKhachHang.Values.filter(j => j.Year === i)[0].Value
-        const phaiThuDaiHanKhachHangValue = phaiThuDaiHanKhachHang && phaiThuDaiHanKhachHang.Values && phaiThuDaiHanKhachHang.Values.filter(j => j.Year === i)[0].Value
-        const phaiTraNguoiBanNganHanValue = phaiTraNguoiBanNganHan && phaiTraNguoiBanNganHan.Values && phaiTraNguoiBanNganHan.Values.filter(j => j.Year === i)[0].Value
-        const phaiTraNguoiBanDaiHanValue = phaiTraNguoiBanDaiHan && phaiTraNguoiBanDaiHan.Values && phaiTraNguoiBanDaiHan.Values.filter(j => j.Year === i)[0].Value
-        const tongCongTaiSanValue = tongCongTaiSan && tongCongTaiSan.Values && phaiTraNguoiBanDaiHan.Values.filter(j => j.Year === i)[0].Value
-        const loiNhuanGopValue = loiNhuanGop && loiNhuanGop.Values && phaiTraNguoiBanDaiHan.Values.filter(j => j.Year === i)[0].Value
-        const LNSTValue = LNST && LNST.Values && LNST.Values.filter(j => j.Year === i)[0].Value
+        const taiSanNganHanValue = taiSanNganHan && taiSanNganHan.Values && taiSanNganHan.Values.filter(j => j.Year === i).length && taiSanNganHan.Values.filter(j => j.Year === i)[0].Value
+        const noNganHanValue = noNganHan && noNganHan.Values && noNganHan.Values.filter(j => j.Year === i).length && noNganHan.Values.filter(j => j.Year === i)[0].Value
+        const hangTonKhoValue = hangTonKho && hangTonKho.Values && hangTonKho.Values.filter(j => j.Year === i).length && hangTonKho.Values.filter(j => j.Year === i)[0].Value
+        const tienVsTuongDuongTienValue = tienVsTuongDuongTien && tienVsTuongDuongTien.Values && tienVsTuongDuongTien.Values.filter(j => j.Year === i).length && tienVsTuongDuongTien.Values.filter(j => j.Year === i)[0].Value
+        const loiNhuanTruocThueValue = loiNhuanTruocThue && loiNhuanTruocThue.Values && loiNhuanTruocThue.Values.filter(j => j.Year === i).length && loiNhuanTruocThue.Values.filter(j => j.Year === i)[0].Value
+        const chiPhiLayVayValue = chiPhiLayVay && chiPhiLayVay.Values && chiPhiLayVay.Values.filter(j => j.Year === i).length && chiPhiLayVay.Values.filter(j => j.Year === i)[0].Value
+        const noVayValue = noVay && noVay.Values && noVay.Values.filter(j => j.Year === i).length && noVay.Values.filter(j => j.Year === i)[0].Value
+        const noVayDaiHanValue = noVayDaiHan && noVayDaiHan.Values && noVayDaiHan.Values.filter(j => j.Year === i).length && noVayDaiHan.Values.filter(j => j.Year === i)[0].Value
+        const noVayNganHanValue = noVayNganHan && noVayNganHan.Values && noVayNganHan.Values.filter(j => j.Year === i).length && noVayNganHan.Values.filter(j => j.Year === i)[0].Value
+        const VCSHValue = VCSH && VCSH.Values && VCSH.Values.filter(j => j.Year === i).length && VCSH.Values.filter(j => j.Year === i)[0].Value
+        const tongCongNguonVonValue = tongCongNguonVon && tongCongNguonVon.Values && tongCongNguonVon.Values.filter(j => j.Year === i).length && tongCongNguonVon.Values.filter(j => j.Year === i)[0].Value
+        const doanhThuThuanValue = doanhThuThuan && doanhThuThuan.Values && doanhThuThuan.Values.filter(j => j.Year === i).length && doanhThuThuan.Values.filter(j => j.Year === i)[0].Value
+        const phaiThuNganHanKhachHangValue = phaiThuNganHanKhachHang && phaiThuNganHanKhachHang.Values && phaiThuNganHanKhachHang.Values.filter(j => j.Year === i).length && phaiThuNganHanKhachHang.Values.filter(j => j.Year === i)[0].Value
+        const phaiThuDaiHanKhachHangValue = phaiThuDaiHanKhachHang && phaiThuDaiHanKhachHang.Values && phaiThuDaiHanKhachHang.Values.filter(j => j.Year === i).length && phaiThuDaiHanKhachHang.Values.filter(j => j.Year === i)[0].Value
+        const phaiTraNguoiBanNganHanValue = phaiTraNguoiBanNganHan && phaiTraNguoiBanNganHan.Values && phaiTraNguoiBanNganHan.Values.filter(j => j.Year === i).length && phaiTraNguoiBanNganHan.Values.filter(j => j.Year === i)[0].Value
+        const phaiTraNguoiBanDaiHanValue = phaiTraNguoiBanDaiHan && phaiTraNguoiBanDaiHan.Values && phaiTraNguoiBanDaiHan.Values.filter(j => j.Year === i).length && phaiTraNguoiBanDaiHan.Values.filter(j => j.Year === i)[0].Value
+        const tongCongTaiSanValue = tongCongTaiSan && tongCongTaiSan.Values && phaiTraNguoiBanDaiHan.Values.filter(j => j.Year === i).length && phaiTraNguoiBanDaiHan.Values.filter(j => j.Year === i)[0].Value
+        const loiNhuanGopValue = loiNhuanGop && loiNhuanGop.Values && phaiTraNguoiBanDaiHan.Values.filter(j => j.Year === i).length && phaiTraNguoiBanDaiHan.Values.filter(j => j.Year === i)[0].Value
+        const LNSTValue = LNST && LNST.Values && LNST.Values.filter(j => j.Year === i).length && LNST.Values.filter(j => j.Year === i)[0].Value
 
         let dataType3Indexes = dataType3.filter(j => Number(j.Year) === i)
 
@@ -153,39 +175,39 @@ export const mapDataImportantIndexes = (dataType1, dataType2, dataType3, dataTyp
             Year: i,
             Quarter: 0,
             // Value: (taiSanNganHanValue && noNganHanValue) ? taiSanNganHanValue / noNganHanValue : null
-            Value: dataType3Indexes.length && dataType3Indexes[0].CurrentRatio
+            Value: i === 'Current' ? CurrentRatio : (dataType3Indexes.length && dataType3Indexes[0].CurrentRatio)
         })
         tyLeThanhToanNhanhValues.push({
             Year: i,
             Quarter: 0,
             // Value: (taiSanNganHanValue && noNganHanValue && hangTonKhoValue) ? (taiSanNganHanValue - hangTonKhoValue) / noNganHanValue : null
-            Value: dataType3Indexes.length && dataType3Indexes[0].QuickRatio
+            Value: i === 'Current' ? QuickRatio : (dataType3Indexes.length && dataType3Indexes[0].QuickRatio)
         })
         tyLeThanhToanTucThoiValues.push({
             Year: i,
             Quarter: 0,
-            Value: (tienVsTuongDuongTienValue && noNganHanValue) ? tienVsTuongDuongTienValue / noNganHanValue : null
+            Value: i === 'Current' ? null : ((tienVsTuongDuongTienValue && noNganHanValue) ? tienVsTuongDuongTienValue / noNganHanValue : null)
         })
         khaNangThanhToanLaiVayValues.push({
             Year: i,
             Quarter: 0,
-            Value: (loiNhuanTruocThueValue && chiPhiLayVayValue) ? (loiNhuanTruocThueValue + chiPhiLayVayValue) / chiPhiLayVayValue : null
+            Value: i === 'Current' ? null : ((loiNhuanTruocThueValue && chiPhiLayVayValue) ? (loiNhuanTruocThueValue + chiPhiLayVayValue) / chiPhiLayVayValue : null)
         })
         // INDEX 2
         tyLeNoVay_VCSHValues.push({
             Year: i,
             Quarter: 0,
-            Value: (noVayValue && VCSHValue) ? noVayValue / VCSHValue : null
+            Value: i === 'Current' ? TotalDebtOverEquity : ((noVayValue && VCSHValue) ? noVayValue / VCSHValue : null)
         })
         tyLeNovayDaiHan_VCSHValues.push({
             Year: i,
             Quarter: 0,
-            Value: (noVayDaiHanValue && VCSHValue) ? noVayDaiHanValue / VCSHValue : null
+            Value: i === 'Current' ? null : ((noVayDaiHanValue && VCSHValue) ? noVayDaiHanValue / VCSHValue : null)
         })
         tyLeNoVayNganHan_VCSHValues.push({
             Year: i,
             Quarter: 0,
-            Value: (noVayNganHanValue && VCSHValue) ? noVayNganHanValue / VCSHValue : null
+            Value: i === 'Current' ? null : ((noVayNganHanValue && VCSHValue) ? noVayNganHanValue / VCSHValue : null)
         })
         // INDEX 3
 
@@ -203,59 +225,59 @@ export const mapDataImportantIndexes = (dataType1, dataType2, dataType3, dataTyp
         soVongQuayHangTonKhoValues.push({
             Year: i,
             Quarter: 0,
-            Value: dataType3Indexes.length && dataType3Indexes[0].InventoryTurnover
+            Value: i === 'Current' ? InventoryTurnover : (dataType3Indexes.length && dataType3Indexes[0].InventoryTurnover)
         })
         soVongQuayPhaiThuKhachHangValues.push({
             Year: i,
             Quarter: 0,
-            Value: dataType3Indexes.length && dataType3Indexes[0].ReceivablesTurnover
+            Value: i === 'Current' ? ReceivablesTurnover : (dataType3Indexes.length && dataType3Indexes[0].ReceivablesTurnover)
         })
         soVongQuayPhaiTraNguoiBanValues.push({
             Year: i,
             Quarter: 0,
-            Value: soVongQuayPhaiTraNguoiBan
+            Value: i === 'Current' ? null : soVongQuayPhaiTraNguoiBan
         })
         vongQuayTienMatValues.push({
             Year: i,
             Quarter: 0,
-            Value: vongQuayTienMat
+            Value: i === 'Current' ? null : vongQuayTienMat
         })
         vongQuayTaiSanValues.push({
             Year: i,
             Quarter: 0,
-            Value: dataType3Indexes.length && dataType3Indexes[0].AssetsTurnover
+            Value: i === 'Current' ? null : (dataType3Indexes.length && dataType3Indexes[0].AssetsTurnover)
             // (doanhThuThuanValue && tongCongTaiSanValue) ? doanhThuThuanValue / tongCongTaiSanValue : null
         })
         // INDEX 4
         bienLoiNhuanGopValues.push({
             Year: i,
             Quarter: 0,
-            Value: dataType3Indexes.length && dataType3Indexes[0].GrossMargin
+            Value: i === 'Current' ? GrossMargin : (dataType3Indexes.length && dataType3Indexes[0].GrossMargin)
         })
         ROSValues.push({
             Year: i,
             Quarter: 0,
-            Value: (LNSTValue && doanhThuThuanValue) ? LNSTValue / doanhThuThuanValue : null
+            Value: i === 'Current' ? null : ((LNSTValue && doanhThuThuanValue) ? LNSTValue / doanhThuThuanValue : null)
         })
         ROAValues.push({
             Year: i,
             Quarter: 0,
-            Value: dataType3Indexes.length && dataType3Indexes[0].ROA
+            Value: i === 'Current' ? ROA : (dataType3Indexes.length && dataType3Indexes[0].ROA)
         })
         ROEValues.push({
             Year: i,
             Quarter: 0,
-            Value: dataType3Indexes.length && dataType3Indexes[0].ROE
+            Value: i === 'Current' ? ROE : (dataType3Indexes.length && dataType3Indexes[0].ROE)
         })
         heSoDonBayTaiChinhValues.push({
             Year: i,
             Quarter: 0,
-            Value: (dataType3Indexes.length && dataType3Indexes[0].ROE && dataType3Indexes[0].ROA) ? dataType3Indexes[0].ROE / dataType3Indexes[0].ROA : null
+            Value: i === 'Current' ? ROE / ROA : ((dataType3Indexes.length && dataType3Indexes[0].ROE && dataType3Indexes[0].ROA) ? dataType3Indexes[0].ROE / dataType3Indexes[0].ROA : null)
         })
         EPSValues.push({
             Year: i,
             Quarter: 0,
-            Value: dataType3Indexes.length && dataType3Indexes[0].DilutedEPS
+            Value: i === 'Current' ? DilutedEPS : (dataType3Indexes.length && dataType3Indexes[0].DilutedEPS)
         })
         // INDEX 5
         // INDEX 6
@@ -263,12 +285,12 @@ export const mapDataImportantIndexes = (dataType1, dataType2, dataType3, dataTyp
             Year: i,
             Quarter: 0,
             // Value: (PriceClose && dataType3Indexes.length && dataType3Indexes[0].DilutedEPS) ? PriceClose / dataType3Indexes[0].DilutedEPS : null
-            Value: DilutedPE
+            Value: i === 'Current' ? DilutedPE : DilutedPE
         })
         PBValues.push({
             Year: i,
             Quarter: 0,
-            Value: PB
+            Value: i === 'Current' ? PB : PB
         })
 
 
@@ -419,6 +441,6 @@ export const mapDataImportantIndexes = (dataType1, dataType2, dataType3, dataTyp
         Name: "PB",
         Values: PBValues
     })
-
+    console.log(result)
     return result
 }

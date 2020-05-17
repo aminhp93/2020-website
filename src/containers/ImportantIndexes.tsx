@@ -63,7 +63,7 @@ class ImportantIndexes extends React.Component<IProps, IState> {
     }
 
     getColumnDefs = () => {
-        const yearsArray = [2014, 2015, 2016, 2017, 2018, 2019]
+        const yearsArray = [2014, 2015, 2016, 2017, 2018, 2019, 'Current']
         let result = [{
             headerName: 'Name',
             cellRenderer: (params) => {
