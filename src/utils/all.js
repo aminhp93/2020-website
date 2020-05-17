@@ -66,7 +66,7 @@ export function mapDataTwoDate(data1, data2, allStocks) {
 export const arrayToKeyValue = (array, key = 'id') =>
     Object.fromEntries(array.map(item => [item[key], item]))
 
-export const mapDataImportantIndexes = (dataType1, dataType2) => {
+export const mapDataImportantIndexes = (dataType1, dataType2, dataType3) => {
     if (!dataType1 || !dataType2) return []
     let result = []
 
@@ -144,11 +144,14 @@ export const mapDataImportantIndexes = (dataType1, dataType2) => {
         const loiNhuanGopValue = loiNhuanGop && loiNhuanGop.Values && phaiTraNguoiBanDaiHan.Values.filter(j => j.Year === i)[0].Value
         const LNSTValue = LNST && LNST.Values && LNST.Values.filter(j => j.Year === i)[0].Value
 
+        let dataType3Indexes = dataType3.filter(j => Number(j.Year) === i)
+
         // INDEX 1
         tyLeThanhToanHienHanhValues.push({
             Year: i,
             Quarter: 0,
-            Value: (taiSanNganHanValue && noNganHanValue) ? taiSanNganHanValue / noNganHanValue : null
+            // Value: (taiSanNganHanValue && noNganHanValue) ? taiSanNganHanValue / noNganHanValue : null
+            Value: dataType3Indexes.length && dataType3Indexes[0].CurrentRatio
         })
         tyLeThanhToanNhanhValues.push({
             Year: i,
@@ -182,19 +185,27 @@ export const mapDataImportantIndexes = (dataType1, dataType2) => {
             Value: (noVayNganHanValue && VCSHValue) ? noVayNganHanValue / VCSHValue : null
         })
         // INDEX 3
-        let soVongQuayHangTonKho = (tongCongNguonVonValue && hangTonKhoValue) ? tongCongNguonVonValue / hangTonKhoValue : null
-        let soVongQuayPhaiThuKhachHang = (doanhThuThuanValue && (phaiThuNganHanKhachHangValue || phaiThuNganHanKhachHangValue === 0) && (phaiThuDaiHanKhachHangValue || phaiThuDaiHanKhachHangValue === 0)) ? doanhThuThuanValue / (phaiThuNganHanKhachHangValue + phaiThuDaiHanKhachHangValue) : null
+
+        // let soVongQuayHangTonKho = (tongCongNguonVonValue && hangTonKhoValue) ? tongCongNguonVonValue / hangTonKhoValue : null
+        // let soVongQuayPhaiThuKhachHang = (doanhThuThuanValue && (phaiThuNganHanKhachHangValue || phaiThuNganHanKhachHangValue === 0) && (phaiThuDaiHanKhachHangValue || phaiThuDaiHanKhachHangValue === 0)) ? doanhThuThuanValue / (phaiThuNganHanKhachHangValue + phaiThuDaiHanKhachHangValue) : null
         let soVongQuayPhaiTraNguoiBan = (tongCongNguonVonValue && (phaiTraNguoiBanNganHanValue || phaiTraNguoiBanNganHanValue === 0) && (phaiTraNguoiBanDaiHanValue || phaiTraNguoiBanDaiHanValue === 0)) ? tongCongNguonVonValue / (phaiTraNguoiBanNganHanValue + phaiTraNguoiBanDaiHanValue) : null
-        let vongQuayTienMat = (soVongQuayHangTonKho && soVongQuayPhaiThuKhachHang && soVongQuayPhaiTraNguoiBan) ? (360 / soVongQuayHangTonKho + 360 / soVongQuayPhaiThuKhachHang + 360 / soVongQuayPhaiTraNguoiBan) : null
+        let vongQuayTienMat = (
+            dataType3Indexes.length
+            && dataType3Indexes[0].InventoryTurnover
+            && dataType3Indexes[0].ReceivablesTurnover
+            && soVongQuayPhaiTraNguoiBan
+        )
+            ? (360 / dataType3Indexes[0].InventoryTurnover + 360 / dataType3Indexes[0].ReceivablesTurnover + 360 / soVongQuayPhaiTraNguoiBan)
+            : null
         soVongQuayHangTonKhoValues.push({
             Year: i,
             Quarter: 0,
-            Value: soVongQuayHangTonKho
+            Value: dataType3Indexes.length && dataType3Indexes[0].InventoryTurnover
         })
         soVongQuayPhaiThuKhachHangValues.push({
             Year: i,
             Quarter: 0,
-            Value: soVongQuayPhaiThuKhachHang
+            Value: dataType3Indexes.length && dataType3Indexes[0].ReceivablesTurnover
         })
         soVongQuayPhaiTraNguoiBanValues.push({
             Year: i,
@@ -209,7 +220,8 @@ export const mapDataImportantIndexes = (dataType1, dataType2) => {
         vongQuayTaiSanValues.push({
             Year: i,
             Quarter: 0,
-            Value: (doanhThuThuanValue && tongCongTaiSanValue) ? doanhThuThuanValue / tongCongTaiSanValue : null
+            Value: dataType3Indexes.length && dataType3Indexes[0].AssetsTurnover
+            // (doanhThuThuanValue && tongCongTaiSanValue) ? doanhThuThuanValue / tongCongTaiSanValue : null
         })
         // INDEX 4
         // INDEX 5
@@ -219,24 +231,24 @@ export const mapDataImportantIndexes = (dataType1, dataType2) => {
     })
 
     // INDEX 1
-    result.push(taiSanNganHan)
-    result.push(noNganHan)
+    // result.push(taiSanNganHan)
+    // result.push(noNganHan)
     result.push({
         ID: "tyLeThanhToanHienHanh",
         Name: "tyLeThanhToanHienHanh",
         Values: tyLeThanhToanHienHanhValues
     })
 
-    result.push(taiSanNganHan)
-    result.push(noNganHan)
+    // result.push(taiSanNganHan)
+    // result.push(noNganHan)
     result.push({
         ID: "tyLeThanhToanNhanh",
         Name: "tyLeThanhToanNhanh",
         Values: tyLeThanhToanNhanhValues
     })
 
-    result.push(taiSanNganHan)
-    result.push(noNganHan)
+    // result.push(taiSanNganHan)
+    // result.push(noNganHan)
     result.push({
         ID: "tyLeThanhToanTucThoi",
         Name: "tyLeThanhToanTucThoi",
@@ -244,8 +256,8 @@ export const mapDataImportantIndexes = (dataType1, dataType2) => {
     })
 
 
-    result.push(taiSanNganHan)
-    result.push(noNganHan)
+    // result.push(taiSanNganHan)
+    // result.push(noNganHan)
     result.push({
         ID: "khaNangThanhToanLaiVay",
         Name: "khaNangThanhToanLaiVay",
@@ -253,24 +265,24 @@ export const mapDataImportantIndexes = (dataType1, dataType2) => {
     })
 
     // INDEX 2
-    result.push(loiNhuanTruocThue)
-    result.push(VCSH)
+    // result.push(noVay)
+    // result.push(VCSH)
     result.push({
         ID: "tyLeNoVay_VCSH",
         Name: "tyLeNoVay_VCSH",
         Values: tyLeNoVay_VCSHValues
     })
 
-    result.push(noVayDaiHan)
-    result.push(VCSH)
+    // result.push(noVayDaiHan)
+    // result.push(VCSH)
     result.push({
         ID: "tyLeNovayDaiHan_VCSH",
         Name: "tyLeNovayDaiHan_VCSH",
         Values: tyLeNovayDaiHan_VCSHValues
     })
 
-    result.push(noVayNganHan)
-    result.push(VCSH)
+    // result.push(noVayNganHan)
+    // result.push(VCSH)
     result.push({
         ID: "tyLeNoVayNganHan_VCSH",
         Name: "tyLeNoVayNganHan_VCSH",
@@ -278,26 +290,26 @@ export const mapDataImportantIndexes = (dataType1, dataType2) => {
     })
 
     // INDEX 3
-    result.push(tongCongNguonVon)
-    result.push(hangTonKho)
+    // result.push(tongCongNguonVon)
+    // result.push(hangTonKho)
     result.push({
         ID: "soVongQuayHangTonKho",
         Name: "soVongQuayHangTonKho",
         Values: soVongQuayHangTonKhoValues
     })
 
-    result.push(doanhThuThuan)
-    result.push(phaiThuNganHanKhachHang)
-    result.push(phaiThuDaiHanKhachHang)
+    // result.push(doanhThuThuan)
+    // result.push(phaiThuNganHanKhachHang)
+    // result.push(phaiThuDaiHanKhachHang)
     result.push({
         ID: "soVongQuayPhaiThuKhachHang",
         Name: "soVongQuayPhaiThuKhachHang",
         Values: soVongQuayPhaiThuKhachHangValues
     })
 
-    result.push(tongCongNguonVon)
-    result.push(phaiTraNguoiBanNganHan)
-    result.push(phaiTraNguoiBanDaiHan)
+    // result.push(tongCongNguonVon)
+    // // result.push(phaiTraNguoiBanNganHan)
+    // result.push(phaiTraNguoiBanDaiHan)
     result.push({
         ID: "soVongQuayPhaiTraNguoiBan",
         Name: "soVongQuayPhaiTraNguoiBan",
@@ -310,8 +322,8 @@ export const mapDataImportantIndexes = (dataType1, dataType2) => {
         Values: vongQuayTienMatValues
     })
 
-    result.push(doanhThuThuan)
-    result.push(tongCongTaiSan)
+    // result.push(doanhThuThuan)
+    // result.push(tongCongTaiSan)
     result.push({
         ID: "vongQuayTaiSan",
         Name: "vongQuayTaiSan",

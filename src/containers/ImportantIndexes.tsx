@@ -72,10 +72,10 @@ class ImportantIndexes extends React.Component<IProps, IState> {
             result.push({
                 headerName: JSON.stringify(year),
                 cellRenderer: (params) => {
-                    console.log(params.data)
                     if (params.data.Values && params.data.Values.length) {
                         const data = params.data.Values.filter(item => item.Year === year)
                         const returnValue = data.length && data[0].Value
+                        if (!returnValue) return null
                         if (returnValue < 1000) {
                             return returnValue.toFixed(1)
                         } else if (returnValue > BILLION_UNIT) {
@@ -91,9 +91,7 @@ class ImportantIndexes extends React.Component<IProps, IState> {
     }
 
     crawlData = async () => {
-        // await this.props.getYearlyFinancialInfo()
-        // await this.props.getQuarterlyFinancialInfo()
-        // await this.props.getLastestFinancialInfo()
+
         const dataType1 = {
             financialType: 1,
             year: 2020,
@@ -106,9 +104,11 @@ class ImportantIndexes extends React.Component<IProps, IState> {
         }
         const res1 = await this.props.getLastestFinancialReports(dataType1)
         const res2 = await this.props.getLastestFinancialReports(dataType2)
-        console.log(res1, res2)
-        const rowData = mapDataImportantIndexes(res1.data, res2.data)
-        console.log(rowData)
+        const res3 = await this.props.getYearlyFinancialInfo()
+        // const res4 = await this.props.getQuarterlyFinancialInfo()
+        // const res5 = await this.props.getLastestFinancialInfo()
+        console.log(res1, res2, res3)
+        const rowData = mapDataImportantIndexes(res1.data, res2.data, res3.data)
         this.setState({ rowData })
     }
 
@@ -234,6 +234,18 @@ class ImportantIndexes extends React.Component<IProps, IState> {
     // P/B = gia thi truong / gia tri so sach 1 co phan thuong
 
 
+    // filter = (data, key) => {
+    //     switch (key) {
+    //         case '1':
+    //             return data.filter(i => ['tyLeThanhToanHienHanh', 'tyLeThanhToanNhanh', 'tyLeThanhToanTucThoi', 'khaNangThanhToanLaiVay'].includes(i.Name))
+    //         case '2':
+    //             return data.filter(i => ['tyLeNoVay_VCSH', 'tyLeNovayDaiHan_VCSH', 'tyLeNoVayNganHan_VCSH'].includes(i.Name))
+    //         case '3':
+    //             return data.filter(i => ['tyLeThanhToanHienHanh', 'tyLeThanhToanNhanh', 'tyLeThanhToanTucThoi', 'khaNangThanhToanLaiVay'].includes(i.Name))
+    //         default:
+    //             return data
+    //     }
+    // }
 
     render() {
         const { modules, columnDefs, defaultColDef, rowData } = this.state;
@@ -241,7 +253,9 @@ class ImportantIndexes extends React.Component<IProps, IState> {
         return (
             <div>
                 <div>6 nhom chi so co Ban</div>
-                <Tabs defaultActiveKey='1'>
+                <Tabs defaultActiveKey='2'
+                // onChange={key => this.setState({ rowData: this.filter(rowData, key) })}
+                >
                     <TabPane tab="1. kha nang thanh toan" key="1">
                         <div>{`1. Ty le thanh toan hien hanh = Tai san ngan han / No ngan han`}</div>
                         <div>{`< 1 ==> kha nang thanh toan yeu`}</div>
@@ -394,7 +408,6 @@ const mapStateToProps = state => {
         stocks: get(state, 'stocks'),
         lastUpdatedDate: get(state, 'lastUpdatedDate')
     }
-
 }
 
 const mapDispatchToProps = {

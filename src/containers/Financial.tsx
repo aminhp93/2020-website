@@ -9,12 +9,14 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 
 import {
-    getYearlyFinancialInfoUrl,
+    getYearlyFinancialInfo,
+    getQuarterlyFinancialInfo,
+    getLastestFinancialInfo,
+} from '../reducers/stocks';
+import {
     getYearlyFinancialInfoUpdateUrl,
-    getQuarterlyFinancialInfoUrl,
     getQuarterlyFinancialInfoUpdateUrl,
     getLastestFinancialReportsUrl,
-    getLastestFinancialInfoUrl,
     getLastestFinancialInfoUpdateUrl,
     getLastestFinancialReportsNameUpdateUrl,
     getLastestFinancialReportsValueUpdateUrl
@@ -47,6 +49,9 @@ const TYPE_QUY = ["E1VFVN30", "FUCVREIT", "FUCTVGF1"]
 interface IProps {
     selectedSymbol: string,
     stocks: IStock,
+    getYearlyFinancialInfo: any,
+    getQuarterlyFinancialInfo: any,
+    getLastestFinancialInfo: any,
 }
 
 interface IState {
@@ -91,51 +96,23 @@ class Financial extends React.Component<IProps, IState> {
     }
 
     crawlData = async () => {
-        const { selectedSymbol } = this.props;
-        if (!selectedSymbol) return;
-        let YearlyFinancialInfoArray = null;
-        let QuarterlyFinancialInfoArray = null
-        let LastestFinancialInfoObj = null
-        await axios({
-            method: 'get',
-            url: getYearlyFinancialInfoUrl(selectedSymbol)
-        })
-            .then(response => {
-                if (response.data) {
-                    YearlyFinancialInfoArray = response.data
-                }
-            })
-            .catch(error => console.log(error))
-
-        await axios({
-            method: 'get',
-            url: getQuarterlyFinancialInfoUrl(selectedSymbol)
-        })
-            .then(response => {
-                if (response.data) {
-                    QuarterlyFinancialInfoArray = response.data
-                }
-            })
-            .catch(error => console.log(error))
-
-        await axios({
-            method: 'get',
-            url: getLastestFinancialInfoUrl(selectedSymbol)
-        })
-            .then(response => {
-                if (response.data) {
-                    LastestFinancialInfoObj = response.data
-                }
-            })
-            .catch(error => console.log(error))
-        if (YearlyFinancialInfoArray && QuarterlyFinancialInfoArray && LastestFinancialInfoObj) {
-            this.setState({
-                YearlyFinancialInfoArray,
-                QuarterlyFinancialInfoArray,
-                LastestFinancialInfoObj
-            })
+        try {
+            const res1 = await this.props.getYearlyFinancialInfo()
+            let YearlyFinancialInfoArray = res1.data
+            const res2 = await this.props.getQuarterlyFinancialInfo()
+            let QuarterlyFinancialInfoArray = res2.data
+            const res3 = await this.props.getLastestFinancialInfo()
+            let LastestFinancialInfoObj = res3.data
+            if (YearlyFinancialInfoArray && QuarterlyFinancialInfoArray && LastestFinancialInfoObj) {
+                this.setState({
+                    YearlyFinancialInfoArray,
+                    QuarterlyFinancialInfoArray,
+                    LastestFinancialInfoObj
+                })
+            }
+        } catch (error) {
+            console.log(error)
         }
-
     }
 
     getLastestFinancialReports = () => {
@@ -1051,6 +1028,9 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
+    getYearlyFinancialInfo,
+    getQuarterlyFinancialInfo,
+    getLastestFinancialInfo,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Financial);
