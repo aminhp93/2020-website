@@ -12,11 +12,11 @@ import {
     getYearlyFinancialInfo,
     getQuarterlyFinancialInfo,
     getLastestFinancialInfo,
+    getLastestFinancialReports,
 } from '../reducers/stocks';
 import {
     getYearlyFinancialInfoUpdateUrl,
     getQuarterlyFinancialInfoUpdateUrl,
-    getLastestFinancialReportsUrl,
     getLastestFinancialInfoUpdateUrl,
     getLastestFinancialReportsNameUpdateUrl,
     getLastestFinancialReportsValueUpdateUrl
@@ -52,6 +52,7 @@ interface IProps {
     getYearlyFinancialInfo: any,
     getQuarterlyFinancialInfo: any,
     getLastestFinancialInfo: any,
+    getLastestFinancialReports: any,
 }
 
 interface IState {
@@ -115,11 +116,9 @@ class Financial extends React.Component<IProps, IState> {
         }
     }
 
-    getLastestFinancialReports = () => {
-        const { selectedSymbol } = this.props;
+    getLastestFinancialReports = async () => {
         const { lastestFinancialReportsType } = this.state;
         let type_index = 1
-        if (!selectedSymbol) return;
         switch (lastestFinancialReportsType) {
             case LATEST_FINANCIAL_REPORTS.TYPE_1:
                 type_index = 1
@@ -138,18 +137,14 @@ class Financial extends React.Component<IProps, IState> {
         }
         let quarter = this.state.period === 'quarterly' ? 4 : 0
         let year = 2020
-        axios({
-            method: 'get',
-            url: getLastestFinancialReportsUrl(selectedSymbol, type_index, year, quarter)
-        })
-            .then(response => {
-                if (response.data) {
-                    this.setState({
-                        LastestFinancialReportsArray: response.data
-                    })
-                }
+        try {
+            const res = await this.props.getLastestFinancialReports({ financialType: type_index, year, quarter })
+            this.setState({
+                LastestFinancialReportsArray: res.data
             })
-            .catch(error => console.log(error))
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     mapDataRevenueTable = (data, data2, isProfit) => {
@@ -170,7 +165,6 @@ class Financial extends React.Component<IProps, IState> {
                             } else {
                                 itemObj[keys[k]] = (item.NetSales_MRQ / BILLION_UNIT).toFixed(2)
                             }
-
                         }
                     }
                 }
@@ -260,8 +254,6 @@ class Financial extends React.Component<IProps, IState> {
                                 <Bar dataKey="uv" fill="#8884d8" />
                             </BarChart>
                         </div>
-
-
                     )
                 }
             })
@@ -577,29 +569,6 @@ class Financial extends React.Component<IProps, IState> {
         await this.updateLastestFinancialReportsValuePartial(1500, 1600);
         await this.updateLastestFinancialReportsValuePartial(1600, 1700);
         await this.updateLastestFinancialReportsValuePartial(1700, 1800);
-    }
-
-    test = (symbol, resolve) => {
-        const hostName = 'https://svr1.fireant.vn';
-        const url = `${hostName}/api/Data/Finance/LastestFinancialReports?symbol=${symbol}&type=2&year=2020&quarter=0&count=5`
-        axios({
-            method: 'get',
-            url
-        })
-            .then(response => {
-                if (response.data && response.data.length) {
-                    if ((response.data[3] || {}).Name === '2. Lãi trái phiếu được nhận ') {
-                        xxx.push(symbol)
-                    }
-                    console.log(xxx)
-                }
-                resolve && resolve(response.data)
-
-            })
-            .catch(error => {
-                console.log(error)
-                resolve && resolve(error)
-            })
     }
 
     // RENDER PART
@@ -1029,6 +998,7 @@ const mapDispatchToProps = {
     getYearlyFinancialInfo,
     getQuarterlyFinancialInfo,
     getLastestFinancialInfo,
+    getLastestFinancialReports
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Financial);

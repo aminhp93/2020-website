@@ -92,6 +92,7 @@ export const mapDataImportantIndexes = (dataType1, dataType2, dataType3, dataTyp
     const LNST = dataType1.filter(i => i.ID === 19)[0]
     const PriceClose = dataType4[0].PriceClose
     const PB = dataType5.PB
+    const DilutedPE = dataType5.DilutedPE
 
     const yearsArray = [2014, 2015, 2016, 2017, 2018, 2019]
 
@@ -261,7 +262,8 @@ export const mapDataImportantIndexes = (dataType1, dataType2, dataType3, dataTyp
         PEValues.push({
             Year: i,
             Quarter: 0,
-            Value: (PriceClose && dataType3Indexes.length && dataType3Indexes[0].DilutedEPS) ? PriceClose / dataType3Indexes[0].DilutedEPS : null
+            // Value: (PriceClose && dataType3Indexes.length && dataType3Indexes[0].DilutedEPS) ? PriceClose / dataType3Indexes[0].DilutedEPS : null
+            Value: DilutedPE
         })
         PBValues.push({
             Year: i,
