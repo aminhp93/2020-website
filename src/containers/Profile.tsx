@@ -198,7 +198,7 @@ class Profile extends React.Component<IProps, IState> {
 
     updateCompanyInfoPartial = (start, count) => {
         let listPromises = [];
-        const arr = cloneDeep(this.props.stocks);
+        const arr = cloneDeep(Object.values(this.props.stocks));
         arr.splice(start, count)
         arr.map(item => {
             item.Symbol && listPromises.push(
@@ -240,7 +240,7 @@ class Profile extends React.Component<IProps, IState> {
 
     updateSubCompaniesPartial = (start, count) => {
         let listPromises = [];
-        const arr = cloneDeep(this.props.stocks);
+        const arr = cloneDeep(Object.values(this.props.stocks));
         arr.splice(start, count)
         arr.map(item => {
             item.Symbol && listPromises.push(
@@ -282,7 +282,7 @@ class Profile extends React.Component<IProps, IState> {
 
     updateCompanyOfficersPartial = (start, count) => {
         let listPromises = [];
-        const arr = cloneDeep(this.props.stocks);
+        const arr = cloneDeep(Object.values(this.props.stocks));
         arr.splice(start, count)
         arr.map(item => {
             item.Symbol && listPromises.push(
@@ -324,7 +324,7 @@ class Profile extends React.Component<IProps, IState> {
 
     updateCompanyTransactionsPartial = (start, count) => {
         let listPromises = [];
-        const arr = cloneDeep(this.props.stocks);
+        const arr = cloneDeep(Object.values(this.props.stocks));
         arr.splice(start, count)
         arr.map(item => {
             item.Symbol && listPromises.push(

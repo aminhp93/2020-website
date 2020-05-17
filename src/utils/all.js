@@ -66,7 +66,7 @@ export function mapDataTwoDate(data1, data2, allStocks) {
 export const arrayToKeyValue = (array, key = 'id') =>
     Object.fromEntries(array.map(item => [item[key], item]))
 
-export const mapDataImportantIndexes = (dataType1, dataType2, dataType3, dataType4) => {
+export const mapDataImportantIndexes = (dataType1, dataType2, dataType3, dataType4, dataType5) => {
     if (!dataType1 || !dataType2) return []
     let result = []
 
@@ -91,6 +91,7 @@ export const mapDataImportantIndexes = (dataType1, dataType2, dataType3, dataTyp
     const loiNhuanGop = dataType1.filter(i => i.ID === 15)[0]
     const LNST = dataType1.filter(i => i.ID === 19)[0]
     const PriceClose = dataType4[0].PriceClose
+    const PB = dataType5.PB
 
     const yearsArray = [2014, 2015, 2016, 2017, 2018, 2019]
 
@@ -265,7 +266,7 @@ export const mapDataImportantIndexes = (dataType1, dataType2, dataType3, dataTyp
         PBValues.push({
             Year: i,
             Quarter: 0,
-            Value: (PriceClose && dataType3Indexes.length && dataType3Indexes[0].DilutedEPS) ? PriceClose / dataType3Indexes[0].DilutedEPS : null
+            Value: PB
         })
 
 

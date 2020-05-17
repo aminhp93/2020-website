@@ -297,8 +297,6 @@ class Financial extends React.Component<IProps, IState> {
                 })
             ))
         }
-
-
         return result
     }
 
@@ -328,7 +326,7 @@ class Financial extends React.Component<IProps, IState> {
 
     updateLatestFinancialInfoPartial = (start, count) => {
         let listPromises = [];
-        const arr = cloneDeep(this.props.stocks);
+        const arr = cloneDeep(Object.values(this.props.stocks));
         arr.splice(start, count)
         arr.map(item => {
             item.Symbol && listPromises.push(
@@ -373,7 +371,7 @@ class Financial extends React.Component<IProps, IState> {
 
     updateYearlyFinancialInfoPartial = (start, count) => {
         let listPromises = [];
-        const arr = cloneDeep(this.props.stocks);
+        const arr = cloneDeep(Object.values(this.props.stocks));
         arr.splice(start, count)
         arr.map(item => {
             item.Symbol && listPromises.push(
@@ -418,7 +416,7 @@ class Financial extends React.Component<IProps, IState> {
 
     updateQuarterlyFinancialInfoPartial = (start, count) => {
         let listPromises = [];
-        const arr = cloneDeep(this.props.stocks);
+        const arr = cloneDeep(Object.values(this.props.stocks));
         arr.splice(start, count)
         arr.map(item => {
             item.Symbol && listPromises.push(
@@ -541,7 +539,7 @@ class Financial extends React.Component<IProps, IState> {
 
     updateLastestFinancialReportsValuePartial = (start, count) => {
         let listPromises = [];
-        const arr = cloneDeep(this.props.stocks);
+        const arr = cloneDeep(Object.values(this.props.stocks));
         const arr1 = arr.slice(start, count)
         arr1.map(item => {
             item.Symbol && listPromises.push(
@@ -1004,8 +1002,8 @@ class Financial extends React.Component<IProps, IState> {
                 <div className="Financial-right-container bg-white">
                     <div className="header">
                         CHỈ TIÊU TÀI CHÍNH
-                        <Button disabled={true} onClick={() => this.updateLatestFinancialInfo(selectedSymbol)}>update</Button>
-                        <Button disabled={true} onClick={this.updateLatestFinancialInfoAll}>update all </Button>
+                        <Button disabled={false} onClick={() => this.updateLatestFinancialInfo(selectedSymbol)}>update</Button>
+                        <Button disabled={false} onClick={this.updateLatestFinancialInfoAll}>update all </Button>
                     </div>
                     <div className="Financial-criteria">
                         {this.renderEvaluation()}

@@ -79,11 +79,11 @@ class ImportantIndexes extends React.Component<IProps, IState> {
                         const returnValue = data.length && data[0].Value
                         if (!returnValue) return null
                         if (returnValue < 1000) {
-                            return returnValue.toFixed(1)
-                        } else if (returnValue > BILLION_UNIT) {
-                            return (returnValue / BILLION_UNIT).toFixed(0)
+                            return Number(returnValue).toFixed(2)
+                        } else if (Number(returnValue) > BILLION_UNIT) {
+                            return (Number(returnValue) / BILLION_UNIT).toFixed(0)
                         } else {
-                            return returnValue
+                            return Number(returnValue)
                         }
                     }
                 }
@@ -109,9 +109,9 @@ class ImportantIndexes extends React.Component<IProps, IState> {
         const res3 = await this.props.getYearlyFinancialInfo()
         const res4 = await this.props.getHistoricalQuotes()
         // const res4 = await this.props.getQuarterlyFinancialInfo()
-        // const res5 = await this.props.getLastestFinancialInfo()
+        const res5 = await this.props.getLastestFinancialInfo()
         console.log(res1, res2, res3)
-        const rowData = mapDataImportantIndexes(res1.data, res2.data, res3.data, res4.data)
+        const rowData = mapDataImportantIndexes(res1.data, res2.data, res3.data, res4.data, res5.data)
         this.setState({ rowData })
     }
 
