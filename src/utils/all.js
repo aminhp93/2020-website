@@ -156,7 +156,8 @@ export const mapDataImportantIndexes = (dataType1, dataType2, dataType3) => {
         tyLeThanhToanNhanhValues.push({
             Year: i,
             Quarter: 0,
-            Value: (taiSanNganHanValue && noNganHanValue && hangTonKhoValue) ? (taiSanNganHanValue - hangTonKhoValue) / noNganHanValue : null
+            // Value: (taiSanNganHanValue && noNganHanValue && hangTonKhoValue) ? (taiSanNganHanValue - hangTonKhoValue) / noNganHanValue : null
+            Value: dataType3Indexes.length && dataType3Indexes[0].QuickRatio
         })
         tyLeThanhToanTucThoiValues.push({
             Year: i,
@@ -224,6 +225,36 @@ export const mapDataImportantIndexes = (dataType1, dataType2, dataType3) => {
             // (doanhThuThuanValue && tongCongTaiSanValue) ? doanhThuThuanValue / tongCongTaiSanValue : null
         })
         // INDEX 4
+        bienLoiNhuanGopValues.push({
+            Year: i,
+            Quarter: 0,
+            Value: dataType3Indexes.length && dataType3Indexes[0].GrossMargin
+        })
+        ROSValues.push({
+            Year: i,
+            Quarter: 0,
+            Value: (LNSTValue && doanhThuThuanValue) ? LNSTValue / doanhThuThuanValue : null
+        })
+        ROAValues.push({
+            Year: i,
+            Quarter: 0,
+            Value: dataType3Indexes.length && dataType3Indexes[0].ROA
+        })
+        ROEValues.push({
+            Year: i,
+            Quarter: 0,
+            Value: dataType3Indexes.length && dataType3Indexes[0].ROE
+        })
+        heSoDonBayTaiChinhValues.push({
+            Year: i,
+            Quarter: 0,
+            Value: (dataType3Indexes.length && dataType3Indexes[0].ROE && dataType3Indexes[0].ROA) ? dataType3Indexes[0].ROE / dataType3Indexes[0].ROA : null
+        })
+        EPSValues.push({
+            Year: i,
+            Quarter: 0,
+            Value: dataType3Indexes.length && dataType3Indexes[0].DilutedEPS
+        })
         // INDEX 5
         // INDEX 5
 
@@ -330,8 +361,37 @@ export const mapDataImportantIndexes = (dataType1, dataType2, dataType3) => {
         Values: vongQuayTaiSanValues
     })
 
-
     // INDEX 4
+    result.push({
+        ID: "bienLoiNhuanGop",
+        Name: "bienLoiNhuanGop",
+        Values: bienLoiNhuanGopValues
+    })
+    result.push({
+        ID: "ROS",
+        Name: "ROS",
+        Values: ROSValues
+    })
+    result.push({
+        ID: "ROA",
+        Name: "ROA",
+        Values: ROAValues
+    })
+    result.push({
+        ID: "ROE",
+        Name: "ROE",
+        Values: ROEValues
+    })
+    result.push({
+        ID: "heSoDonBayTaiChinh",
+        Name: "heSoDonBayTaiChinh",
+        Values: heSoDonBayTaiChinhValues
+    })
+    result.push({
+        ID: "EPS",
+        Name: "EPS",
+        Values: EPSValues
+    })
 
     // INDEX 5
 
