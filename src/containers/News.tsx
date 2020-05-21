@@ -38,7 +38,7 @@ class News extends React.Component<IProps, IState> {
     }
 
     componentDidMount() {
-        this.crawlData();
+        // this.crawlData();
     }
 
     componentDidUpdate(preProps) {
@@ -141,7 +141,8 @@ class News extends React.Component<IProps, IState> {
                             <List.Item>
                                 <List.Item.Meta
                                     avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-                                    title={<div onClick={() => this.showModal(item)}>{item.Title}</div>}
+                                    // title={<div onClick={() => this.showModal(item)}>{item.Title}</div>}
+                                    title={<a href={item.NewsUrl} target="_blank">{item.Title}</a>}
                                     description={item.Description}
                                 />
                             </List.Item>

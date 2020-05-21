@@ -1,18 +1,12 @@
 import React from 'react';
-import axios from 'axios';
 import { connect } from 'react-redux';
-import ReactHtmlParser from 'react-html-parser';
-import { List, Avatar, Pagination, Modal, Tabs } from 'antd';
+import { Tabs } from 'antd';
 import { get } from 'lodash';
 
 
 import News from './News';
-import {
-    getCompanyNewsUrl,
-    getCompanyNewsCountUrl,
-    getNewsContentUrl,
-} from '../utils/request';
-import { IStock, ICompanyNews } from '../types'
+
+import { IStock } from '../types'
 import {
     fetchNews
 } from '../reducers/stocks';
@@ -52,12 +46,12 @@ class MarketNews extends React.Component<IProps, IState> {
         }
     }
 
-    crawlData = () => {
+    crawlData = async () => {
         try {
             let type
             let group
-            let startIndex = 5
-            let count = 0
+            let startIndex = '0'
+            let count = '10'
             switch (this.state.key) {
                 case '1':
                     type = 'AllNews'
@@ -99,7 +93,8 @@ class MarketNews extends React.Component<IProps, IState> {
                     break;
 
             }
-            this.props.fetchNews({ type, group, startIndex, count })
+            const res = await this.props.fetchNews({ type, group, startIndex, count })
+            this.setState({ newsDataSource: res.data })
         } catch (error) {
             console.log(error)
         }
