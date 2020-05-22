@@ -3,10 +3,17 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import { cloneDeep, get } from 'lodash';
 import { Table, Button, Tabs, Radio, List } from 'antd';
+import { AgGridReact } from '@ag-grid-community/react';
 import {
     BarChart, Bar, XAxis, YAxis, Tooltip, Legend,
 } from 'recharts';
 import { v4 as uuidv4 } from 'uuid';
+import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
+import { RowGroupingModule } from '@ag-grid-enterprise/row-grouping';
+import { MenuModule } from '@ag-grid-enterprise/menu';
+import { ColumnsToolPanelModule } from '@ag-grid-enterprise/column-tool-panel';
+import { SetFilterModule } from '@ag-grid-enterprise/set-filter';
+
 
 import {
     getYearlyFinancialInfo,
@@ -22,7 +29,8 @@ import {
     getLastestFinancialReportsValueUpdateUrl
 } from '../utils/request';
 import { BILLION_UNIT } from '../utils/unit';
-import { LATEST_FINANCIAL_REPORTS, formatNumber } from '../utils/all'
+import { LATEST_FINANCIAL_REPORTS, formatNumber, mapDataLatestFinancialReport } from '../utils/all'
+import { getLastestFinancialReportsColumnDefs } from '../utils/columnDefs';
 import { IStock } from '../types'
 
 const { TabPane } = Tabs;
@@ -63,9 +71,13 @@ interface IState {
     period: string,
     lastestFinancialReportsType: string,
     LastestFinancialInfoObj: any,
+    defaultColDef: any,
 }
 
 class Financial extends React.Component<IProps, IState> {
+    gridApi: any;
+    gridColumnApi: any;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -76,6 +88,11 @@ class Financial extends React.Component<IProps, IState> {
             period: 'yearly',
             lastestFinancialReportsType: LATEST_FINANCIAL_REPORTS.TYPE_2,
             LastestFinancialInfoObj: {},
+            defaultColDef: {
+                flex: 1,
+                filter: true,
+                sortable: true,
+            },
         }
     }
 
@@ -206,90 +223,6 @@ class Financial extends React.Component<IProps, IState> {
             this.getLastestFinancialReports()
         })
 
-    }
-
-    getColumn = (data) => {
-        const yearsArray = [2015, 2016, 2017, 2018, 2019]
-        const quarterArray = [
-            {
-                Year: 2018,
-                Quarter: 4
-            },
-            {
-                Year: 2019,
-                Quarter: 1
-            },
-            {
-                Year: 2019,
-                Quarter: 2
-            },
-            {
-                Year: 2019,
-                Quarter: 3
-            },
-            {
-                Year: 2019,
-                Quarter: 4
-            },
-            {
-                Year: 2020,
-                Quarter: 1
-            }
-        ]
-
-        let result = [{
-            title: 'Title',
-            render: (params) => {
-                return params.Name
-            }
-        }]
-
-        if (this.state.period === 'yearly') {
-            result.push({
-                title: 'Chart',
-                render: () => {
-                    return (
-                        <div className="test">
-                            <BarChart width={10} height={10} data={data}>
-                                <Bar dataKey="uv" fill="#8884d8" />
-                            </BarChart>
-                        </div>
-                    )
-                }
-            })
-            yearsArray.map(year => (
-                result.push({
-                    title: JSON.stringify(year),
-                    // sorter: (a, b) => {
-                    //     if (a.Values && a.Values.length && b.Values && b.Values.length) {
-                    //         const data1 = a.Values.filter(item => item.Year === year)
-                    //         const data2 = b.Values.filter(item => item.Year === year)
-                    //         return data1[0].Value - data2[0].Value
-                    //     }
-                    // },
-                    render: (params) => {
-                        if (params.Values && params.Values.length) {
-                            const data = params.Values.filter(item => item.Year === year)
-                            const returnValue = data.length && (data[0].Value / BILLION_UNIT).toFixed(0)
-                            return returnValue !== '0' ? returnValue : ''
-                        }
-                    }
-                })
-            ))
-        } else {
-            quarterArray.map(quarterItem => (
-                result.push({
-                    title: `${quarterItem.Year} ${quarterItem.Quarter}`,
-                    render: (params) => {
-                        if (params.Values && params.Values.length) {
-                            const data = params.Values.filter(item => item.Year === quarterItem.Year && item.Quarter === quarterItem.Quarter)
-                            return data.length && (data[0].Value / BILLION_UNIT).toFixed(0)
-                        }
-                    }
-                })
-            ))
-        }
-        return result
     }
 
     handlePeriod = e => {
@@ -571,6 +504,11 @@ class Financial extends React.Component<IProps, IState> {
         await this.updateLastestFinancialReportsValuePartial(1700, 1800);
     }
 
+    onGridReady = params => {
+        this.gridApi = params.api;
+        this.gridColumnApi = params.columnApi;
+    };
+
     // RENDER PART
 
     renderRevenueTable = (isProfit = false) => {
@@ -675,11 +613,36 @@ class Financial extends React.Component<IProps, IState> {
     }
 
     renderLastestFinancialReports = () => {
-        const { LastestFinancialReportsArray } = this.state;
-        const columns = this.getColumn(LastestFinancialReportsArray);
-        return (
-            <Table dataSource={LastestFinancialReportsArray} columns={columns} pagination={false} size="small" />
-        )
+        const { LastestFinancialReportsArray, defaultColDef } = this.state;
+        return <div style={{ width: '100%', height: '100%' }}>
+            <div
+                id="myGrid"
+                style={{
+                    height: '1000px',
+                }}
+                className="ag-theme-alpine"
+            >
+                <AgGridReact
+                    modules={[
+                        ClientSideRowModelModule,
+                        RowGroupingModule,
+                        MenuModule,
+                        ColumnsToolPanelModule,
+                        SetFilterModule,
+
+                    ]}
+                    columnDefs={getLastestFinancialReportsColumnDefs(this.state.period)}
+                    enableRangeSelection={true}
+                    animateRows={true}
+                    defaultColDef={defaultColDef}
+                    onGridReady={this.onGridReady}
+                    autoGroupColumnDef={{ minWidth: 200 }}
+                    rowData={mapDataLatestFinancialReport(LastestFinancialReportsArray)}
+                    onFirstDataRendered={params => params.api.sizeColumnsToFit()}
+                    groupDefaultExpanded={3}
+                />
+            </div>
+        </div>
     }
 
     renderEvaluation = () => {

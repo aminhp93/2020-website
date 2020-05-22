@@ -1,3 +1,5 @@
+import { cloneDeep } from 'lodash';
+
 export const LATEST_FINANCIAL_REPORTS = {
     TYPE_1: 'Can doi ke toan',
     TYPE_2: 'Ket qua kinh doanh',
@@ -443,4 +445,97 @@ export const mapDataImportantIndexes = (dataType1, dataType2, dataType3, dataTyp
     })
     console.log(result)
     return result
+}
+
+export const mapDataLatestFinancialReport = (data) => {
+    let cloneData = cloneDeep(data);
+    for (let i = 0; i < cloneData.length; i++) {
+        let id = JSON.stringify(cloneData[i].ID)
+        if (id.match(/^1/) || id.match(/^2/)) {
+            cloneData[i].ParentID1 = 1
+            if (id.match(/^10/)) {
+                cloneData[i].ParentID2 = 10
+                if (id.match(/^101/)) {
+                    cloneData[i].ParentID3 = 101
+                    if (id.match(/^10101/)) {
+                        cloneData[i].ParentID4 = 10101
+                    } else if (id.match(/^10102/)) {
+                        cloneData[i].ParentID4 = 10102
+                    } else if (id.match(/^10103/)) {
+                        cloneData[i].ParentID4 = 10103
+                    } else if (id.match(/^10104/)) {
+                        cloneData[i].ParentID4 = 10104
+                    } else if (id.match(/^10105/)) {
+                        cloneData[i].ParentID4 = 10105
+                    } else if (id.match(/^10106/)) {
+                        cloneData[i].ParentID4 = 10106
+                    } else if (id.match(/^10107/)) {
+                        cloneData[i].ParentID4 = 10107
+                    }
+                } else if (id.match(/^102/)) {
+                    cloneData[i].ParentID3 = 102
+                    if (id.match(/^10201/)) {
+                        cloneData[i].ParentID4 = 10201
+                    } else if (id.match(/^10202/)) {
+                        cloneData[i].ParentID4 = 10202
+                    } else if (id.match(/^10203/)) {
+                        cloneData[i].ParentID4 = 10203
+                    } else if (id.match(/^10204/)) {
+                        cloneData[i].ParentID4 = 10204
+                    } else if (id.match(/^10205/)) {
+                        cloneData[i].ParentID4 = 10205
+                    } else if (id.match(/^10206/)) {
+                        cloneData[i].ParentID4 = 10206
+                    } else if (id.match(/^10207/)) {
+                        cloneData[i].ParentID4 = 10207
+                    }
+                }
+            }
+        } else if (id.match(/^3/) || id.match(/^4/)) {
+            cloneData[i].ParentID1 = 3
+            if (id.match(/^30/)) {
+                cloneData[i].ParentID2 = 30
+                if (id.match(/^301/)) {
+                    cloneData[i].ParentID3 = 301
+                    if (id.match(/^30101/)) {
+                        cloneData[i].ParentID4 = 30101
+                    } else if (id.match(/^30102/)) {
+                        cloneData[i].ParentID4 = 30102
+                    } else if (id.match(/^30103/)) {
+                        cloneData[i].ParentID4 = 30103
+                    } else if (id.match(/^30104/)) {
+                        cloneData[i].ParentID4 = 30104
+                    } else if (id.match(/^30105/)) {
+                        cloneData[i].ParentID4 = 30105
+                    } else if (id.match(/^30106/)) {
+                        cloneData[i].ParentID4 = 30106
+                    } else if (id.match(/^30107/)) {
+                        cloneData[i].ParentID4 = 30107
+                    }
+                } else if (id.match(/^302/)) {
+                    cloneData[i].ParentID3 = 302
+                    if (id.match(/^30201/)) {
+                        cloneData[i].ParentID4 = 30201
+                    } else if (id.match(/^30202/)) {
+                        cloneData[i].ParentID4 = 30202
+                    } else if (id.match(/^30203/)) {
+                        cloneData[i].ParentID4 = 30203
+                    } else if (id.match(/^30204/)) {
+                        cloneData[i].ParentID4 = 30204
+                    } else if (id.match(/^30205/)) {
+                        cloneData[i].ParentID4 = 30205
+                    } else if (id.match(/^30206/)) {
+                        cloneData[i].ParentID4 = 30206
+                    } else if (id.match(/^30207/)) {
+                        cloneData[i].ParentID4 = 30207
+                    }
+                } else {
+                    cloneData[i].ParentID3 = 13
+                }
+            }
+        } else {
+            cloneData[i].ParentID1 = 3
+        }
+    }
+    return cloneData
 }
