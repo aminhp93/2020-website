@@ -2,11 +2,13 @@ import React from 'react';
 import moment from 'moment';
 
 import { BILLION_UNIT } from './unit';
+
 import {
     mapColorPriceChange,
     formatNumber,
     mapArrayToKeyValue,
-    mapDataTwoDate
+    mapDataTwoDate,
+    LATEST_FINANCIAL_REPORTS
 } from './all';
 
 
@@ -381,79 +383,9 @@ export const HistoricalQuotesSupplyDemandColumns = [
     }
 ]
 
-export const getLastestFinancialReportsColumnDefs = (period) => {
-    const year = [
-        {
-            field: 'ParentID1',
-            rowGroup: true,
-            hide: true
-        },
-        {
-            field: 'ParentID2',
-            rowGroup: true,
-            hide: true
-        },
-        {
-            field: 'ParentID3',
-            rowGroup: true,
-            hide: true
-        },
-        {
-            field: 'ParentID4',
-            rowGroup: true,
-            hide: true
-        },
-        {
-            field: 'ParentID5',
-            rowGroup: true,
-            hide: true
-        },
-        {
-            field: 'Name',
-        },
-        {
-            headerName: '2016',
-            cellRenderer: (params) => {
-                if (params.data && params.data.Values && params.data.Values.length) {
-                    const data = params.data.Values.filter(item => item.Year === 2016)
-                    const returnValue = data.length && (data[0].Value / BILLION_UNIT).toFixed(0)
-                    return returnValue !== '0' ? returnValue : ''
-                }
-            },
-        },
-        {
-            headerName: '2017',
-            cellRenderer: (params) => {
-                if (params.data && params.data.Values && params.data.Values.length) {
-                    const data = params.data.Values.filter(item => item.Year === 2017)
-                    const returnValue = data.length && (data[0].Value / BILLION_UNIT).toFixed(0)
-                    return returnValue !== '0' ? returnValue : ''
-                }
-            },
-        },
-        {
-            headerName: '2018',
-            cellRenderer: (params) => {
-                if (params.data && params.data.Values && params.data.Values.length) {
-                    const data = params.data.Values.filter(item => item.Year === 2018)
-                    const returnValue = data.length && (data[0].Value / BILLION_UNIT).toFixed(0)
-                    return returnValue !== '0' ? returnValue : ''
-                }
-            },
-        },
-        {
-            headerName: '2019',
-            cellRenderer: (params) => {
-                if (params.data && params.data.Values && params.data.Values.length) {
-                    const data = params.data.Values.filter(item => item.Year === 2019)
-                    const returnValue = data.length && (data[0].Value / BILLION_UNIT).toFixed(0)
-                    return returnValue !== '0' ? returnValue : ''
-                }
-            },
-        }
-    ]
-
-    const quarterArray = [
+export const getLastestFinancialReportsColumnDefs = (period, type) => {
+    let yearArray = [2015, 2016, 2017, 2018, 2019]
+    let quarterArray = [
         {
             Year: 2018,
             Quarter: 4
@@ -479,17 +411,63 @@ export const getLastestFinancialReportsColumnDefs = (period) => {
             Quarter: 1
         }
     ]
-
-    let quarter = [
-
+    let year = []
+    let quarter = []
+    let rowGroup = [
+        {
+            field: 'ParentID1',
+            rowGroup: true,
+            hide: true
+        },
+        {
+            field: 'ParentID2',
+            rowGroup: true,
+            hide: true
+        },
+        {
+            field: 'ParentID3',
+            rowGroup: true,
+            hide: true
+        },
+        {
+            field: 'ParentID4',
+            rowGroup: true,
+            hide: true
+        },
+        {
+            field: 'ParentID5',
+            rowGroup: true,
+            hide: true
+        },
     ]
+    if (type === LATEST_FINANCIAL_REPORTS.TYPE_1 || type === LATEST_FINANCIAL_REPORTS.TYPE_4) {
+        year = year.concat(rowGroup)
+    }
+    year.push({
+        field: 'Name'
+    })
+    yearArray.map(yearItem => {
 
+        year.push({
+            headerName: JSON.stringify(yearItem),
+            cellRenderer: (params) => {
+                if (params.data && params.data.Values && params.data.Values.length) {
+                    const data = params.data.Values.filter(item => item.Year === yearItem)
+                    return data.length && (data[0].Value / BILLION_UNIT).toFixed(0)
+                }
+            }
+        })
+    })
+
+    quarterArray.push({
+        field: 'Name'
+    })
     quarterArray.map(quarterItem => (
         quarter.push({
-            title: `${quarterItem.Year} ${quarterItem.Quarter}`,
-            render: (params) => {
-                if (params.Values && params.Values.length) {
-                    const data = params.Values.filter(item => item.Year === quarterItem.Year && item.Quarter === quarterItem.Quarter)
+            headerName: `${quarterItem.Year} ${quarterItem.Quarter}`,
+            cellRenderer: (params) => {
+                if (params.data && params.data.Values && params.data.Values.length) {
+                    const data = params.data.Values.filter(item => item.Year === quarterItem.Year && item.Quarter === quarterItem.Quarter)
                     return data.length && (data[0].Value / BILLION_UNIT).toFixed(0)
                 }
             }

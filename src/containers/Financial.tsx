@@ -613,7 +613,7 @@ class Financial extends React.Component<IProps, IState> {
     }
 
     renderLastestFinancialReports = () => {
-        const { LastestFinancialReportsArray, defaultColDef } = this.state;
+        const { LastestFinancialReportsArray, defaultColDef, period, lastestFinancialReportsType } = this.state;
         return <div style={{ width: '100%', height: '100%' }}>
             <div
                 id="myGrid"
@@ -631,7 +631,7 @@ class Financial extends React.Component<IProps, IState> {
                         SetFilterModule,
 
                     ]}
-                    columnDefs={getLastestFinancialReportsColumnDefs(this.state.period)}
+                    columnDefs={getLastestFinancialReportsColumnDefs(period, lastestFinancialReportsType)}
                     enableRangeSelection={true}
                     animateRows={true}
                     defaultColDef={defaultColDef}
@@ -847,7 +847,7 @@ class Financial extends React.Component<IProps, IState> {
         if (isFinancialReports) {
             return (
                 <div className="Financial bg-white">
-                    <div>
+                    <div style={{ width: '100%' }}>
                         <div className="header">
                             Bao cao tai chinh
                         </div>
