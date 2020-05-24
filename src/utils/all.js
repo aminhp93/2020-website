@@ -450,6 +450,27 @@ export const mapDataImportantIndexes = (dataType1, dataType2, dataType3, dataTyp
 export const mapDataLatestFinancialReport = (data, period = null, type = null) => {
     let cloneData = cloneDeep(data);
 
+    if (type === LATEST_FINANCIAL_REPORTS.TYPE_2) {
+        console.log(cloneData)
+        if (cloneData.length) {
+            let Values = []
+            cloneData[0].Values.map(i => {
+                let doanhThuThuan = cloneData.filter(j => j.ID === 3)[0].Values.filter(j => j.Year === i.Year)[0].Value
+                let doanhThuHoatDongTaiChinh = cloneData.filter(j => j.ID === 6)[0].Values.filter(j => j.Year === i.Year)[0].Value
+                let doanhThuKhac = cloneData.filter(j => j.ID === 12)[0].Values.filter(j => j.Year === i.Year)[0].Value
+                Values.push({
+                    Year: i.Year,
+                    Value: doanhThuThuan + doanhThuHoatDongTaiChinh + doanhThuKhac
+                })
+            })
+            cloneData.push({
+                ID: 'TONG DOANH THU',
+                Name: 'TONG DOANH THU',
+                Values
+            })
+        }
+    }
+
     for (let i = 0; i < cloneData.length; i++) {
         let id = JSON.stringify(cloneData[i].ID)
         if (id.match(/^1/) || id.match(/^2/)) {
@@ -543,7 +564,6 @@ export const mapDataLatestFinancialReport = (data, period = null, type = null) =
             let tongCongTaiSan = data.filter(i => i.ID === 2)[0].Values
 
             yearArray.map((year, index) => {
-                // console.log(cloneData[i].Values.filter(j => j.Year === year)[0].Value, tongCongTaiSan)
                 cloneData[i].Values.push(
                     {
                         Year: `%${yearArray[index]}`,
@@ -564,6 +584,29 @@ export const mapDataLatestFinancialReport = (data, period = null, type = null) =
             })
         }
 
+        if (type === LATEST_FINANCIAL_REPORTS.TYPE_2) {
+            switch (cloneData[i].ID) {
+                case 'TONG DOANH THU':
+                    cloneData[i].sortedIndex = 0
+                    break;
+                case 3:
+                    cloneData[i].sortedIndex = 1
+                    break;
+                case 6:
+                    cloneData[i].sortedIndex = 2
+                    break;
+                case 12:
+                    cloneData[i].sortedIndex = 3
+                    break;
+                default:
+                    cloneData[i].sortedIndex = 9999
+                    break;
+            }
+        }
+
+    }
+    if (type === LATEST_FINANCIAL_REPORTS.TYPE_2) {
+        cloneData.sort((a, b) => a.sortedIndex - b.sortedIndex)
     }
     console.log(cloneData)
     return cloneData

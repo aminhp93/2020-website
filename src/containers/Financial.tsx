@@ -645,7 +645,7 @@ class Financial extends React.Component<IProps, IState> {
                     defaultColDef={defaultColDef}
                     onGridReady={this.onGridReady}
                     autoGroupColumnDef={{ minWidth: 200 }}
-                    rowData={mapDataLatestFinancialReport(LastestFinancialReportsArray, null, LATEST_FINANCIAL_REPORTS.TYPE_1)}
+                    rowData={mapDataLatestFinancialReport(LastestFinancialReportsArray, null, lastestFinancialReportsType)}
                     onFirstDataRendered={params => params.api.sizeColumnsToFit()}
                     groupDefaultExpanded={3}
                 />

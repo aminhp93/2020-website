@@ -450,7 +450,7 @@ export const getLastestFinancialReportsColumnDefs = (period, type, analysisType 
     })
     yearArray.map(yearItem => {
         year.push({
-            headerName: JSON.stringify(yearItem),
+            headerName: yearItem,
             cellRenderer: (params) => {
                 if (params.data && params.data.Values && params.data.Values.length) {
                     const data = params.data.Values.filter(item => item.Year === yearItem)
@@ -463,12 +463,12 @@ export const getLastestFinancialReportsColumnDefs = (period, type, analysisType 
         let tyTrongArray = ['%2015', '%2016', '%2017', '%2018', '%2019']
         tyTrongArray.map((yearItem, index) => {
             year.push({
-                headerName: JSON.stringify(yearItem),
+                headerName: yearItem,
                 cellRenderer: (params) => {
                     if (params.data && params.data.Values && params.data.Values.length) {
                         const data = params.data.Values.filter(item => item.Year === yearItem)
                         const div = document.createElement("div");
-                        if (data.length && (data[0].Value * 100).toFixed(1) > 50) {
+                        if (data.length && (data[0].Value * 100).toFixed(1) > 10) {
                             div.className = 'red'
                         }
                         div.innerText = data.length && (data[0].Value * 100).toFixed(1)
@@ -483,7 +483,7 @@ export const getLastestFinancialReportsColumnDefs = (period, type, analysisType 
         let chieuNgangArray = ['2016-2015', '2017-2016', '2018-2017', '2019-2018']
         chieuNgangArray.map((yearItem, index) => {
             year.push({
-                headerName: JSON.stringify(yearItem),
+                headerName: yearItem,
                 cellRenderer: (params) => {
                     if (params.data && params.data.Values && params.data.Values.length) {
                         const data = params.data.Values.filter(item => item.Year === yearItem)
