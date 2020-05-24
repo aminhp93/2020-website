@@ -879,7 +879,7 @@ class Financial extends React.Component<IProps, IState> {
                         <div>
                             <Radio.Group value={analysisType} onChange={this.handleAnalysisType}>
                                 <Radio.Button value="tyTrong">Ty trong</Radio.Button>
-                                <Radio.Button value="yearly">Hang nam</Radio.Button>
+                                <Radio.Button value="chieuNgang">Chieu ngang</Radio.Button>
                                 <Radio.Button value="yearly">Hang nam</Radio.Button>
                             </Radio.Group>
                         </div>

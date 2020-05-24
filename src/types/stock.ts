@@ -7,5 +7,6 @@ export interface ICompanyNews {
 }
 
 export interface IAnalysisType {
-    tyTrong: 'Ty trong'
+    tyTrong: 'Ty trong',
+    chieuNgang: 'Chieu ngang'
 }

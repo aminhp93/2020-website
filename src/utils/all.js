@@ -550,6 +550,17 @@ export const mapDataLatestFinancialReport = (data, period = null, type = null) =
                         Value: cloneData[i].Values.filter(j => j.Year === year)[0].Value / tongCongTaiSan.filter(j => j.Year === year)[0].Value
                     }
                 )
+                if (index > 0) {
+                    let newValue = cloneData[i].Values.filter(j => j.Year === year)[0].Value
+                    let oldValue = cloneData[i].Values.filter(j => j.Year === yearArray[index - 1])[0].Value
+                    cloneData[i].Values.push(
+                        {
+                            Year: `${year}-${yearArray[index - 1]}`,
+                            Value: (newValue - oldValue) / oldValue
+                        }
+                    )
+                }
+
             })
         }
 
