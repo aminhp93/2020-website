@@ -148,7 +148,7 @@ class Stock extends React.Component<IProps, IState> {
                                 <TabPane tab="OverallMarket1" key="1">
                                     <div className="App-content">
                                         <div>
-                                            <Tabs defaultActiveKey="9">
+                                            <Tabs defaultActiveKey="7">
                                                 <TabPane tab="Transaction" key="1">
                                                     <Transaction />
                                                 </TabPane>

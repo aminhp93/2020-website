@@ -31,7 +31,7 @@ import {
 import { BILLION_UNIT } from '../utils/unit';
 import { LATEST_FINANCIAL_REPORTS, formatNumber, mapDataLatestFinancialReport } from '../utils/all'
 import { getLastestFinancialReportsColumnDefs } from '../utils/columnDefs';
-import { IStock } from '../types'
+import { IStock, IAnalysisType } from '../types'
 
 const { TabPane } = Tabs;
 
@@ -72,6 +72,7 @@ interface IState {
     lastestFinancialReportsType: string,
     LastestFinancialInfoObj: any,
     defaultColDef: any,
+    analysisType: IAnalysisType
 }
 
 class Financial extends React.Component<IProps, IState> {
@@ -93,6 +94,7 @@ class Financial extends React.Component<IProps, IState> {
                 filter: true,
                 sortable: true,
             },
+            analysisType: null
         }
     }
 
@@ -509,6 +511,12 @@ class Financial extends React.Component<IProps, IState> {
         this.gridColumnApi = params.columnApi;
     };
 
+    handleAnalysisType = e => {
+        this.setState({ analysisType: e.target.value }, () => {
+            // 
+        })
+    }
+
     // RENDER PART
 
     renderRevenueTable = (isProfit = false) => {
@@ -613,7 +621,7 @@ class Financial extends React.Component<IProps, IState> {
     }
 
     renderLastestFinancialReports = () => {
-        const { LastestFinancialReportsArray, defaultColDef, period, lastestFinancialReportsType } = this.state;
+        const { LastestFinancialReportsArray, defaultColDef, period, lastestFinancialReportsType, analysisType } = this.state;
         return <div style={{ width: '100%', height: '100%' }}>
             <div
                 id="myGrid"
@@ -631,13 +639,13 @@ class Financial extends React.Component<IProps, IState> {
                         SetFilterModule,
 
                     ]}
-                    columnDefs={getLastestFinancialReportsColumnDefs(period, lastestFinancialReportsType)}
+                    columnDefs={getLastestFinancialReportsColumnDefs(period, lastestFinancialReportsType, analysisType)}
                     enableRangeSelection={true}
                     animateRows={true}
                     defaultColDef={defaultColDef}
                     onGridReady={this.onGridReady}
                     autoGroupColumnDef={{ minWidth: 200 }}
-                    rowData={mapDataLatestFinancialReport(LastestFinancialReportsArray)}
+                    rowData={mapDataLatestFinancialReport(LastestFinancialReportsArray, null, LATEST_FINANCIAL_REPORTS.TYPE_1)}
                     onFirstDataRendered={params => params.api.sizeColumnsToFit()}
                     groupDefaultExpanded={3}
                 />
@@ -842,7 +850,7 @@ class Financial extends React.Component<IProps, IState> {
     }
 
     render() {
-        const { period, isFinancialReports } = this.state;
+        const { period, isFinancialReports, analysisType } = this.state;
         const { selectedSymbol } = this.props;
         if (isFinancialReports) {
             return (
@@ -865,6 +873,13 @@ class Financial extends React.Component<IProps, IState> {
                         <div>
                             <Radio.Group value={period} onChange={this.handlePeriod}>
                                 <Radio.Button value="quarterly">Hang quy</Radio.Button>
+                                <Radio.Button value="yearly">Hang nam</Radio.Button>
+                            </Radio.Group>
+                        </div>
+                        <div>
+                            <Radio.Group value={analysisType} onChange={this.handleAnalysisType}>
+                                <Radio.Button value="tyTrong">Ty trong</Radio.Button>
+                                <Radio.Button value="yearly">Hang nam</Radio.Button>
                                 <Radio.Button value="yearly">Hang nam</Radio.Button>
                             </Radio.Group>
                         </div>

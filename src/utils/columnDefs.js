@@ -10,6 +10,8 @@ import {
     mapDataTwoDate,
     LATEST_FINANCIAL_REPORTS
 } from './all';
+import { IAnalysisType } from '../types'
+
 
 
 export function getYearlyFinancialInfoColumnDefs() {
@@ -383,7 +385,7 @@ export const HistoricalQuotesSupplyDemandColumns = [
     }
 ]
 
-export const getLastestFinancialReportsColumnDefs = (period, type) => {
+export const getLastestFinancialReportsColumnDefs = (period, type, analysisType = null) => {
     let yearArray = [2015, 2016, 2017, 2018, 2019]
     let quarterArray = [
         {
@@ -447,7 +449,6 @@ export const getLastestFinancialReportsColumnDefs = (period, type) => {
         field: 'Name'
     })
     yearArray.map(yearItem => {
-
         year.push({
             headerName: JSON.stringify(yearItem),
             cellRenderer: (params) => {
@@ -458,6 +459,21 @@ export const getLastestFinancialReportsColumnDefs = (period, type) => {
             }
         })
     })
+    if (analysisType === 'tyTrong' && type === LATEST_FINANCIAL_REPORTS.TYPE_1) {
+        let tyTrongArray = ['%2015', '%2016', '%2017', '%2018']
+        tyTrongArray.map((yearItem, index) => {
+            year.push({
+                headerName: JSON.stringify(yearItem),
+                cellRenderer: (params) => {
+                    if (params.data && params.data.Values && params.data.Values.length) {
+                        const data = params.data.Values.filter(item => item.Year === yearItem)
+                        return data.length && (data[0].Value * 100).toFixed(1)
+                    }
+                }
+            })
+
+        })
+    }
 
     quarterArray.push({
         field: 'Name'

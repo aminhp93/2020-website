@@ -447,8 +447,9 @@ export const mapDataImportantIndexes = (dataType1, dataType2, dataType3, dataTyp
     return result
 }
 
-export const mapDataLatestFinancialReport = (data) => {
+export const mapDataLatestFinancialReport = (data, period = null, type = null) => {
     let cloneData = cloneDeep(data);
+
     for (let i = 0; i < cloneData.length; i++) {
         let id = JSON.stringify(cloneData[i].ID)
         if (id.match(/^1/) || id.match(/^2/)) {
@@ -536,6 +537,23 @@ export const mapDataLatestFinancialReport = (data) => {
         } else {
             cloneData[i].ParentID1 = 3
         }
+
+        if (type === LATEST_FINANCIAL_REPORTS.TYPE_1) {
+            let yearArray = [2015, 2016, 2017, 2018, 2019]
+            let tongCongTaiSan = data.filter(i => i.ID === 2)[0].Values
+
+            yearArray.map((year, index) => {
+                // console.log(cloneData[i].Values.filter(j => j.Year === year)[0].Value, tongCongTaiSan)
+                cloneData[i].Values.push(
+                    {
+                        Year: `%${yearArray[index]}`,
+                        Value: cloneData[i].Values.filter(j => j.Year === year)[0].Value / tongCongTaiSan.filter(j => j.Year === year)[0].Value
+                    }
+                )
+            })
+        }
+
     }
+    console.log(cloneData)
     return cloneData
 }

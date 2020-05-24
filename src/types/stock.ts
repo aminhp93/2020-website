@@ -5,3 +5,7 @@ export interface IStock {
 export interface ICompanyNews {
     [key: string]: any,
 }
+
+export interface IAnalysisType {
+    tyTrong: 'Ty trong'
+}
