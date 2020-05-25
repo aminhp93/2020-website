@@ -449,24 +449,44 @@ export const mapDataImportantIndexes = (dataType1, dataType2, dataType3, dataTyp
 
 export const mapDataLatestFinancialReport = (data, period = null, type = null) => {
     let cloneData = cloneDeep(data);
+    let tongDoanhThuValues = []
+    let tongChiPhiValues = []
 
     if (type === LATEST_FINANCIAL_REPORTS.TYPE_2) {
-        console.log(cloneData)
         if (cloneData.length) {
-            let Values = []
+
+
             cloneData[0].Values.map(i => {
                 let doanhThuThuan = cloneData.filter(j => j.ID === 3)[0].Values.filter(j => j.Year === i.Year)[0].Value
                 let doanhThuHoatDongTaiChinh = cloneData.filter(j => j.ID === 6)[0].Values.filter(j => j.Year === i.Year)[0].Value
                 let doanhThuKhac = cloneData.filter(j => j.ID === 12)[0].Values.filter(j => j.Year === i.Year)[0].Value
-                Values.push({
+
+                let giaVonBanHang = cloneData.filter(j => j.ID === 4)[0].Values.filter(j => j.Year === i.Year)[0].Value
+                let chiPhiTaiChinh = cloneData.filter(j => j.ID === 7)[0].Values.filter(j => j.Year === i.Year)[0].Value
+                let chiPhiBanHang = cloneData.filter(j => j.ID === 9)[0].Values.filter(j => j.Year === i.Year)[0].Value
+                let chiPhiKhac = cloneData.filter(j => j.ID === 13)[0].Values.filter(j => j.Year === i.Year)[0].Value
+
+                tongDoanhThuValues.push({
                     Year: i.Year,
                     Value: doanhThuThuan + doanhThuHoatDongTaiChinh + doanhThuKhac
+                })
+
+                tongChiPhiValues.push({
+                    Year: i.Year,
+                    Value: giaVonBanHang + chiPhiTaiChinh + chiPhiBanHang + chiPhiKhac
                 })
             })
             cloneData.push({
                 ID: 'TONG DOANH THU',
-                Name: 'TONG DOANH THU',
-                Values
+                Name: 'TONG DOANH THU (3)+(6)+(12)',
+                Values: tongDoanhThuValues
+            })
+
+
+            cloneData.push({
+                ID: 'TONG CHI PHI',
+                Name: 'TONG CHI PHI (4)+(7)+(9)+(13)',
+                Values: tongChiPhiValues
             })
         }
     }
@@ -580,6 +600,37 @@ export const mapDataLatestFinancialReport = (data, period = null, type = null) =
                         }
                     )
                 }
+            })
+        } else if (type === LATEST_FINANCIAL_REPORTS.TYPE_2) {
+            let yearArray = [2015, 2016, 2017, 2018, 2019]
+
+            yearArray.map((year, index) => {
+                if ([3, 6, 12].includes(cloneData[i].ID)) {
+                    cloneData[i].Values.push(
+                        {
+                            Year: `%${yearArray[index]}`,
+                            Value: cloneData[i].Values.filter(j => j.Year === year)[0].Value / tongDoanhThuValues.filter(j => j.Year === year)[0].Value
+                        }
+                    )
+                } else if ([4, 7, 9, 13].includes(cloneData[i].ID)) {
+                    cloneData[i].Values.push(
+                        {
+                            Year: `%${yearArray[index]}`,
+                            Value: cloneData[i].Values.filter(j => j.Year === year)[0].Value / tongChiPhiValues.filter(j => j.Year === year)[0].Value
+                        }
+                    )
+                }
+
+                if (index > 0) {
+                    let newValue = cloneData[i].Values.filter(j => j.Year === year)[0].Value
+                    let oldValue = cloneData[i].Values.filter(j => j.Year === yearArray[index - 1])[0].Value
+                    cloneData[i].Values.push(
+                        {
+                            Year: `${year}-${yearArray[index - 1]}`,
+                            Value: (newValue - oldValue) / oldValue
+                        }
+                    )
+                }
 
             })
         }
@@ -597,6 +648,33 @@ export const mapDataLatestFinancialReport = (data, period = null, type = null) =
                     break;
                 case 12:
                     cloneData[i].sortedIndex = 3
+                    break;
+                case 'TONG CHI PHI':
+                    cloneData[i].sortedIndex = 4
+                    break;
+                case 4:
+                    cloneData[i].sortedIndex = 5
+                    break;
+                case 7:
+                    cloneData[i].sortedIndex = 6
+                    break;
+                case 9:
+                    cloneData[i].sortedIndex = 7
+                    break;
+                case 13:
+                    cloneData[i].sortedIndex = 8
+                    break;
+                case 5:
+                    cloneData[i].sortedIndex = 9
+                    break;
+                case 15:
+                    cloneData[i].sortedIndex = 10
+                    break;
+                case 18:
+                    cloneData[i].sortedIndex = 11
+                    break;
+                case 19:
+                    cloneData[i].sortedIndex = 12
                     break;
                 default:
                     cloneData[i].sortedIndex = 9999

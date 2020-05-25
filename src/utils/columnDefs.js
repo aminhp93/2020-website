@@ -459,47 +459,94 @@ export const getLastestFinancialReportsColumnDefs = (period, type, analysisType 
             }
         })
     })
-    if (analysisType === 'tyTrong' && type === LATEST_FINANCIAL_REPORTS.TYPE_1) {
-        let tyTrongArray = ['%2015', '%2016', '%2017', '%2018', '%2019']
-        tyTrongArray.map((yearItem, index) => {
-            year.push({
-                headerName: yearItem,
-                cellRenderer: (params) => {
-                    if (params.data && params.data.Values && params.data.Values.length) {
-                        const data = params.data.Values.filter(item => item.Year === yearItem)
-                        const div = document.createElement("div");
-                        if (data.length && (data[0].Value * 100).toFixed(1) > 10) {
-                            div.className = 'red'
+    if (type === LATEST_FINANCIAL_REPORTS.TYPE_1) {
+
+
+        if (analysisType === 'tyTrong') {
+            let tyTrongArray = ['%2015', '%2016', '%2017', '%2018', '%2019']
+            tyTrongArray.map((yearItem, index) => {
+                year.push({
+                    headerName: yearItem,
+                    cellRenderer: (params) => {
+                        if (params.data && params.data.Values && params.data.Values.length) {
+                            const data = params.data.Values.filter(item => item.Year === yearItem)
+                            const div = document.createElement("div");
+                            if (data.length && (data[0].Value * 100).toFixed(1) > 10) {
+                                div.className = 'red'
+                            }
+                            div.innerText = data.length && (data[0].Value * 100).toFixed(1)
+                            return div
                         }
-                        div.innerText = data.length && (data[0].Value * 100).toFixed(1)
-                        return div
                     }
-                }
+                })
             })
-        })
+        } else if (analysisType === 'chieuNgang') {
+            let chieuNgangArray = ['2016-2015', '2017-2016', '2018-2017', '2019-2018']
+            chieuNgangArray.map((yearItem, index) => {
+                year.push({
+                    headerName: yearItem,
+                    cellRenderer: (params) => {
+                        if (params.data && params.data.Values && params.data.Values.length) {
+                            const data = params.data.Values.filter(item => item.Year === yearItem)
+                            const div = document.createElement("div");
+                            if (data.length && (data[0].Value * 100).toFixed(1) > 0) {
+                                div.className = 'green'
+                            } else {
+                                div.className = 'red'
+                            }
+                            div.innerText = data.length && (data[0].Value * 100).toFixed(1)
+                            return div
+                        }
+                    }
+                })
+            })
+        }
     }
 
-    if (analysisType === 'chieuNgang' && type === LATEST_FINANCIAL_REPORTS.TYPE_1) {
-        let chieuNgangArray = ['2016-2015', '2017-2016', '2018-2017', '2019-2018']
-        chieuNgangArray.map((yearItem, index) => {
-            year.push({
-                headerName: yearItem,
-                cellRenderer: (params) => {
-                    if (params.data && params.data.Values && params.data.Values.length) {
-                        const data = params.data.Values.filter(item => item.Year === yearItem)
-                        const div = document.createElement("div");
-                        if (data.length && (data[0].Value * 100).toFixed(1) > 0) {
-                            div.className = 'green'
-                        } else {
-                            div.className = 'red'
+
+    if (type === LATEST_FINANCIAL_REPORTS.TYPE_2) {
+        if (analysisType === 'tyTrong') {
+            let tyTrongArray = ['%2015', '%2016', '%2017', '%2018', '%2019']
+            tyTrongArray.map((yearItem, index) => {
+                year.push({
+                    headerName: yearItem,
+                    cellRenderer: (params) => {
+                        if (params.data && params.data.Values && params.data.Values.length) {
+                            const data = params.data.Values.filter(item => item.Year === yearItem)
+                            if (!data.length) return ''
+                            const div = document.createElement("div");
+                            if (data.length && (data[0].Value * 100).toFixed(1) > 10) {
+                                div.className = 'red'
+                            }
+                            div.innerText = data.length && (data[0].Value * 100).toFixed(1)
+                            return div
                         }
-                        div.innerText = data.length && (data[0].Value * 100).toFixed(1)
-                        return div
                     }
-                }
+                })
             })
-        })
+        } else if (analysisType === 'chieuNgang') {
+            let chieuNgangArray = ['2016-2015', '2017-2016', '2018-2017', '2019-2018']
+            chieuNgangArray.map((yearItem, index) => {
+                year.push({
+                    headerName: yearItem,
+                    cellRenderer: (params) => {
+                        if (params.data && params.data.Values && params.data.Values.length) {
+                            const data = params.data.Values.filter(item => item.Year === yearItem)
+                            const div = document.createElement("div");
+                            if (data.length && (data[0].Value * 100).toFixed(1) > 0) {
+                                div.className = 'green'
+                            } else {
+                                div.className = 'red'
+                            }
+                            div.innerText = data.length && (data[0].Value * 100).toFixed(1)
+                            return div
+                        }
+                    }
+                })
+            })
+        }
     }
+
 
     quarterArray.push({
         field: 'Name'
