@@ -100,6 +100,6 @@ export const updateStock = (data: any): ThunkActionType => async (
 ) => {
     const { stocks } = getStoreValue();
     console.log(data)
-    const response = await StockService.updateStock(stocks[data.data].id, { IsVN30: true })
+    const response = await StockService.updateStock(stocks[data].id, { IsVN30: true })
     return response
 }

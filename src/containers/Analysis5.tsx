@@ -459,15 +459,42 @@ class Analysis5 extends React.Component<IProps, IState> {
         this.setState(data, () => this.scan());
     }
 
-    changeType = (type) => {
+    changeType = async (type) => {
         this.setState({
             type: type.target.value
-        }, () => {
-            const data = {}
-            data[type.target.value] = true
-            console.log(type.target.value, data)
-            this.props.filterStocks(data)
         })
+        const data = {}
+        data[type.target.value] = true
+        console.log(type.target.value, data)
+        const res = await this.props.filterStocks(data)
+        await axios({
+            url: getLastestFinancialInfoFilterUrl(),
+            method: 'post',
+            data: {
+                symbols: res.data.map(item => item.Symbol)
+            }
+        })
+            .then(response => {
+                console.log(response)
+                this.setState({
+                    rowData: response.data
+                })
+                // data.map(item => {
+                //     const found = response.data.filter(i => i.Symbol === item.Stock)
+                //     if (found.length === 1) {
+                //         item.ROE = Number((Number(found[0].ROE) * 100).toFixed(2))
+                //         item.EPS = Number((Number(found[0].EPS)).toFixed(0))
+                //     } else {
+                //         item.ROE = null
+                //         item.EPS = null
+                //     }
+                //     return item
+                // })
+            })
+            .catch(error => {
+                console.log(error)
+            })
+
     }
 
     handleChange = (e) => {
@@ -478,7 +505,7 @@ class Analysis5 extends React.Component<IProps, IState> {
     }
 
     handleAdd = () => {
-        this.props.updateStock({ data: this.state.addVN30Stock })
+        this.props.updateStock(this.state.addVN30Stock)
     }
 
 
