@@ -442,7 +442,7 @@ export const getLastestFinancialReportsColumnDefs = (period, type, analysisType 
             hide: true
         },
     ]
-    if (type === LATEST_FINANCIAL_REPORTS.TYPE_1 || type === LATEST_FINANCIAL_REPORTS.TYPE_4) {
+    if (type === LATEST_FINANCIAL_REPORTS.TYPE_1) {
         year = year.concat(rowGroup)
     }
     year.push({

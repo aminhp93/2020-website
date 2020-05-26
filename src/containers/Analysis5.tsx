@@ -1,14 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
-import { DatePicker, Button, Modal, Input } from 'antd';
+import { DatePicker, Button, Modal, Input, Radio, Select, Spin } from 'antd';
 import { debounce, get } from 'lodash';
-
 import {
     BarChartOutlined,
     InfoCircleOutlined
 } from '@ant-design/icons';
-import moment from 'moment';
+import moment from 'moment'
+    ;
 import {
     mapColorPriceChange,
     formatNumber,
@@ -22,7 +22,10 @@ import {
     getLastestFinancialInfoFilterUrl,
     getStockScanUrl
 } from '../utils/request';
-
+import {
+    filterStocks,
+    updateStock
+} from '../reducers/stocks';
 import axios from 'axios';
 
 import { AgGridReact } from '@ag-grid-community/react';
@@ -34,11 +37,15 @@ import ChartTV from './ChartTV/ChartTV';
 import Profile from './Profile';
 import { IStock } from '../types'
 
+const { Option } = Select;
+
 const { RangePicker } = DatePicker;
 
 interface IProps {
     selectedSymbol: string,
     stocks: IStock,
+    filterStocks: any,
+    updateStock: any,
 }
 
 interface IState {
@@ -51,6 +58,12 @@ interface IState {
     symbol: string,
     startDate: string,
     endDate: string,
+    type: string,
+    addVN30Stock: string,
+    value?: any,
+    data?: any,
+    fetching?: boolean,
+
 }
 
 class Analysis5 extends React.Component<IProps, IState> {
@@ -60,6 +73,7 @@ class Analysis5 extends React.Component<IProps, IState> {
     constructor(props) {
         super(props);
         this.state = {
+            type: 'default',
             symbol: '',
             modules: AllModules,
             columnDefs: [
@@ -260,9 +274,28 @@ class Analysis5 extends React.Component<IProps, IState> {
             endDate: '',
             visibleChart: false,
             visibleInfo: false,
+            addVN30Stock: '',
+            data: []
         }
         this.scan = debounce(this.scan, 300);
+        this.fetchUser = debounce(this.fetchUser, 800);
+
     }
+
+    fetchUser = value => {
+        this.setState({
+            data: [],
+            fetching: true
+        }, () => {
+            const filteredStocks = Object.values(this.props.stocks).filter(item => {
+                return (item.Symbol || '').toLowerCase().includes((value || '').toLowerCase())
+            })
+            this.setState({
+                data: filteredStocks,
+                fetching: false
+            })
+        });
+    };
 
     crawData = async (startDate = '', endDate = '') => {
         this.gridApi.showLoadingOverlay();
@@ -426,14 +459,47 @@ class Analysis5 extends React.Component<IProps, IState> {
         this.setState(data, () => this.scan());
     }
 
+    changeType = (type) => {
+        this.setState({
+            type: type.target.value
+        }, () => {
+            const data = {}
+            data[type.target.value] = true
+            console.log(type.target.value, data)
+            this.props.filterStocks(data)
+        })
+    }
+
+    handleChange = (e) => {
+        console.log(e)
+        this.setState({
+            addVN30Stock: e[0].key
+        })
+    }
+
+    handleAdd = () => {
+        this.props.updateStock({ data: this.state.addVN30Stock })
+    }
+
+
+
     render() {
         const { startDate, endDate, rowData,
             modules, columnDefs, defaultColDef,
-            visibleChart, visibleInfo
+            visibleChart, visibleInfo, type,
+            value, fetching, data
         } = this.state;
         return (
             <div>
                 <div>
+                    <div>
+
+                        <Radio.Group value={type} onChange={this.changeType}>
+                            <Radio.Button value="IsVN30">VN30</Radio.Button>
+                            <Radio.Button value="IsFavorite">Favorite</Radio.Button>
+                            <Radio.Button value="default">Default</Radio.Button>
+                        </Radio.Group>
+                    </div>
                     <div>
                         <div className="flex">
                             <Input addonBefore="Symbol" onChange={(e) => this.changeInput(e, 'Symbol')} />
@@ -481,6 +547,21 @@ class Analysis5 extends React.Component<IProps, IState> {
                         />
                     </div>
                 </div>
+                {type === 'IsVN30' ? <><Select
+                    mode="multiple"
+                    labelInValue
+                    value={value}
+                    placeholder="Select stock"
+                    notFoundContent={fetching ? <Spin size="small" /> : null}
+                    filterOption={false}
+                    onSearch={this.fetchUser}
+                    onChange={this.handleChange}
+                    style={{ width: '200px' }}
+                >
+                    {data.map(d => (
+                        <Option key={d.Symbol}>{d.Symbol}</Option>
+                    ))}
+                </Select><Button onClick={this.handleAdd}>Add</Button></> : null}
                 {visibleChart ?
                     <Modal
                         className="chartTVModal"
@@ -519,6 +600,8 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
+    filterStocks,
+    updateStock
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Analysis5);

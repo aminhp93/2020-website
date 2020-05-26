@@ -45,6 +45,20 @@ const StockService = {
             url: StockUrls.getHistoricalQuotes(selectedSymbol, startDate, endDate)
         })
     },
+    filterStocks(data) {
+        return request({
+            method: 'POST',
+            data,
+            url: StockUrls.filterStocks()
+        })
+    },
+    updateStock(id, data) {
+        return request({
+            method: 'PATCH',
+            data,
+            url: StockUrls.updateStock(id)
+        })
+    },
 
 };
 

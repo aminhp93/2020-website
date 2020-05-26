@@ -20,7 +20,7 @@ class Analysis extends React.Component<IProps, IState> {
     render() {
         return (
             <div className="Analysis">
-                <Tabs defaultActiveKey="1">
+                <Tabs defaultActiveKey="6">
                     <TabPane tab="Overview Analysis" key="1">
                         <OverviewAnalysis />
                     </TabPane>

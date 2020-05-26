@@ -85,3 +85,21 @@ export const getHistoricalQuotes = (data: any): ThunkActionType => async (
     const response = await StockService.getHistoricalQuotes(selectedSymbol, startDate, endDate)
     return response
 }
+
+export const filterStocks = (data: any): ThunkActionType => async (
+    dispatch,
+    getStoreValue
+) => {
+    const response = await StockService.filterStocks(data)
+    return response
+}
+
+export const updateStock = (data: any): ThunkActionType => async (
+    dispatch,
+    getStoreValue
+) => {
+    const { stocks } = getStoreValue();
+    console.log(data)
+    const response = await StockService.updateStock(stocks[data.data].id, { IsVN30: true })
+    return response
+}
