@@ -100,6 +100,23 @@ export const updateStock = (data: any): ThunkActionType => async (
 ) => {
     const { stocks } = getStoreValue();
     console.log(data)
-    const response = await StockService.updateStock(stocks[data].id, { IsVN30: true })
+    const response = await StockService.updateStock(stocks[data[0].key].id, { IsVN30: true })
+    return response
+}
+
+export const scanStock = (data: any): ThunkActionType => async (
+    dispatch,
+    getStoreValue
+) => {
+    const dataRequest = {}
+    if (data) {
+        const keys = Object.keys(data).filter(i => ['Symbol'].includes(i))
+        keys.map(key => {
+            dataRequest[key] = data[key]
+        })
+    }
+
+    console.log(dataRequest)
+    const response = await StockService.scanStock(dataRequest)
     return response
 }

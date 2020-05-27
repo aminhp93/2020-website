@@ -17,7 +17,9 @@ export const StockUrls = {
     getLastestFinancialReports: (symbol, type = 1, year = 2020, quarter = 0, count = 5) => `${baseUrl}/api/Data/Finance/LastestFinancialReports/?symbol=${symbol}&type=${type}&year=${year}&quarter=${quarter}&count=${count}`,
     getHistoricalQuotes: (symbol, startDate, endDate) => `${baseUrl}/api/Data/Companies/HistoricalQuotes/?symbol=${symbol}&startDate=${startDate}&endDate=${endDate}`,
     filterStocks: () => `${baseUrl}/api/Stock/Filter/`,
-    updateStock: (id) => `${baseUrl}/api2/Stock/${id}/`
+    updateStock: (id) => `${baseUrl}/api2/Stock/${id}/`,
+    scanStock: () => `${baseUrl}/api/Stock/scan/`,
+
 };
 
 export const LastUpdatedDateUrls = {

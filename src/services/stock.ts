@@ -59,6 +59,13 @@ const StockService = {
             url: StockUrls.updateStock(id)
         })
     },
+    scanStock(data) {
+        return request({
+            method: 'POST',
+            data,
+            url: StockUrls.scanStock()
+        })
+    },
 
 };
 

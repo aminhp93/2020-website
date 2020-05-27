@@ -1,17 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import ReactDOM from 'react-dom';
-import { DatePicker, Button, Modal, Input, Radio, Select, Spin } from 'antd';
+import { DatePicker, Button, Modal, Input, Radio, Select, Spin, Icon } from 'antd';
 import { debounce, get } from 'lodash';
-import {
-    BarChartOutlined,
-    InfoCircleOutlined
-} from '@ant-design/icons';
 import moment from 'moment'
-    ;
+import axios from 'axios';
+
 import {
-    mapColorPriceChange,
-    formatNumber,
     mapArrayToKeyValue,
     mapDataTwoDate
 } from '../utils/all';
@@ -24,28 +18,30 @@ import {
 } from '../utils/request';
 import {
     filterStocks,
-    updateStock
+    updateStock,
+    scanStock
 } from '../reducers/stocks';
-import axios from 'axios';
-
-import { AgGridReact } from '@ag-grid-community/react';
-import { AllModules } from '@ag-grid-enterprise/all-modules';
-
-import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
-import '@ag-grid-community/all-modules/dist/styles/ag-theme-alpine.css';
 import ChartTV from './ChartTV/ChartTV';
 import Profile from './Profile';
 import { IStock } from '../types'
+import { analysis5ColumnDefs } from '../utils/columnDefs';
+
+import { AgGridReact } from '@ag-grid-community/react';
+import { AllModules } from '@ag-grid-enterprise/all-modules';
+import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
+import '@ag-grid-community/all-modules/dist/styles/ag-theme-alpine.css';
 
 const { Option } = Select;
-
 const { RangePicker } = DatePicker;
+
 
 interface IProps {
     selectedSymbol: string,
     stocks: IStock,
     filterStocks: any,
     updateStock: any,
+    lastUpdatedDate: any,
+    scanStock: any,
 }
 
 interface IState {
@@ -59,11 +55,10 @@ interface IState {
     startDate: string,
     endDate: string,
     type: string,
-    addVN30Stock: string,
+    addVN30Stock: any,
     value?: any,
     data?: any,
     fetching?: boolean,
-
 }
 
 class Analysis5 extends React.Component<IProps, IState> {
@@ -76,190 +71,7 @@ class Analysis5 extends React.Component<IProps, IState> {
             type: 'default',
             symbol: '',
             modules: AllModules,
-            columnDefs: [
-                {
-                    headerName: 'Stock',
-                    field: 'Stock',
-                    align: 'left',
-                    cellRenderer: params => {
-                        const div = document.createElement("div");
-                        div.className = 'flex space-between'
-                        ReactDOM.render(
-                            <>
-                                <div>{params.data.Stock}</div>
-                                <div className="flex">
-                                    <div onClick={() => { this.setState({ visibleChart: true, symbol: params.data.Stock }) }}><BarChartOutlined style={{ fontSize: '16px' }} /></div>
-                                    <div onClick={() => { this.setState({ visibleInfo: true }) }}><InfoCircleOutlined style={{ fontSize: '16px' }} /></div>
-                                </div>
-
-                            </>,
-                            div
-                        );
-                        return div
-                    }
-                },
-                {
-                    field: 'ICBCode',
-                    headerName: 'ICBCode',
-                    filter: 'agNumberColumnFilter',
-                    align: 'right',
-                    cellRenderer: params => {
-                        const div = document.createElement("div");
-                        div.innerText = params.data.ICBCode
-                        return div
-                    }
-                },
-                {
-                    field: 'PriceClose',
-                    headerName: 'Price',
-                    filter: 'agNumberColumnFilter',
-                    align: 'right',
-                    cellRenderer: params => {
-                        const div = document.createElement("div");
-                        div.innerText = formatNumber(params.data.PriceClose)
-                        return div
-                    }
-                },
-                {
-                    field: 'PriceChange',
-                    headerName: '%',
-                    align: 'right',
-                    filter: 'agNumberColumnFilter',
-                    cellRenderer: params => {
-                        const div = document.createElement("div");
-                        div.innerText = params.data.PriceChange
-                        div.className = mapColorPriceChange(params.data.PriceChange)
-                        return div
-                    }
-                },
-                // {
-                //     field: 'Volume',
-                //     align: 'right',
-                //     headerName: 'DealVolume',
-                //     filter: 'agNumberColumnFilter',
-                //     cellRenderer: params => {
-                //         const div = document.createElement("div");
-                //         div.innerText = formatNumber(params.data.DealVolume)
-                //         return div
-                //     }
-                // },
-                {
-                    field: 'TodayCapital',
-                    align: 'right',
-                    headerName: 'TodayCapital',
-                    filter: 'agNumberColumnFilter',
-                    cellRenderer: params => {
-                        const div = document.createElement("div");
-                        div.innerText = formatNumber(params.data.TodayCapital)
-                        return div
-                    }
-                },
-                {
-                    field: 'VolumeChange',
-                    align: 'right',
-                    headerName: '%Volume',
-                    filter: 'agNumberColumnFilter',
-                    cellRenderer: params => {
-                        const div = document.createElement("div");
-                        div.innerText = formatNumber(params.data.VolumeChange)
-                        return div
-                    }
-                },
-                {
-                    align: 'right',
-                    headerName: 'ROE',
-                    filter: 'agNumberColumnFilter',
-                    cellRenderer: params => {
-                        const div = document.createElement("div");
-                        div.innerText = formatNumber(params.data.ROE)
-                        return div
-                    }
-                },
-                {
-                    align: 'right',
-                    headerName: 'EPS',
-                    filter: 'agNumberColumnFilter',
-                    cellRenderer: params => {
-                        const div = document.createElement("div");
-                        div.innerText = formatNumber(params.data.EPS)
-                        return div
-                    }
-                },
-                {
-                    align: 'right',
-                    headerName: 'TT EPS cung ky',
-                    filter: 'agNumberColumnFilter',
-                    cellRenderer: params => {
-                        const div = document.createElement("div");
-                        div.innerText = formatNumber(params.data.EPS)
-                        return div
-                    }
-                },
-                {
-                    align: 'right',
-                    headerName: 'TT LNST nam',
-                    filter: 'agNumberColumnFilter',
-                    cellRenderer: params => {
-                        const div = document.createElement("div");
-                        div.innerText = formatNumber(params.data.EPS)
-                        return div
-                    }
-                },
-                {
-                    align: 'right',
-                    headerName: 'Point',
-                    filter: 'agNumberColumnFilter',
-                    cellRenderer: params => {
-                        const div = document.createElement("div");
-                        div.innerText = formatNumber(params.data.EPS)
-                        return div
-                    }
-                },
-                {
-                    align: 'right',
-                    headerName: 'Power',
-                    filter: 'agNumberColumnFilter',
-                    cellRenderer: params => {
-                        const div = document.createElement("div");
-                        div.innerText = formatNumber(params.data.EPS)
-                        return div
-                    }
-                },
-                {
-                    field: 'BuyForeignQuantity',
-                    align: 'right',
-                    headerName: 'BuyForeignQuantity',
-                    filter: 'agNumberColumnFilter',
-                    cellRenderer: params => {
-                        const div = document.createElement("div");
-                        div.innerText = formatNumber(params.data.BuyForeignQuantity)
-                        return div
-                    }
-                },
-                {
-                    field: 'SellForeignQuantity',
-                    align: 'right',
-                    headerName: 'SellForeignQuantity',
-                    filter: 'agNumberColumnFilter',
-                    cellRenderer: params => {
-                        const div = document.createElement("div");
-                        div.innerText = formatNumber(params.data.SellForeignQuantity)
-                        return div
-                    }
-                },
-                {
-                    field: 'MarketCap',
-                    align: 'right',
-                    headerName: 'MarketCap',
-                    filter: 'agNumberColumnFilter',
-                    cellRenderer: params => {
-                        const div = document.createElement("div");
-                        div.innerText = formatNumber(params.data.MarketCap)
-                        return div
-                    }
-                },
-
-            ],
+            columnDefs: analysis5ColumnDefs,
             defaultColDef: {
                 flex: 1,
                 filter: true,
@@ -274,247 +86,250 @@ class Analysis5 extends React.Component<IProps, IState> {
             endDate: '',
             visibleChart: false,
             visibleInfo: false,
-            addVN30Stock: '',
+            addVN30Stock: [],
             data: []
         }
         this.scan = debounce(this.scan, 300);
-        this.fetchUser = debounce(this.fetchUser, 800);
+        // this.fetchUser = debounce(this.fetchUser, 800);
 
     }
 
     fetchUser = value => {
-        this.setState({
-            data: [],
-            fetching: true
-        }, () => {
-            const filteredStocks = Object.values(this.props.stocks).filter(item => {
-                return (item.Symbol || '').toLowerCase().includes((value || '').toLowerCase())
-            })
-            this.setState({
-                data: filteredStocks,
-                fetching: false
-            })
-        });
+        // this.setState({
+        //     data: [],
+        //     fetching: true
+        // }, () => {
+        //     const filteredStocks = Object.values(this.props.stocks).filter(item => {
+        //         return (item.Symbol || '').toLowerCase().includes((value || '').toLowerCase())
+        //     })
+        //     this.setState({
+        //         data: filteredStocks,
+        //         fetching: false
+        //     })
+        // });
     };
 
     crawData = async (startDate = '', endDate = '') => {
-        this.gridApi.showLoadingOverlay();
+        // this.gridApi.showLoadingOverlay();
+        // const { lastUpdatedDate } = this.props;
+        // const { stocks } = this.props;
+        // let data1 = [];
+        // let data2 = []
 
-        const { stocks } = this.props;
-        let data1 = [];
-        let data2 = []
-        let lastUpdatedDate = '';
-        await axios({
-            url: getConfigGetCreateUrl('LAST_UPDATED_HISTORICAL_QUOTES'),
-            method: 'get'
-        })
-            .then(response => {
-                lastUpdatedDate = response.data.value
-            })
-            .catch(error => {
-                console.log(error)
-            })
-        if (!lastUpdatedDate) return
+        // if (!lastUpdatedDate.value) return
 
-        await axios({
-            url: getStockFilter(),
-            method: 'post',
-            data: {
-                Date: endDate ? endDate : lastUpdatedDate
-            }
-        })
-            .then(response => {
-                data1 = response.data.sort((a, b) => a.Stock - b.Stock)
-            })
-            .catch(error => {
-                console.log(error)
-            })
+        // await axios({
+        //     url: getStockFilter(),
+        //     method: 'post',
+        //     data: {
+        //         Date: endDate ? endDate : lastUpdatedDate.value
+        //     }
+        // })
+        //     .then(response => {
+        //         data1 = response.data.sort((a, b) => a.Stock - b.Stock)
+        //     })
+        //     .catch(error => {
+        //         console.log(error)
+        //     })
 
-        await axios({
-            url: getStockFilter(),
-            method: 'post',
-            data: {
-                Date: startDate ? startDate : moment(lastUpdatedDate).add(-1, 'days').format('YYYY-MM-DD') + 'T00:00:00Z'
-            }
-        })
-            .then(response => {
-                data2 = response.data.sort((a, b) => a.Stock - b.Stock)
-            })
-            .catch(error => {
-                console.log(error)
-            })
+        // await axios({
+        //     url: getStockFilter(),
+        //     method: 'post',
+        //     data: {
+        //         Date: startDate ? startDate : moment(lastUpdatedDate.value).add(-1, 'days').format('YYYY-MM-DD') + 'T00:00:00Z'
+        //     }
+        // })
+        //     .then(response => {
+        //         data2 = response.data.sort((a, b) => a.Stock - b.Stock)
+        //     })
+        //     .catch(error => {
+        //         console.log(error)
+        //     })
 
-        let mappedData = mapDataTwoDate(data1, data2, mapArrayToKeyValue(Object.values(stocks)));
-        if (!mappedData.length) return;
-        let data = mappedData.filter(item => item.TodayCapital > 5 && item.PriceChange > 1).sort((a, b) => b.TodayCapital - a.TodayCapital)
-        await axios({
-            url: getCompanyInfoFilterUrl(),
-            method: 'post',
-            data: {
-                symbols: data.map(item => item.Stock)
-            }
-        })
-            .then(response => {
-                console.log(response)
-                data.map(item => {
-                    const found = response.data.filter(i => i.Symbol === item.Stock)
-                    if (found.length === 1) {
-                        item.ICBCode = Number(found[0].ICBCode)
-                    } else {
-                        item.ICBCode = null
-                    }
-                    return item
-                })
-            })
-            .catch(error => {
-                console.log(error)
-            })
-        await axios({
-            url: getLastestFinancialInfoFilterUrl(),
-            method: 'post',
-            data: {
-                symbols: data.map(item => item.Stock)
-            }
-        })
-            .then(response => {
-                console.log(response)
-                data.map(item => {
-                    const found = response.data.filter(i => i.Symbol === item.Stock)
-                    if (found.length === 1) {
-                        item.ROE = Number((Number(found[0].ROE) * 100).toFixed(2))
-                        item.EPS = Number((Number(found[0].EPS)).toFixed(0))
-                    } else {
-                        item.ROE = null
-                        item.EPS = null
-                    }
-                    return item
-                })
-            })
-            .catch(error => {
-                console.log(error)
-            })
-        let dataSetState
-        if (startDate) {
-            dataSetState = {
-                rowData: data
-            }
-        } else {
-            dataSetState = {
-                rowData: data,
-                startDate: moment(lastUpdatedDate).add(-1, 'days').format('YYYY-MM-DD') + 'T00:00:00Z',
-                endDate: lastUpdatedDate
-            }
-        }
+        // let mappedData = mapDataTwoDate(data1, data2, mapArrayToKeyValue(Object.values(stocks)));
+        // if (!mappedData.length) return;
+        // let data = mappedData.filter(item => item.TodayCapital > 5 && item.PriceChange > 1).sort((a, b) => b.TodayCapital - a.TodayCapital)
+        // await axios({
+        //     url: getCompanyInfoFilterUrl(),
+        //     method: 'post',
+        //     data: {
+        //         symbols: data.map(item => item.Stock)
+        //     }
+        // })
+        //     .then(response => {
+        //         console.log(response)
+        //         data.map(item => {
+        //             const found = response.data.filter(i => i.Symbol === item.Stock)
+        //             if (found.length === 1) {
+        //                 item.ICBCode = Number(found[0].ICBCode)
+        //             } else {
+        //                 item.ICBCode = null
+        //             }
+        //             return item
+        //         })
+        //     })
+        //     .catch(error => {
+        //         console.log(error)
+        //     })
+        // await axios({
+        //     url: getLastestFinancialInfoFilterUrl(),
+        //     method: 'post',
+        //     data: {
+        //         symbols: data.map(item => item.Stock)
+        //     }
+        // })
+        //     .then(response => {
+        //         console.log(response)
+        //         data.map(item => {
+        //             const found = response.data.filter(i => i.Symbol === item.Stock)
+        //             if (found.length === 1) {
+        //                 item.ROE = Number((Number(found[0].ROE) * 100).toFixed(2))
+        //                 item.EPS = Number((Number(found[0].EPS)).toFixed(0))
+        //             } else {
+        //                 item.ROE = null
+        //                 item.EPS = null
+        //             }
+        //             return item
+        //         })
+        //     })
+        //     .catch(error => {
+        //         console.log(error)
+        //     })
+        // let dataSetState
+        // if (startDate) {
+        //     dataSetState = {
+        //         rowData: data
+        //     }
+        // } else {
+        //     dataSetState = {
+        //         rowData: data,
+        //         startDate: moment(lastUpdatedDate.value).add(-1, 'days').format('YYYY-MM-DD') + 'T00:00:00Z',
+        //         endDate: lastUpdatedDate.value
+        //     }
+        // }
 
-        this.setState(dataSetState, () => this.gridApi.hideOverlay());
+        // this.setState(dataSetState, () => this.gridApi.hideOverlay());
     }
 
-    onGridReady = params => {
+    onGridReady = async params => {
         this.gridApi = params.api;
         this.gridColumnApi = params.columnApi;
-        this.crawData();
+        const res = await this.props.scanStock();
+        this.setState({
+            rowData: res.data
+        })
     };
 
     onChange = (date, dateString) => {
-        if (dateString && dateString.length === 2) {
-            this.setState({
-                startDate: dateString[0] + 'T00:00:00Z',
-                endDate: dateString[1] + 'T00:00:00Z'
-            })
-        }
+        // if (dateString && dateString.length === 2) {
+        //     this.setState({
+        //         startDate: dateString[0] + 'T00:00:00Z',
+        //         endDate: dateString[1] + 'T00:00:00Z'
+        //     })
+        // }
     }
 
     handleOk = e => {
-        this.setState({
-            visibleChart: false,
-            visibleInfo: false,
-        });
+        // this.setState({
+        //     visibleChart: false,
+        //     visibleInfo: false,
+        // });
     };
 
     handleCancel = e => {
-        this.setState({
-            visibleChart: false,
-            visibleInfo: false,
-        });
+        // this.setState({
+        //     visibleChart: false,
+        //     visibleInfo: false,
+        // });
     };
-
-    scan = () => {
-        console.log(this.state)
-        axios({
-            url: getStockScanUrl(),
-            method: 'post',
-            data: this.state
-        })
-            .then(response => {
-                console.log(response)
-            })
-            .catch(error => {
-                console.log(error)
-            })
-    }
 
     changeInput = (e, index) => {
         const data = {};
-        data[index] = e.target.value;
-        this.setState(data, () => this.scan());
+        if (index === 'Symbol') {
+            data[index] = e.target.value.toUpperCase();
+        } else {
+            data[index] = e.target.value
+        }
+
+        const dataRequest = { ...this.state, ...data }
+        console.log(data, this.state, dataRequest);
+        this.scan(dataRequest)
+        this.setState(data)
+    }
+
+    scan = async (data) => {
+
+        const res = await this.props.scanStock(data);
+        this.setState({
+            rowData: res.data
+        })
     }
 
     changeType = async (type) => {
-        this.setState({
-            type: type.target.value
-        })
-        const data = {}
-        data[type.target.value] = true
-        console.log(type.target.value, data)
-        const res = await this.props.filterStocks(data)
-        await axios({
-            url: getLastestFinancialInfoFilterUrl(),
-            method: 'post',
-            data: {
-                symbols: res.data.map(item => item.Symbol)
-            }
-        })
-            .then(response => {
-                console.log(response)
-                this.setState({
-                    rowData: response.data
-                })
-                // data.map(item => {
-                //     const found = response.data.filter(i => i.Symbol === item.Stock)
-                //     if (found.length === 1) {
-                //         item.ROE = Number((Number(found[0].ROE) * 100).toFixed(2))
-                //         item.EPS = Number((Number(found[0].EPS)).toFixed(0))
-                //     } else {
-                //         item.ROE = null
-                //         item.EPS = null
-                //     }
-                //     return item
-                // })
-            })
-            .catch(error => {
-                console.log(error)
-            })
+        //     this.setState({
+        //         type: type.target.value
+        //     })
+        //     const data = {}
+        //     data[type.target.value] = true
+        //     console.log(type.target.value, data)
+        //     const res = await this.props.filterStocks(data)
+        //     await axios({
+        //         url: getLastestFinancialInfoFilterUrl(),
+        //         method: 'post',
+        //         data: {
+        //             symbols: res.data.map(item => item.Symbol)
+        //         }
+        //     })
+        //         .then(response => {
+        //             console.log(response)
+        //             this.setState({
+        //                 rowData: response.data
+        //             })
+        //         })
+        //         .catch(error => {
+        //             console.log(error)
+        //         })
 
     }
 
-    handleChange = (e) => {
-        console.log(e)
-        this.setState({
-            addVN30Stock: e[0].key
-        })
+    handleChangeVN30 = value => {
+        // console.log(value)
+        // this.setState({
+        //     data: [],
+        //     fetching: false,
+        //     addVN30Stock: value
+        // })
     }
 
-    handleAdd = () => {
-        this.props.updateStock(this.state.addVN30Stock)
+    handleAdd = async () => {
+        // await this.props.updateStock(this.state.addVN30Stock)
+        // this.setState({ addVN30Stock: [] })
+        // const data = {}
+        // data[this.state.type] = true
+        // const res = await this.props.filterStocks(data)
+        // await axios({
+        //     url: getLastestFinancialInfoFilterUrl(),
+        //     method: 'post',
+        //     data: {
+        //         symbols: res.data.map(item => item.Symbol)
+        //     }
+        // })
+        //     .then(response => {
+        //         console.log(response)
+        //         this.setState({
+        //             rowData: response.data
+        //         })
+        //     })
+        //     .catch(error => {
+        //         console.log(error)
+        //     })
     }
-
-
 
     render() {
         const { startDate, endDate, rowData,
             modules, columnDefs, defaultColDef,
             visibleChart, visibleInfo, type,
-            value, fetching, data
+            fetching, data, addVN30Stock
         } = this.state;
         return (
             <div>
@@ -577,12 +392,12 @@ class Analysis5 extends React.Component<IProps, IState> {
                 {type === 'IsVN30' ? <><Select
                     mode="multiple"
                     labelInValue
-                    value={value}
+                    value={addVN30Stock}
                     placeholder="Select stock"
                     notFoundContent={fetching ? <Spin size="small" /> : null}
                     filterOption={false}
                     onSearch={this.fetchUser}
-                    onChange={this.handleChange}
+                    onChange={this.handleChangeVN30}
                     style={{ width: '200px' }}
                 >
                     {data.map(d => (
@@ -623,12 +438,15 @@ const mapStateToProps = state => {
     return {
         selectedSymbol: get(state, 'selectedSymbol'),
         stocks: get(state, 'stocks'),
+        lastUpdatedDate: get(state, 'lastUpdatedDate')
     }
 }
 
 const mapDispatchToProps = {
     filterStocks,
-    updateStock
+    updateStock,
+    scanStock
+
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Analysis5);
