@@ -35,6 +35,7 @@ import ImportantIndexes from './ImportantIndexes';
 
 import { IStock } from '../types'
 import { fetchListStocks } from '../reducers/stocks';
+import { fetchCompany } from '../reducers/companies';
 import { updateSelectedSymbolSuccess } from '../reducers/selectedSymbol';
 import { getLastUpdatedDate } from '../reducers/lastUpdatedDate';
 
@@ -45,10 +46,11 @@ const { Option } = Select;
 interface IProps {
     selectedSymbol: string,
     stocks: IStock,
-    lastUpdatedDate: any
+    lastUpdatedDate: any,
     updateSelectedSymbolSuccess: any,
-    fetchListStocks: any
-    getLastUpdatedDate: any;
+    fetchListStocks: any,
+    getLastUpdatedDate: any,
+    fetchCompany: any,
 }
 
 interface IState {
@@ -73,11 +75,16 @@ class Stock extends React.Component<IProps, IState> {
         this.fetchUser = debounce(this.fetchUser, 800);
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         try {
-            await this.props.getLastUpdatedDate()
-            await this.props.fetchListStocks()
-            this.setState({ loading: false })
+            const promise1 = this.props.getLastUpdatedDate()
+            const promise2 = this.props.fetchListStocks()
+            const promise3 = this.props.fetchCompany()
+            Promise.all([promise1, promise2, promise3])
+                .then(response => {
+                    this.setState({ loading: false })
+                })
+
         } catch (error) {
             this.setState({ loading: false })
         }
@@ -210,7 +217,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
     getLastUpdatedDate,
     fetchListStocks,
-    updateSelectedSymbolSuccess
+    updateSelectedSymbolSuccess,
+    fetchCompany
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Stock);

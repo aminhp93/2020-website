@@ -66,6 +66,12 @@ const StockService = {
             url: StockUrls.scanStock()
         })
     },
+    fetchCompanyInfo() {
+        return request({
+            method: 'GET',
+            url: StockUrls.fetchCompanyInfo()
+        })
+    }
 
 };
 

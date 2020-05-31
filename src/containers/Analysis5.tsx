@@ -1,9 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { DatePicker, Button, Modal, Input, Radio, Select, Spin, Icon } from 'antd';
-import { debounce, get } from 'lodash';
+import { debounce, get, each } from 'lodash';
 import moment from 'moment'
-import axios from 'axios';
 
 import {
     mapArrayToKeyValue,
@@ -42,6 +41,7 @@ interface IProps {
     updateStock: any,
     lastUpdatedDate: any,
     scanStock: any,
+    companies: any,
 }
 
 interface IState {
@@ -211,14 +211,21 @@ class Analysis5 extends React.Component<IProps, IState> {
         // this.setState(dataSetState, () => this.gridApi.hideOverlay());
     }
 
-    onGridReady = async params => {
+    onGridReady = params => {
         this.gridApi = params.api;
         this.gridColumnApi = params.columnApi;
-        const res = await this.props.scanStock();
-        this.setState({
-            rowData: res.data
-        })
+        this.scan();
     };
+
+    mapData = (data) => {
+        const { companies, stocks } = this.props;
+        each(data, i => {
+            i.ICBCode = (companies[i.stockId] || {}).ICBCode
+            i.Symbol = (stocks[i.stockId] || {}).Symbol
+            return i
+        })
+        return data
+    }
 
     onChange = (date, dateString) => {
         // if (dateString && dateString.length === 2) {
@@ -252,16 +259,18 @@ class Analysis5 extends React.Component<IProps, IState> {
         }
 
         const dataRequest = { ...this.state, ...data }
-        console.log(data, this.state, dataRequest);
         this.scan(dataRequest)
         this.setState(data)
     }
 
-    scan = async (data) => {
-
+    scan = async (data = null) => {
+        let defaultFilter = {
+            TodayCapital: 5
+        }
+        data = { ...data, ...defaultFilter }
         const res = await this.props.scanStock(data);
         this.setState({
-            rowData: res.data
+            rowData: this.mapData(res.data)
         })
     }
 
@@ -438,7 +447,8 @@ const mapStateToProps = state => {
     return {
         selectedSymbol: get(state, 'selectedSymbol'),
         stocks: get(state, 'stocks'),
-        lastUpdatedDate: get(state, 'lastUpdatedDate')
+        lastUpdatedDate: get(state, 'lastUpdatedDate'),
+        companies: get(state, 'companies')
     }
 }
 

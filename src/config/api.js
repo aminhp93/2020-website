@@ -19,8 +19,12 @@ export const StockUrls = {
     filterStocks: () => `${baseUrl}/api/Stock/Filter/`,
     updateStock: (id) => `${baseUrl}/api2/Stock/${id}/`,
     scanStock: () => `${baseUrl}/api/Stock/scan/`,
-
 };
+
+export const CompanyUrls = {
+    fetchCompany: () => `${baseUrl}/api/Company/`
+}
+
 
 export const LastUpdatedDateUrls = {
     getLastUpdatedDate: (id) => `${baseUrl}/api/config/${id ? `?key=${id}` : ''}`,

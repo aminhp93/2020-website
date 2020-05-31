@@ -25,7 +25,7 @@ export const fetchListStocks = (): ThunkActionType => async (
     dispatch
 ) => {
     const response = await StockService.getListStocks();
-    const data = keyBy(response.data, 'Symbol');
+    const data = keyBy(response.data, 'id');
     dispatch(fetchListStocksSuccess(data));
 };
 
@@ -108,15 +108,7 @@ export const scanStock = (data: any): ThunkActionType => async (
     dispatch,
     getStoreValue
 ) => {
-    const dataRequest = {}
-    if (data) {
-        const keys = Object.keys(data).filter(i => ['Symbol'].includes(i))
-        keys.map(key => {
-            dataRequest[key] = data[key]
-        })
-    }
 
-    console.log(dataRequest)
-    const response = await StockService.scanStock(dataRequest)
+    const response = await StockService.scanStock(data)
     return response
 }
