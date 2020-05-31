@@ -108,7 +108,16 @@ export const scanStock = (data: any): ThunkActionType => async (
     dispatch,
     getStoreValue
 ) => {
+    const dataRequest = {}
+    console.log(data);
+    const ALLOW_CONDITION_SEARCH = ['Symbol', 'TodayCapital', 'type']
+    if (data) {
+        const keys = Object.keys(data).filter(i => ALLOW_CONDITION_SEARCH.includes(i))
+        keys.map(key => {
+            dataRequest[key] = data[key]
+        })
+    }
 
-    const response = await StockService.scanStock(data)
+    const response = await StockService.scanStock(dataRequest)
     return response
 }

@@ -613,29 +613,29 @@ export const analysis5ColumnDefs = [
             return div
         }
     },
-    {
-        field: 'PriceChange',
-        headerName: '%',
-        align: 'right',
-        filter: 'agNumberColumnFilter',
-        cellRenderer: params => {
-            const div = document.createElement("div");
-            div.innerText = params.data.PriceChange
-            div.className = mapColorPriceChange(params.data.PriceChange)
-            return div
-        }
-    },
     // {
-    //     field: 'Volume',
+    //     field: 'PriceChange',
+    //     headerName: '%',
     //     align: 'right',
-    //     headerName: 'DealVolume',
     //     filter: 'agNumberColumnFilter',
     //     cellRenderer: params => {
     //         const div = document.createElement("div");
-    //         div.innerText = formatNumber(params.data.DealVolume)
+    //         div.innerText = params.data.PriceChange
+    //         div.className = mapColorPriceChange(params.data.PriceChange)
     //         return div
     //     }
     // },
+    {
+        field: 'Volume',
+        align: 'right',
+        headerName: 'DealVolume',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = formatNumber(params.data.DealVolume)
+            return div
+        }
+    },
     {
         field: 'TodayCapital',
         align: 'right',
@@ -647,109 +647,109 @@ export const analysis5ColumnDefs = [
             return div
         }
     },
-    {
-        field: 'VolumeChange',
-        align: 'right',
-        headerName: '%Volume',
-        filter: 'agNumberColumnFilter',
-        cellRenderer: params => {
-            const div = document.createElement("div");
-            div.innerText = formatNumber(params.data.VolumeChange)
-            return div
-        }
-    },
-    {
-        align: 'right',
-        headerName: 'ROE',
-        filter: 'agNumberColumnFilter',
-        cellRenderer: params => {
-            const div = document.createElement("div");
-            div.innerText = formatNumber(params.data.ROE)
-            return div
-        }
-    },
-    {
-        align: 'right',
-        headerName: 'EPS',
-        filter: 'agNumberColumnFilter',
-        cellRenderer: params => {
-            const div = document.createElement("div");
-            div.innerText = formatNumber(params.data.EPS)
-            return div
-        }
-    },
-    {
-        align: 'right',
-        headerName: 'TT EPS cung ky',
-        filter: 'agNumberColumnFilter',
-        cellRenderer: params => {
-            const div = document.createElement("div");
-            div.innerText = formatNumber(params.data.EPS)
-            return div
-        }
-    },
-    {
-        align: 'right',
-        headerName: 'TT LNST nam',
-        filter: 'agNumberColumnFilter',
-        cellRenderer: params => {
-            const div = document.createElement("div");
-            div.innerText = formatNumber(params.data.EPS)
-            return div
-        }
-    },
-    {
-        align: 'right',
-        headerName: 'Point',
-        filter: 'agNumberColumnFilter',
-        cellRenderer: params => {
-            const div = document.createElement("div");
-            div.innerText = formatNumber(params.data.EPS)
-            return div
-        }
-    },
-    {
-        align: 'right',
-        headerName: 'Power',
-        filter: 'agNumberColumnFilter',
-        cellRenderer: params => {
-            const div = document.createElement("div");
-            div.innerText = formatNumber(params.data.EPS)
-            return div
-        }
-    },
-    {
-        field: 'BuyForeignQuantity',
-        align: 'right',
-        headerName: 'BuyForeignQuantity',
-        filter: 'agNumberColumnFilter',
-        cellRenderer: params => {
-            const div = document.createElement("div");
-            div.innerText = formatNumber(params.data.BuyForeignQuantity)
-            return div
-        }
-    },
-    {
-        field: 'SellForeignQuantity',
-        align: 'right',
-        headerName: 'SellForeignQuantity',
-        filter: 'agNumberColumnFilter',
-        cellRenderer: params => {
-            const div = document.createElement("div");
-            div.innerText = formatNumber(params.data.SellForeignQuantity)
-            return div
-        }
-    },
-    {
-        field: 'MarketCap',
-        align: 'right',
-        headerName: 'MarketCap',
-        filter: 'agNumberColumnFilter',
-        cellRenderer: params => {
-            const div = document.createElement("div");
-            div.innerText = formatNumber(params.data.MarketCap)
-            return div
-        }
-    },
+    // {
+    //     field: 'VolumeChange',
+    //     align: 'right',
+    //     headerName: '%Volume',
+    //     filter: 'agNumberColumnFilter',
+    //     cellRenderer: params => {
+    //         const div = document.createElement("div");
+    //         div.innerText = formatNumber(params.data.VolumeChange)
+    //         return div
+    //     }
+    // },
+    // {
+    //     align: 'right',
+    //     headerName: 'ROE',
+    //     filter: 'agNumberColumnFilter',
+    //     cellRenderer: params => {
+    //         const div = document.createElement("div");
+    //         div.innerText = formatNumber(params.data.ROE)
+    //         return div
+    //     }
+    // },
+    // {
+    //     align: 'right',
+    //     headerName: 'EPS',
+    //     filter: 'agNumberColumnFilter',
+    //     cellRenderer: params => {
+    //         const div = document.createElement("div");
+    //         div.innerText = formatNumber(params.data.EPS)
+    //         return div
+    //     }
+    // },
+    // {
+    //     align: 'right',
+    //     headerName: 'TT EPS cung ky',
+    //     filter: 'agNumberColumnFilter',
+    //     cellRenderer: params => {
+    //         const div = document.createElement("div");
+    //         div.innerText = formatNumber(params.data.EPS)
+    //         return div
+    //     }
+    // },
+    // {
+    //     align: 'right',
+    //     headerName: 'TT LNST nam',
+    //     filter: 'agNumberColumnFilter',
+    //     cellRenderer: params => {
+    //         const div = document.createElement("div");
+    //         div.innerText = formatNumber(params.data.EPS)
+    //         return div
+    //     }
+    // },
+    // {
+    //     align: 'right',
+    //     headerName: 'Point',
+    //     filter: 'agNumberColumnFilter',
+    //     cellRenderer: params => {
+    //         const div = document.createElement("div");
+    //         div.innerText = formatNumber(params.data.EPS)
+    //         return div
+    //     }
+    // },
+    // {
+    //     align: 'right',
+    //     headerName: 'Power',
+    //     filter: 'agNumberColumnFilter',
+    //     cellRenderer: params => {
+    //         const div = document.createElement("div");
+    //         div.innerText = formatNumber(params.data.EPS)
+    //         return div
+    //     }
+    // },
+    // {
+    //     field: 'BuyForeignQuantity',
+    //     align: 'right',
+    //     headerName: 'BuyForeignQuantity',
+    //     filter: 'agNumberColumnFilter',
+    //     cellRenderer: params => {
+    //         const div = document.createElement("div");
+    //         div.innerText = formatNumber(params.data.BuyForeignQuantity)
+    //         return div
+    //     }
+    // },
+    // {
+    //     field: 'SellForeignQuantity',
+    //     align: 'right',
+    //     headerName: 'SellForeignQuantity',
+    //     filter: 'agNumberColumnFilter',
+    //     cellRenderer: params => {
+    //         const div = document.createElement("div");
+    //         div.innerText = formatNumber(params.data.SellForeignQuantity)
+    //         return div
+    //     }
+    // },
+    // {
+    //     field: 'MarketCap',
+    //     align: 'right',
+    //     headerName: 'MarketCap',
+    //     filter: 'agNumberColumnFilter',
+    //     cellRenderer: params => {
+    //         const div = document.createElement("div");
+    //         div.innerText = formatNumber(params.data.MarketCap)
+    //         return div
+    //     }
+    // },
 
 ]

@@ -220,8 +220,8 @@ class Analysis5 extends React.Component<IProps, IState> {
     mapData = (data) => {
         const { companies, stocks } = this.props;
         each(data, i => {
-            i.ICBCode = (companies[i.stockId] || {}).ICBCode
-            i.Symbol = (stocks[i.stockId] || {}).Symbol
+            i.ICBCode = (companies[i.Stock] || {}).ICBCode
+            i.Symbol = (stocks[i.Stock] || {}).Symbol
             return i
         })
         return data
@@ -254,6 +254,9 @@ class Analysis5 extends React.Component<IProps, IState> {
         const data = {};
         if (index === 'Symbol') {
             data[index] = e.target.value.toUpperCase();
+        } else if (index === 'TodayCapital') {
+            if (e.target.value.match(/\D/)) return
+            data[index] = Number(e.target.value);
         } else {
             data[index] = e.target.value
         }
@@ -265,19 +268,22 @@ class Analysis5 extends React.Component<IProps, IState> {
 
     scan = async (data = null) => {
         let defaultFilter = {
-            TodayCapital: 5
+            TodayCapital: 5000000000
         }
-        data = { ...data, ...defaultFilter }
+        data = { ...defaultFilter, ...data }
         const res = await this.props.scanStock(data);
         this.setState({
             rowData: this.mapData(res.data)
         })
     }
 
-    changeType = async (type) => {
-        //     this.setState({
-        //         type: type.target.value
-        //     })
+    changeType = async (e) => {
+        const data = { type: e.target.value };
+        const dataRequest = { ...this.state, ...data }
+        this.scan(dataRequest)
+        this.setState({
+            type: e.target.value
+        })
         //     const data = {}
         //     data[type.target.value] = true
         //     console.log(type.target.value, data)
@@ -343,6 +349,7 @@ class Analysis5 extends React.Component<IProps, IState> {
         return (
             <div>
                 <div>
+                    <div>Count: {rowData.length}</div>
                     <div>
 
                         <Radio.Group value={type} onChange={this.changeType}>
@@ -357,7 +364,7 @@ class Analysis5 extends React.Component<IProps, IState> {
                             <Input addonBefore="ICBCode" onChange={(e) => this.changeInput(e, 'ICBCode')} />
                             <Input addonBefore="Price" onChange={(e) => this.changeInput(e, 'Price')} />
                             <Input addonBefore="%ChangePrice" onChange={(e) => this.changeInput(e, 'ChangePrice')} />
-                            <Input addonBefore="TodayCapital" onChange={(e) => this.changeInput(e, 'TodayCapital')} />
+                            <Input addonBefore="TodayCapital" onChange={(e) => this.changeInput(e, 'TodayCapital')} defaultValue={5000000000} />
                         </div>
                         <div className="flex">
                             <Input addonBefore="%Volume" onChange={(e) => this.changeInput(e, 'ChangeVolume')} />
