@@ -71,7 +71,7 @@ class Analysis5 extends React.Component<IProps, IState> {
             type: 'default',
             symbol: '',
             modules: AllModules,
-            columnDefs: analysis5ColumnDefs,
+            columnDefs: analysis5ColumnDefs(this),
             defaultColDef: {
                 flex: 1,
                 filter: true,
@@ -237,17 +237,17 @@ class Analysis5 extends React.Component<IProps, IState> {
     }
 
     handleOk = e => {
-        // this.setState({
-        //     visibleChart: false,
-        //     visibleInfo: false,
-        // });
+        this.setState({
+            visibleChart: false,
+            visibleInfo: false,
+        });
     };
 
     handleCancel = e => {
-        // this.setState({
-        //     visibleChart: false,
-        //     visibleInfo: false,
-        // });
+        this.setState({
+            visibleChart: false,
+            visibleInfo: false,
+        });
     };
 
     changeInput = (e, index) => {
@@ -271,7 +271,9 @@ class Analysis5 extends React.Component<IProps, IState> {
             TodayCapital: 5000000000
         }
         data = { ...defaultFilter, ...data }
+        this.gridApi.showLoadingOverlay();
         const res = await this.props.scanStock(data);
+        this.gridApi.hideOverlay()
         this.setState({
             rowData: this.mapData(res.data)
         })

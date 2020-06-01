@@ -570,186 +570,208 @@ export const getLastestFinancialReportsColumnDefs = (period, type, analysisType 
     return period === 'yearly' ? year : quarter
 }
 
-export const analysis5ColumnDefs = [
-    {
-        headerName: 'Stock',
-        align: 'left',
-        cellRenderer: params => {
-            const div = document.createElement("div");
-            div.className = 'flex space-between'
-            ReactDOM.render(
-                <>
-                    <div>{params.data.Symbol}</div>
-                    <div className="flex">
-                        <div onClick={() => { this.setState({ visibleChart: true, symbol: params.data.Stock }) }}><BarChartOutlined style={{ fontSize: '16px' }} /></div>
-                        <div onClick={() => { this.setState({ visibleInfo: true }) }}><InfoCircleOutlined style={{ fontSize: '16px' }} /></div>
-                    </div>
+export const analysis5ColumnDefs = (that) => {
+    return [
+        {
+            headerName: 'Stock',
+            align: 'left',
+            field: 'Symbol',
+            cellRenderer: params => {
+                const div = document.createElement("div");
+                div.innerText = params.data.Symbol
+                return div
+            }
+        },
+        {
+            headerName: 'Actions',
+            align: 'left',
+            cellRenderer: params => {
+                const div = document.createElement("div");
+                div.className = 'flex space-between'
+                ReactDOM.render(
+                    <>
+                        <div className="flex">
+                            <div onClick={() => { that.setState({ visibleChart: true, symbol: params.data.Symbol }) }}><BarChartOutlined style={{ fontSize: '16px' }} /></div>
+                            <div onClick={() => { that.setState({ visibleInfo: true }) }}><InfoCircleOutlined style={{ fontSize: '16px' }} /></div>
+                        </div>
 
-                </>,
-                div
-            );
-            return div
-        }
-    },
-    {
-        field: 'ICBCode',
-        headerName: 'ICBCode',
-        filter: 'agNumberColumnFilter',
-        align: 'right',
-        cellRenderer: params => {
-            const div = document.createElement("div");
-            div.innerText = params.data.ICBCode
-            return div
-        }
-    },
-    {
-        field: 'PriceClose',
-        headerName: 'Price',
-        filter: 'agNumberColumnFilter',
-        align: 'right',
-        cellRenderer: params => {
-            const div = document.createElement("div");
-            div.innerText = formatNumber(params.data.PriceClose)
-            return div
-        }
-    },
-    // {
-    //     field: 'PriceChange',
-    //     headerName: '%',
-    //     align: 'right',
-    //     filter: 'agNumberColumnFilter',
-    //     cellRenderer: params => {
-    //         const div = document.createElement("div");
-    //         div.innerText = params.data.PriceChange
-    //         div.className = mapColorPriceChange(params.data.PriceChange)
-    //         return div
-    //     }
-    // },
-    {
-        field: 'Volume',
-        align: 'right',
-        headerName: 'DealVolume',
-        filter: 'agNumberColumnFilter',
-        cellRenderer: params => {
-            const div = document.createElement("div");
-            div.innerText = formatNumber(params.data.DealVolume)
-            return div
-        }
-    },
-    {
-        field: 'TodayCapital',
-        align: 'right',
-        headerName: 'TodayCapital',
-        filter: 'agNumberColumnFilter',
-        cellRenderer: params => {
-            const div = document.createElement("div");
-            div.innerText = formatNumber(params.data.TodayCapital)
-            return div
-        }
-    },
-    // {
-    //     field: 'VolumeChange',
-    //     align: 'right',
-    //     headerName: '%Volume',
-    //     filter: 'agNumberColumnFilter',
-    //     cellRenderer: params => {
-    //         const div = document.createElement("div");
-    //         div.innerText = formatNumber(params.data.VolumeChange)
-    //         return div
-    //     }
-    // },
-    // {
-    //     align: 'right',
-    //     headerName: 'ROE',
-    //     filter: 'agNumberColumnFilter',
-    //     cellRenderer: params => {
-    //         const div = document.createElement("div");
-    //         div.innerText = formatNumber(params.data.ROE)
-    //         return div
-    //     }
-    // },
-    // {
-    //     align: 'right',
-    //     headerName: 'EPS',
-    //     filter: 'agNumberColumnFilter',
-    //     cellRenderer: params => {
-    //         const div = document.createElement("div");
-    //         div.innerText = formatNumber(params.data.EPS)
-    //         return div
-    //     }
-    // },
-    // {
-    //     align: 'right',
-    //     headerName: 'TT EPS cung ky',
-    //     filter: 'agNumberColumnFilter',
-    //     cellRenderer: params => {
-    //         const div = document.createElement("div");
-    //         div.innerText = formatNumber(params.data.EPS)
-    //         return div
-    //     }
-    // },
-    // {
-    //     align: 'right',
-    //     headerName: 'TT LNST nam',
-    //     filter: 'agNumberColumnFilter',
-    //     cellRenderer: params => {
-    //         const div = document.createElement("div");
-    //         div.innerText = formatNumber(params.data.EPS)
-    //         return div
-    //     }
-    // },
-    // {
-    //     align: 'right',
-    //     headerName: 'Point',
-    //     filter: 'agNumberColumnFilter',
-    //     cellRenderer: params => {
-    //         const div = document.createElement("div");
-    //         div.innerText = formatNumber(params.data.EPS)
-    //         return div
-    //     }
-    // },
-    // {
-    //     align: 'right',
-    //     headerName: 'Power',
-    //     filter: 'agNumberColumnFilter',
-    //     cellRenderer: params => {
-    //         const div = document.createElement("div");
-    //         div.innerText = formatNumber(params.data.EPS)
-    //         return div
-    //     }
-    // },
-    // {
-    //     field: 'BuyForeignQuantity',
-    //     align: 'right',
-    //     headerName: 'BuyForeignQuantity',
-    //     filter: 'agNumberColumnFilter',
-    //     cellRenderer: params => {
-    //         const div = document.createElement("div");
-    //         div.innerText = formatNumber(params.data.BuyForeignQuantity)
-    //         return div
-    //     }
-    // },
-    // {
-    //     field: 'SellForeignQuantity',
-    //     align: 'right',
-    //     headerName: 'SellForeignQuantity',
-    //     filter: 'agNumberColumnFilter',
-    //     cellRenderer: params => {
-    //         const div = document.createElement("div");
-    //         div.innerText = formatNumber(params.data.SellForeignQuantity)
-    //         return div
-    //     }
-    // },
-    // {
-    //     field: 'MarketCap',
-    //     align: 'right',
-    //     headerName: 'MarketCap',
-    //     filter: 'agNumberColumnFilter',
-    //     cellRenderer: params => {
-    //         const div = document.createElement("div");
-    //         div.innerText = formatNumber(params.data.MarketCap)
-    //         return div
-    //     }
-    // },
+                    </>,
+                    div
+                );
+                return div
+            }
+        },
+        {
+            field: 'ICBCode',
+            headerName: 'ICBCode',
+            filter: 'agNumberColumnFilter',
+            align: 'right',
+            cellRenderer: params => {
+                const div = document.createElement("div");
+                div.innerText = params.data.ICBCode
+                return div
+            }
+        },
+        {
+            field: 'PriceClose',
+            headerName: 'Price',
+            filter: 'agNumberColumnFilter',
+            align: 'right',
+            cellRenderer: params => {
+                const div = document.createElement("div");
+                div.innerText = formatNumber(params.data.PriceClose)
+                return div
+            }
+        },
+        {
+            field: 'DealVolume',
+            align: 'right',
+            headerName: 'DealVolume',
+            filter: 'agNumberColumnFilter',
+            cellRenderer: params => {
+                const div = document.createElement("div");
+                div.innerText = formatNumber(params.data.DealVolume)
+                return div
+            }
+        },
+        {
+            field: 'TodayCapital',
+            align: 'right',
+            headerName: 'TodayCapital',
+            filter: 'agNumberColumnFilter',
+            cellRenderer: params => {
+                const div = document.createElement("div");
+                div.innerText = formatNumber(params.data.TodayCapital)
+                return div
+            }
+        },
+        {
+            field: 'LastPrice',
+            align: 'right',
+            headerName: 'LastPrice',
+            filter: 'agNumberColumnFilter',
+            cellRenderer: params => {
+                const div = document.createElement("div");
+                div.innerText = formatNumber(params.data.LastPrice)
+                return div
+            }
+        },
+        {
+            field: 'PriceChange',
+            headerName: '%',
+            align: 'right',
+            filter: 'agNumberColumnFilter',
+            cellRenderer: params => {
+                const div = document.createElement("div");
+                div.innerText = Number(params.data.PriceChange).toFixed(2)
+                div.className = mapColorPriceChange(params.data.PriceChange)
+                return div
+            }
+        },
+        // {
+        //     field: 'VolumeChange',
+        //     align: 'right',
+        //     headerName: '%Volume',
+        //     filter: 'agNumberColumnFilter',
+        //     cellRenderer: params => {
+        //         const div = document.createElement("div");
+        //         div.innerText = formatNumber(params.data.VolumeChange)
+        //         return div
+        //     }
+        // },
+        // {
+        //     align: 'right',
+        //     headerName: 'ROE',
+        //     filter: 'agNumberColumnFilter',
+        //     cellRenderer: params => {
+        //         const div = document.createElement("div");
+        //         div.innerText = formatNumber(params.data.ROE)
+        //         return div
+        //     }
+        // },
+        // {
+        //     align: 'right',
+        //     headerName: 'EPS',
+        //     filter: 'agNumberColumnFilter',
+        //     cellRenderer: params => {
+        //         const div = document.createElement("div");
+        //         div.innerText = formatNumber(params.data.EPS)
+        //         return div
+        //     }
+        // },
+        // {
+        //     align: 'right',
+        //     headerName: 'TT EPS cung ky',
+        //     filter: 'agNumberColumnFilter',
+        //     cellRenderer: params => {
+        //         const div = document.createElement("div");
+        //         div.innerText = formatNumber(params.data.EPS)
+        //         return div
+        //     }
+        // },
+        // {
+        //     align: 'right',
+        //     headerName: 'TT LNST nam',
+        //     filter: 'agNumberColumnFilter',
+        //     cellRenderer: params => {
+        //         const div = document.createElement("div");
+        //         div.innerText = formatNumber(params.data.EPS)
+        //         return div
+        //     }
+        // },
+        // {
+        //     align: 'right',
+        //     headerName: 'Point',
+        //     filter: 'agNumberColumnFilter',
+        //     cellRenderer: params => {
+        //         const div = document.createElement("div");
+        //         div.innerText = formatNumber(params.data.EPS)
+        //         return div
+        //     }
+        // },
+        // {
+        //     align: 'right',
+        //     headerName: 'Power',
+        //     filter: 'agNumberColumnFilter',
+        //     cellRenderer: params => {
+        //         const div = document.createElement("div");
+        //         div.innerText = formatNumber(params.data.EPS)
+        //         return div
+        //     }
+        // },
+        // {
+        //     field: 'BuyForeignQuantity',
+        //     align: 'right',
+        //     headerName: 'BuyForeignQuantity',
+        //     filter: 'agNumberColumnFilter',
+        //     cellRenderer: params => {
+        //         const div = document.createElement("div");
+        //         div.innerText = formatNumber(params.data.BuyForeignQuantity)
+        //         return div
+        //     }
+        // },
+        // {
+        //     field: 'SellForeignQuantity',
+        //     align: 'right',
+        //     headerName: 'SellForeignQuantity',
+        //     filter: 'agNumberColumnFilter',
+        //     cellRenderer: params => {
+        //         const div = document.createElement("div");
+        //         div.innerText = formatNumber(params.data.SellForeignQuantity)
+        //         return div
+        //     }
+        // },
+        // {
+        //     field: 'MarketCap',
+        //     align: 'right',
+        //     headerName: 'MarketCap',
+        //     filter: 'agNumberColumnFilter',
+        //     cellRenderer: params => {
+        //         const div = document.createElement("div");
+        //         div.innerText = formatNumber(params.data.MarketCap)
+        //         return div
+        //     }
+        // },
 
-]
+    ]
+}
