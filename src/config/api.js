@@ -19,6 +19,7 @@ export const StockUrls = {
     filterStocks: () => `${baseUrl}/api/Stock/Filter/`,
     updateStock: (id) => `${baseUrl}/api2/Stock/${id}/`,
     scanStock: () => `${baseUrl}/api/Stock/scan/`,
+    fetchDecisiveIndexes: () => `${baseUrl}/api/DecisiveIndex/`,
 };
 
 export const CompanyUrls = {

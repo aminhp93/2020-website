@@ -34,10 +34,11 @@ import MarketNews from './MarketNews';
 import ImportantIndexes from './ImportantIndexes';
 
 import { IStock } from '../types'
-import { fetchListStocks } from '../reducers/stocks';
+import { fetchListStocks, } from '../reducers/stocks';
 import { fetchCompany } from '../reducers/companies';
 import { updateSelectedSymbolSuccess } from '../reducers/selectedSymbol';
 import { getLastUpdatedDate } from '../reducers/lastUpdatedDate';
+import { fetchDecisiveIndexes } from '../reducers/decisiveIndexes';
 
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -51,6 +52,7 @@ interface IProps {
     fetchListStocks: any,
     getLastUpdatedDate: any,
     fetchCompany: any,
+    fetchDecisiveIndexes: any,
 }
 
 interface IState {
@@ -80,7 +82,8 @@ class Stock extends React.Component<IProps, IState> {
             const promise1 = this.props.getLastUpdatedDate()
             const promise2 = this.props.fetchListStocks()
             const promise3 = this.props.fetchCompany()
-            Promise.all([promise1, promise2, promise3])
+            const promise4 = this.props.fetchDecisiveIndexes()
+            Promise.all([promise1, promise2, promise3, promise4])
                 .then(response => {
                     this.setState({ loading: false })
                 })
@@ -218,7 +221,8 @@ const mapDispatchToProps = {
     getLastUpdatedDate,
     fetchListStocks,
     updateSelectedSymbolSuccess,
-    fetchCompany
+    fetchCompany,
+    fetchDecisiveIndexes
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Stock);

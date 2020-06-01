@@ -42,6 +42,7 @@ interface IProps {
     lastUpdatedDate: any,
     scanStock: any,
     companies: any,
+    decisiveIndexes: any,
 }
 
 interface IState {
@@ -218,10 +219,12 @@ class Analysis5 extends React.Component<IProps, IState> {
     };
 
     mapData = (data) => {
-        const { companies, stocks } = this.props;
+        const { companies, stocks, decisiveIndexes } = this.props;
+
         each(data, i => {
             i.ICBCode = (companies[i.Stock] || {}).ICBCode
             i.Symbol = (stocks[i.Stock] || {}).Symbol
+            i.LowestPoint = (decisiveIndexes[i.Stock] || {}).LowestPoint
             return i
         })
         return data
@@ -457,7 +460,8 @@ const mapStateToProps = state => {
         selectedSymbol: get(state, 'selectedSymbol'),
         stocks: get(state, 'stocks'),
         lastUpdatedDate: get(state, 'lastUpdatedDate'),
-        companies: get(state, 'companies')
+        companies: get(state, 'companies'),
+        decisiveIndexes: get(state, 'decisiveIndexes')
     }
 }
 

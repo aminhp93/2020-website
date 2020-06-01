@@ -71,6 +71,12 @@ const StockService = {
             method: 'GET',
             url: StockUrls.fetchCompanyInfo()
         })
+    },
+    fetchDecisiveIndexes() {
+        return request({
+            method: 'GET',
+            url: StockUrls.fetchDecisiveIndexes()
+        })
     }
 
 };
