@@ -1,20 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { DatePicker, Button, Modal, Input, Radio, Select, Spin, Icon } from 'antd';
+import { DatePicker, Button, Modal, Input, Radio } from 'antd';
 import { debounce, get, each } from 'lodash';
 import moment from 'moment'
 
-import {
-    mapArrayToKeyValue,
-    mapDataTwoDate
-} from '../utils/all';
-import {
-    getConfigGetCreateUrl,
-    getStockFilter,
-    getCompanyInfoFilterUrl,
-    getLastestFinancialInfoFilterUrl,
-    getStockScanUrl
-} from '../utils/request';
 import {
     filterStocks,
     updateStock,
@@ -30,7 +19,6 @@ import { AllModules } from '@ag-grid-enterprise/all-modules';
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-alpine.css';
 
-const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 
@@ -83,133 +71,14 @@ class Analysis5 extends React.Component<IProps, IState> {
                 enablePivot: true,
             },
             rowData: [],
-            startDate: '',
-            endDate: '',
+            startDate: moment().format('YYYY-MM-DD') + 'T00:00:00Z',
+            endDate: moment().format('YYYY-MM-DD') + 'T00:00:00Z',
             visibleChart: false,
             visibleInfo: false,
             addVN30Stock: [],
             data: []
         }
         this.scan = debounce(this.scan, 300);
-        // this.fetchUser = debounce(this.fetchUser, 800);
-
-    }
-
-    fetchUser = value => {
-        // this.setState({
-        //     data: [],
-        //     fetching: true
-        // }, () => {
-        //     const filteredStocks = Object.values(this.props.stocks).filter(item => {
-        //         return (item.Symbol || '').toLowerCase().includes((value || '').toLowerCase())
-        //     })
-        //     this.setState({
-        //         data: filteredStocks,
-        //         fetching: false
-        //     })
-        // });
-    };
-
-    crawData = async (startDate = '', endDate = '') => {
-        // this.gridApi.showLoadingOverlay();
-        // const { lastUpdatedDate } = this.props;
-        // const { stocks } = this.props;
-        // let data1 = [];
-        // let data2 = []
-
-        // if (!lastUpdatedDate.value) return
-
-        // await axios({
-        //     url: getStockFilter(),
-        //     method: 'post',
-        //     data: {
-        //         Date: endDate ? endDate : lastUpdatedDate.value
-        //     }
-        // })
-        //     .then(response => {
-        //         data1 = response.data.sort((a, b) => a.Stock - b.Stock)
-        //     })
-        //     .catch(error => {
-        //         console.log(error)
-        //     })
-
-        // await axios({
-        //     url: getStockFilter(),
-        //     method: 'post',
-        //     data: {
-        //         Date: startDate ? startDate : moment(lastUpdatedDate.value).add(-1, 'days').format('YYYY-MM-DD') + 'T00:00:00Z'
-        //     }
-        // })
-        //     .then(response => {
-        //         data2 = response.data.sort((a, b) => a.Stock - b.Stock)
-        //     })
-        //     .catch(error => {
-        //         console.log(error)
-        //     })
-
-        // let mappedData = mapDataTwoDate(data1, data2, mapArrayToKeyValue(Object.values(stocks)));
-        // if (!mappedData.length) return;
-        // let data = mappedData.filter(item => item.TodayCapital > 5 && item.PriceChange > 1).sort((a, b) => b.TodayCapital - a.TodayCapital)
-        // await axios({
-        //     url: getCompanyInfoFilterUrl(),
-        //     method: 'post',
-        //     data: {
-        //         symbols: data.map(item => item.Stock)
-        //     }
-        // })
-        //     .then(response => {
-        //         console.log(response)
-        //         data.map(item => {
-        //             const found = response.data.filter(i => i.Symbol === item.Stock)
-        //             if (found.length === 1) {
-        //                 item.ICBCode = Number(found[0].ICBCode)
-        //             } else {
-        //                 item.ICBCode = null
-        //             }
-        //             return item
-        //         })
-        //     })
-        //     .catch(error => {
-        //         console.log(error)
-        //     })
-        // await axios({
-        //     url: getLastestFinancialInfoFilterUrl(),
-        //     method: 'post',
-        //     data: {
-        //         symbols: data.map(item => item.Stock)
-        //     }
-        // })
-        //     .then(response => {
-        //         console.log(response)
-        //         data.map(item => {
-        //             const found = response.data.filter(i => i.Symbol === item.Stock)
-        //             if (found.length === 1) {
-        //                 item.ROE = Number((Number(found[0].ROE) * 100).toFixed(2))
-        //                 item.EPS = Number((Number(found[0].EPS)).toFixed(0))
-        //             } else {
-        //                 item.ROE = null
-        //                 item.EPS = null
-        //             }
-        //             return item
-        //         })
-        //     })
-        //     .catch(error => {
-        //         console.log(error)
-        //     })
-        // let dataSetState
-        // if (startDate) {
-        //     dataSetState = {
-        //         rowData: data
-        //     }
-        // } else {
-        //     dataSetState = {
-        //         rowData: data,
-        //         startDate: moment(lastUpdatedDate.value).add(-1, 'days').format('YYYY-MM-DD') + 'T00:00:00Z',
-        //         endDate: lastUpdatedDate.value
-        //     }
-        // }
-
-        // this.setState(dataSetState, () => this.gridApi.hideOverlay());
     }
 
     onGridReady = params => {
@@ -231,12 +100,12 @@ class Analysis5 extends React.Component<IProps, IState> {
     }
 
     onChange = (date, dateString) => {
-        // if (dateString && dateString.length === 2) {
-        //     this.setState({
-        //         startDate: dateString[0] + 'T00:00:00Z',
-        //         endDate: dateString[1] + 'T00:00:00Z'
-        //     })
-        // }
+        if (dateString && dateString.length === 2) {
+            this.setState({
+                startDate: dateString[0] + 'T00:00:00Z',
+                endDate: dateString[1] + 'T00:00:00Z'
+            })
+        }
     }
 
     handleOk = e => {
@@ -271,9 +140,9 @@ class Analysis5 extends React.Component<IProps, IState> {
 
     scan = async (data = null) => {
         let defaultFilter = {
-            TodayCapital: 5000000000
+            TodayCapital: 5000000000,
         }
-        data = { ...defaultFilter, ...data }
+        data = { ...this.state, ...defaultFilter, ...data }
         this.gridApi.showLoadingOverlay();
         const res = await this.props.scanStock(data);
         this.gridApi.hideOverlay()
@@ -289,67 +158,12 @@ class Analysis5 extends React.Component<IProps, IState> {
         this.setState({
             type: e.target.value
         })
-        //     const data = {}
-        //     data[type.target.value] = true
-        //     console.log(type.target.value, data)
-        //     const res = await this.props.filterStocks(data)
-        //     await axios({
-        //         url: getLastestFinancialInfoFilterUrl(),
-        //         method: 'post',
-        //         data: {
-        //             symbols: res.data.map(item => item.Symbol)
-        //         }
-        //     })
-        //         .then(response => {
-        //             console.log(response)
-        //             this.setState({
-        //                 rowData: response.data
-        //             })
-        //         })
-        //         .catch(error => {
-        //             console.log(error)
-        //         })
-
-    }
-
-    handleChangeVN30 = value => {
-        // console.log(value)
-        // this.setState({
-        //     data: [],
-        //     fetching: false,
-        //     addVN30Stock: value
-        // })
-    }
-
-    handleAdd = async () => {
-        // await this.props.updateStock(this.state.addVN30Stock)
-        // this.setState({ addVN30Stock: [] })
-        // const data = {}
-        // data[this.state.type] = true
-        // const res = await this.props.filterStocks(data)
-        // await axios({
-        //     url: getLastestFinancialInfoFilterUrl(),
-        //     method: 'post',
-        //     data: {
-        //         symbols: res.data.map(item => item.Symbol)
-        //     }
-        // })
-        //     .then(response => {
-        //         console.log(response)
-        //         this.setState({
-        //             rowData: response.data
-        //         })
-        //     })
-        //     .catch(error => {
-        //         console.log(error)
-        //     })
     }
 
     render() {
         const { startDate, endDate, rowData,
             modules, columnDefs, defaultColDef,
             visibleChart, visibleInfo, type,
-            fetching, data, addVN30Stock
         } = this.state;
         return (
             <div>
@@ -390,7 +204,7 @@ class Analysis5 extends React.Component<IProps, IState> {
                     </div>
                 </div>
                 <RangePicker onChange={this.onChange} value={startDate ? [moment(startDate), moment(endDate)] : []} />
-                <Button onClick={() => this.crawData(startDate, endDate)}>Xem</Button>
+                <Button onClick={() => this.scan()}>Xem</Button>
                 <div style={{ width: '100%', height: '100%' }}>
                     <div
                         id="myGrid"
@@ -410,21 +224,7 @@ class Analysis5 extends React.Component<IProps, IState> {
                         />
                     </div>
                 </div>
-                {type === 'IsVN30' ? <><Select
-                    mode="multiple"
-                    labelInValue
-                    value={addVN30Stock}
-                    placeholder="Select stock"
-                    notFoundContent={fetching ? <Spin size="small" /> : null}
-                    filterOption={false}
-                    onSearch={this.fetchUser}
-                    onChange={this.handleChangeVN30}
-                    style={{ width: '200px' }}
-                >
-                    {data.map(d => (
-                        <Option key={d.Symbol}>{d.Symbol}</Option>
-                    ))}
-                </Select><Button onClick={this.handleAdd}>Add</Button></> : null}
+
                 {visibleChart ?
                     <Modal
                         className="chartTVModal"
