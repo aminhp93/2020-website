@@ -679,6 +679,17 @@ export const analysis5ColumnDefs = (that) => {
                 return div
             }
         },
+        {
+            field: 'LowestPointChange',
+            headerName: 'LowestPointChange',
+            align: 'right',
+            filter: 'agNumberColumnFilter',
+            cellRenderer: params => {
+                const div = document.createElement("div");
+                div.innerText = Number(params.data.LowestPointChange).toFixed(2)
+                return div
+            }
+        },
         // {
         //     field: 'VolumeChange',
         //     align: 'right',
