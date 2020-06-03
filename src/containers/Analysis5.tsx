@@ -91,7 +91,7 @@ class Analysis5 extends React.Component<IProps, IState> {
         const { companies, stocks, decisiveIndexes } = this.props;
 
         each(data, i => {
-            i.ICBCode = (companies[i.Stock] || {}).ICBCode
+            i.ICBCode = Number((companies[i.Stock] || {}).ICBCode)
             i.Symbol = (stocks[i.Stock] || {}).Symbol
             i.LowestPoint = (decisiveIndexes[i.Stock] || {}).LowestPoint
             i.LowestPointChange = (i.PriceClose - (decisiveIndexes[i.Stock] || {}).LowestPoint) / (decisiveIndexes[i.Stock] || {}).LowestPoint * 100
