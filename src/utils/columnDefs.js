@@ -10,12 +10,9 @@ import { BILLION_UNIT } from './unit';
 import {
     mapColorPriceChange,
     formatNumber,
-    mapArrayToKeyValue,
-    mapDataTwoDate,
+    mapColorFinancialReportChange,
     LATEST_FINANCIAL_REPORTS
 } from './all';
-import { IAnalysisType } from '../types'
-
 
 
 export function getYearlyFinancialInfoColumnDefs() {
@@ -641,7 +638,7 @@ export const analysis5ColumnDefs = (that) => {
             filter: 'agNumberColumnFilter',
             cellRenderer: params => {
                 const div = document.createElement("div");
-                div.innerText = formatNumber(params.data.TodayCapital)
+                div.innerText = formatNumber((params.data.TodayCapital / BILLION_UNIT).toFixed(0))
                 return div
             }
         },
@@ -686,18 +683,7 @@ export const analysis5ColumnDefs = (that) => {
             filter: 'agNumberColumnFilter',
             cellRenderer: params => {
                 const div = document.createElement("div");
-                div.innerText = Number(params.data.LowestPointChange).toFixed(2)
-                return div
-            }
-        },
-        {
-            field: 'CurrentRevenue',
-            headerName: '2019Revenue',
-            align: 'right',
-            filter: 'agNumberColumnFilter',
-            cellRenderer: params => {
-                const div = document.createElement("div");
-                div.innerText = Number(params.data.CurrentRevenue / BILLION_UNIT).toFixed(0)
+                div.innerText = Number(params.data.LowestPointChange).toFixed(1)
                 return div
             }
         },
@@ -713,13 +699,61 @@ export const analysis5ColumnDefs = (that) => {
             }
         },
         {
+            field: 'CurrentRevenue',
+            headerName: '2019Revenue',
+            align: 'right',
+            filter: 'agNumberColumnFilter',
+            cellRenderer: params => {
+                const div = document.createElement("div");
+                div.innerText = Number(params.data.CurrentRevenue / BILLION_UNIT).toFixed(0)
+                return div
+            }
+        },
+        {
             field: 'RevenueChange',
-            headerName: 'RevenueChange',
+            headerName: '%Rev',
             align: 'right',
             filter: 'agNumberColumnFilter',
             cellRenderer: params => {
                 const div = document.createElement("div");
                 div.innerText = (Number(params.data.RevenueChange) * 100).toFixed(1)
+                div.className = mapColorFinancialReportChange(params.data.RevenueChange)
+
+                return div
+            }
+        },
+        {
+            field: 'LastProfit',
+            headerName: '2018Profit',
+            align: 'right',
+            filter: 'agNumberColumnFilter',
+            cellRenderer: params => {
+                const div = document.createElement("div");
+                div.innerText = Number(params.data.LastProfit / BILLION_UNIT).toFixed(0)
+                return div
+            }
+        },
+        {
+            field: 'CurrentProfit',
+            headerName: '2019Profit',
+            align: 'right',
+            filter: 'agNumberColumnFilter',
+            cellRenderer: params => {
+                const div = document.createElement("div");
+                div.innerText = Number(params.data.CurrentProfit / BILLION_UNIT).toFixed(0)
+                return div
+            }
+        },
+
+        {
+            field: 'ProfitChange',
+            headerName: '%Profit',
+            align: 'right',
+            filter: 'agNumberColumnFilter',
+            cellRenderer: params => {
+                const div = document.createElement("div");
+                div.innerText = (Number(params.data.ProfitChange) * 100).toFixed(1)
+                div.className = mapColorFinancialReportChange(params.data.ProfitChange)
                 return div
             }
         },

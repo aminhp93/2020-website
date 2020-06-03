@@ -57,7 +57,7 @@ class Analysis5 extends React.Component<IProps, IState> {
     constructor(props) {
         super(props);
         this.state = {
-            type: 'default',
+            type: 'IsVN30',
             symbol: '',
             modules: AllModules,
             columnDefs: analysis5ColumnDefs(this),
@@ -220,7 +220,7 @@ class Analysis5 extends React.Component<IProps, IState> {
                             defaultColDef={defaultColDef}
                             onGridReady={this.onGridReady}
                             rowData={rowData}
-                            sideBar={true}
+                            // sideBar={true}
                             onFirstDataRendered={params => params.api.sizeColumnsToFit()}
                         />
                     </div>

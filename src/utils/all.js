@@ -27,6 +27,17 @@ export function mapColorPriceChange(data) {
     }
 }
 
+export function mapColorFinancialReportChange(data) {
+    if (!data) return ''
+    if (data > 0) {
+        return 'green'
+    } else if (data === 0) {
+        return 'white'
+    } else if (data < 0) {
+        return 'red'
+    }
+}
+
 export function mapArrayToKeyValue(data) {
     let result = {}
     data.map(item => {
