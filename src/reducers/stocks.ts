@@ -60,8 +60,9 @@ export const getLastestFinancialInfo = (): ThunkActionType => async (
     dispatch,
     getStoreValue
 ) => {
-    const { selectedSymbol } = getStoreValue();
-    const response = await StockService.getLastestFinancialInfo(selectedSymbol)
+    const { selectedSymbol, stocks } = getStoreValue();
+    const stock: any = Object.values(stocks).filter((i: any) => i.Symbol === selectedSymbol)[0]
+    const response = await StockService.getLastestFinancialInfo(stock.id)
     return response
 }
 

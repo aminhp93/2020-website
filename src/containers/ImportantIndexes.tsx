@@ -111,7 +111,6 @@ class ImportantIndexes extends React.Component<IProps, IState> {
     }
 
     crawlData = async () => {
-        return
 
         const dataType1 = {
             financialType: 1,

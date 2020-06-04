@@ -567,196 +567,428 @@ export const getLastestFinancialReportsColumnDefs = (period, type, analysisType 
     return period === 'yearly' ? year : quarter
 }
 
-export const analysis5ColumnDefs = (that) => {
-    return [
-        {
-            headerName: 'Stock',
-            align: 'left',
-            field: 'Symbol',
-            cellRenderer: params => {
-                const div = document.createElement("div");
-                div.innerText = params.data.Symbol
-                return div
-            }
-        },
-        {
-            headerName: 'Actions',
-            align: 'left',
-            cellRenderer: params => {
-                const div = document.createElement("div");
-                div.className = 'flex space-between'
-                ReactDOM.render(
-                    <>
-                        <div className="flex">
-                            <div onClick={() => { that.setState({ visibleChart: true, symbol: params.data.Symbol }) }}><BarChartOutlined style={{ fontSize: '16px' }} /></div>
-                            <div onClick={() => { that.setState({ visibleInfo: true }) }}><InfoCircleOutlined style={{ fontSize: '16px' }} /></div>
-                        </div>
+export const analysis5ColumnDefs = (that, importantIndexType = null) => {
+    const Stock = {
+        headerName: 'Stock',
+        align: 'left',
+        field: 'Symbol',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = params.data.Symbol
+            return div
+        }
+    }
 
-                    </>,
-                    div
-                );
-                return div
-            }
-        },
-        {
-            field: 'ICBCode',
-            headerName: 'ICBCode',
-            filter: 'agNumberColumnFilter',
-            align: 'right',
-            cellRenderer: params => {
-                const div = document.createElement("div");
-                div.innerText = params.data.ICBCode
-                return div
-            }
-        },
-        {
-            field: 'PriceClose',
-            headerName: 'Price',
-            filter: 'agNumberColumnFilter',
-            align: 'right',
-            cellRenderer: params => {
-                const div = document.createElement("div");
-                div.innerText = formatNumber(params.data.PriceClose)
-                return div
-            }
-        },
-        {
-            field: 'DealVolume',
-            align: 'right',
-            headerName: 'DealVolume',
-            filter: 'agNumberColumnFilter',
-            cellRenderer: params => {
-                const div = document.createElement("div");
-                div.innerText = formatNumber(params.data.DealVolume)
-                return div
-            }
-        },
-        {
-            field: 'TodayCapital',
-            align: 'right',
-            headerName: 'TodayCapital',
-            filter: 'agNumberColumnFilter',
-            cellRenderer: params => {
-                const div = document.createElement("div");
-                div.innerText = formatNumber((params.data.TodayCapital / BILLION_UNIT).toFixed(0))
-                return div
-            }
-        },
-        {
-            field: 'LastPrice',
-            align: 'right',
-            headerName: 'LastPrice',
-            filter: 'agNumberColumnFilter',
-            cellRenderer: params => {
-                const div = document.createElement("div");
-                div.innerText = formatNumber(params.data.LastPrice)
-                return div
-            }
-        },
-        {
-            field: 'PriceChange',
-            headerName: '%',
-            align: 'right',
-            filter: 'agNumberColumnFilter',
-            cellRenderer: params => {
-                const div = document.createElement("div");
-                div.innerText = Number(params.data.PriceChange).toFixed(2)
-                div.className = mapColorPriceChange(params.data.PriceChange)
-                return div
-            }
-        },
-        {
-            field: 'LowestPoint',
-            headerName: 'LowestPoint',
-            align: 'right',
-            filter: 'agNumberColumnFilter',
-            cellRenderer: params => {
-                const div = document.createElement("div");
-                div.innerText = params.data.LowestPoint
-                return div
-            }
-        },
-        {
-            field: 'LowestPointChange',
-            headerName: 'LowestPointChange',
-            align: 'right',
-            filter: 'agNumberColumnFilter',
-            cellRenderer: params => {
-                const div = document.createElement("div");
-                div.innerText = Number(params.data.LowestPointChange).toFixed(1)
-                return div
-            }
-        },
-        {
-            field: 'LastRevenue',
-            headerName: '2018Revenue',
-            align: 'right',
-            filter: 'agNumberColumnFilter',
-            cellRenderer: params => {
-                const div = document.createElement("div");
-                div.innerText = Number(params.data.LastRevenue / BILLION_UNIT).toFixed(0)
-                return div
-            }
-        },
-        {
-            field: 'CurrentRevenue',
-            headerName: '2019Revenue',
-            align: 'right',
-            filter: 'agNumberColumnFilter',
-            cellRenderer: params => {
-                const div = document.createElement("div");
-                div.innerText = Number(params.data.CurrentRevenue / BILLION_UNIT).toFixed(0)
-                return div
-            }
-        },
-        {
-            field: 'RevenueChange',
-            headerName: '%Rev',
-            align: 'right',
-            filter: 'agNumberColumnFilter',
-            cellRenderer: params => {
-                const div = document.createElement("div");
-                div.innerText = (Number(params.data.RevenueChange) * 100).toFixed(1)
-                div.className = mapColorFinancialReportChange(params.data.RevenueChange)
+    const Actions = {
+        headerName: 'Actions',
+        align: 'left',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.className = 'flex space-between'
+            ReactDOM.render(
+                <>
+                    <div className="flex">
+                        <div onClick={() => { that.setState({ visibleChart: true, symbol: params.data.Symbol }) }}><BarChartOutlined style={{ fontSize: '16px' }} /></div>
+                        <div onClick={() => { that.setState({ visibleInfo: true }) }}><InfoCircleOutlined style={{ fontSize: '16px' }} /></div>
+                    </div>
+                </>,
+                div
+            );
+            return div
+        }
+    }
 
-                return div
-            }
-        },
-        {
-            field: 'LastProfit',
-            headerName: '2018Profit',
-            align: 'right',
-            filter: 'agNumberColumnFilter',
-            cellRenderer: params => {
-                const div = document.createElement("div");
-                div.innerText = Number(params.data.LastProfit / BILLION_UNIT).toFixed(0)
-                return div
-            }
-        },
-        {
-            field: 'CurrentProfit',
-            headerName: '2019Profit',
-            align: 'right',
-            filter: 'agNumberColumnFilter',
-            cellRenderer: params => {
-                const div = document.createElement("div");
-                div.innerText = Number(params.data.CurrentProfit / BILLION_UNIT).toFixed(0)
-                return div
-            }
-        },
+    const ICBCode = {
+        field: 'ICBCode',
+        headerName: 'ICBCode',
+        filter: 'agNumberColumnFilter',
+        align: 'right',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = params.data.ICBCode
+            return div
+        }
+    }
 
-        {
-            field: 'ProfitChange',
-            headerName: '%Profit',
-            align: 'right',
-            filter: 'agNumberColumnFilter',
-            cellRenderer: params => {
-                const div = document.createElement("div");
-                div.innerText = (Number(params.data.ProfitChange) * 100).toFixed(1)
-                div.className = mapColorFinancialReportChange(params.data.ProfitChange)
-                return div
-            }
-        },
+    const Price = {
+        field: 'PriceClose',
+        headerName: 'Price',
+        filter: 'agNumberColumnFilter',
+        align: 'right',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = formatNumber(params.data.PriceClose)
+            return div
+        }
+    }
+    const DealVolume = {
+        field: 'DealVolume',
+        align: 'right',
+        headerName: 'DealVolume',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = formatNumber(params.data.DealVolume)
+            return div
+        }
+    }
 
-    ]
+    const TodayCapital = {
+        field: 'TodayCapital',
+        align: 'right',
+        headerName: 'TodayCapital',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = formatNumber((params.data.TodayCapital / BILLION_UNIT).toFixed(0))
+            return div
+        }
+    }
+
+    const LastPrice = {
+        field: 'LastPrice',
+        align: 'right',
+        headerName: 'LastPrice',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = formatNumber(params.data.LastPrice)
+            return div
+        }
+    }
+    const PriceChange = {
+        field: 'PriceChange',
+        headerName: '%',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = Number(params.data.PriceChange).toFixed(2)
+            div.className = mapColorPriceChange(params.data.PriceChange)
+            return div
+        }
+    }
+    const LowestPoint = {
+        field: 'LowestPoint',
+        headerName: 'LowestPoint',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = params.data.LowestPoint
+            return div
+        }
+    }
+    const LowestPointChange = {
+        field: 'LowestPointChange',
+        headerName: 'LowestPointChange',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = Number(params.data.LowestPointChange).toFixed(1)
+            return div
+        }
+    }
+
+    const LastRevenue = {
+        field: 'LastRevenue',
+        headerName: '2018Revenue',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = Number(params.data.LastRevenue / BILLION_UNIT).toFixed(0)
+            return div
+        }
+    }
+
+    const CurrentRevenue = {
+        field: 'CurrentRevenue',
+        headerName: '2019Revenue',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = Number(params.data.CurrentRevenue / BILLION_UNIT).toFixed(0)
+            return div
+        }
+    }
+
+    const RevenueChange = {
+        field: 'RevenueChange',
+        headerName: '%Rev',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (Number(params.data.RevenueChange) * 100).toFixed(1)
+            div.className = mapColorFinancialReportChange(params.data.RevenueChange)
+
+            return div
+        }
+    }
+    const LastProfit = {
+        field: 'LastProfit',
+        headerName: '2018Profit',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = Number(params.data.LastProfit / BILLION_UNIT).toFixed(0)
+            return div
+        }
+    }
+
+    const CurrentProfit = {
+        field: 'CurrentProfit',
+        headerName: '2019Profit',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = Number(params.data.CurrentProfit / BILLION_UNIT).toFixed(0)
+            return div
+        }
+    }
+
+    const ProfitChange = {
+        field: 'ProfitChange',
+        headerName: '%Profit',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (Number(params.data.ProfitChange) * 100).toFixed(1)
+            div.className = mapColorFinancialReportChange(params.data.ProfitChange)
+            return div
+        }
+    }
+
+    const PE = {
+        field: 'PE',
+        headerName: 'PE',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (params.data.PE).toFixed(0)
+            return div
+        }
+    }
+
+    const PS = {
+        field: 'PS',
+        headerName: 'PS',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (params.data.PS).toFixed(1)
+            return div
+        }
+    }
+
+    const PB = {
+        field: 'PB',
+        headerName: 'PB',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (params.data.PB).toFixed(1)
+            return div
+        }
+    }
+
+    const EPS = {
+        field: 'EPS',
+        headerName: 'EPS',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (params.data.EPS).toFixed(0)
+            return div
+        }
+    }
+
+    const QuickRatio = {
+        field: 'QuickRatio',
+        headerName: 'QuickRatio',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (params.data.QuickRatio).toFixed(2)
+            return div
+        }
+    }
+
+    const CurrentRatio = {
+        field: 'CurrentRatio',
+        headerName: 'CurrentRatio',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (params.data.CurrentRatio).toFixed(2)
+            return div
+        }
+    }
+
+    const TotalDebtOverEquity = {
+        field: 'TotalDebtOverEquity',
+        headerName: 'TotalDebtOverEquity',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (params.data.TotalDebtOverEquity).toFixed(2)
+            return div
+        }
+    }
+    const TotalDebtOverAssets = {
+        field: 'TotalDebtOverAssets',
+        headerName: 'TotalDebtOverAssets',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (params.data.TotalDebtOverAssets).toFixed(2)
+            return div
+        }
+    }
+
+    const TotalAssetsTurnover = {
+        field: 'TotalAssetsTurnover',
+        headerName: 'TotalAssetsTurnover',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (params.data.TotalAssetsTurnover).toFixed(2)
+            return div
+        }
+    }
+
+    const InventoryTurnover = {
+        field: 'InventoryTurnover',
+        headerName: 'InventoryTurnover',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (params.data.InventoryTurnover).toFixed(2)
+            return div
+        }
+    }
+
+    const ReceivablesTurnover = {
+        field: 'ReceivablesTurnover',
+        headerName: 'ReceivablesTurnover',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (params.data.ReceivablesTurnover).toFixed(2)
+            return div
+        }
+    }
+
+    const GrossMargin = {
+        field: 'GrossMargin',
+        headerName: 'GrossMargin',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (params.data.GrossMargin).toFixed(2)
+            return div
+        }
+    }
+
+    const OperatingMargin = {
+        field: 'OperatingMargin',
+        headerName: 'OperatingMargin',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (params.data.OperatingMargin).toFixed(2)
+            return div
+        }
+    }
+
+    const EBITMargin = {
+        field: 'EBITMargin',
+        headerName: 'EBITMargin',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (params.data.EBITMargin).toFixed(2)
+            return div
+        }
+    }
+
+    const NetProfitMargin = {
+        field: 'NetProfitMargin',
+        headerName: 'NetProfitMargin',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (params.data.NetProfitMargin).toFixed(2)
+            return div
+        }
+    }
+
+    const ROA = {
+        field: 'ROA',
+        headerName: 'ROA',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (params.data.ROA).toFixed(2)
+            return div
+        }
+    }
+
+    const ROE = {
+        field: 'ROE',
+        headerName: 'ROE',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (params.data.ROE).toFixed(2)
+            return div
+        }
+    }
+
+    const ROIC = {
+        field: 'ROIC',
+        headerName: 'ROIC',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (params.data.ROIC).toFixed(2)
+            return div
+        }
+    }
+
+    switch (importantIndexType) {
+        case 'KhaNangThanhToan':
+            return [Stock, PE, PS, PB, EPS, QuickRatio, CurrentRatio, TotalDebtOverEquity, TotalDebtOverAssets]
+        case 'CoCauTaiSan':
+            return [Stock, TotalAssetsTurnover, InventoryTurnover, ReceivablesTurnover, GrossMargin, OperatingMargin, EBITMargin, NetProfitMargin, ROA, ROE, ROIC]
+        case 'HieuSuatHoatDong':
+            return [Stock]
+        default:
+            return [Stock, Actions, ICBCode, Price, DealVolume, TodayCapital, LastPrice, PriceChange, LowestPoint, LowestPointChange, LastRevenue, CurrentRevenue, RevenueChange, LastProfit, CurrentProfit, ProfitChange]
+    }
+
 }

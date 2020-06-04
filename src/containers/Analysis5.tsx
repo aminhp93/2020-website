@@ -11,7 +11,7 @@ import {
 } from '../reducers/stocks';
 import ChartTV from './ChartTV/ChartTV';
 import Profile from './Profile';
-import { IStock } from '../types'
+import { IStock, IImportantIndexType } from '../types'
 import { analysis5ColumnDefs } from '../utils/columnDefs';
 
 import { AgGridReact } from '@ag-grid-community/react';
@@ -48,6 +48,7 @@ interface IState {
     value?: any,
     data?: any,
     fetching?: boolean,
+    importantIndexType: any,
 }
 
 class Analysis5 extends React.Component<IProps, IState> {
@@ -58,6 +59,7 @@ class Analysis5 extends React.Component<IProps, IState> {
         super(props);
         this.state = {
             type: 'IsVN30',
+            importantIndexType: 'default',
             symbol: '',
             modules: AllModules,
             columnDefs: analysis5ColumnDefs(this),
@@ -95,6 +97,24 @@ class Analysis5 extends React.Component<IProps, IState> {
             i.Symbol = (stocks[i.Stock] || {}).Symbol
             i.LowestPoint = (decisiveIndexes[i.Stock] || {}).LowestPoint
             i.LowestPointChange = (i.PriceClose - (decisiveIndexes[i.Stock] || {}).LowestPoint) / (decisiveIndexes[i.Stock] || {}).LowestPoint * 100
+            i.PE = Number(i.PE)
+            i.PS = Number(i.PS)
+            i.PB = Number(i.PB)
+            i.EPS = Number(i.EPS)
+            i.QuickRatio = Number(i.QuickRatio)
+            i.CurrentRatio = Number(i.CurrentRatio)
+            i.TotalDebtOverEquity = Number(i.TotalDebtOverEquity)
+            i.TotalDebtOverAssets = Number(i.TotalDebtOverAssets)
+            i.TotalAssetsTurnover = Number(i.TotalAssetsTurnover)
+            i.InventoryTurnover = Number(i.InventoryTurnover)
+            i.ReceivablesTurnover = Number(i.ReceivablesTurnover)
+            i.GrossMargin = Number(i.GrossMargin)
+            i.OperatingMargin = Number(i.OperatingMargin)
+            i.EBITMargin = Number(i.EBITMargin)
+            i.NetProfitMargin = Number(i.NetProfitMargin)
+            i.ROA = Number(i.ROA)
+            i.ROE = Number(i.ROE)
+            i.ROIC = Number(i.ROIC)
             return i
         })
         return data
@@ -161,10 +181,18 @@ class Analysis5 extends React.Component<IProps, IState> {
         })
     }
 
+    changeImporantIndex = (e) => {
+        this.setState({
+            importantIndexType: e.target.value,
+            columnDefs: analysis5ColumnDefs(this, e.target.value)
+        })
+    }
+
     render() {
         const { startDate, endDate, rowData,
             modules, columnDefs, defaultColDef,
             visibleChart, visibleInfo, type,
+            importantIndexType
         } = this.state;
         return (
             <div>
@@ -200,12 +228,21 @@ class Analysis5 extends React.Component<IProps, IState> {
                             <Input addonBefore="None" onChange={(e) => this.changeInput(e, 'None')} />
                             <Input addonBefore="None" onChange={(e) => this.changeInput(e, 'None')} />
                         </div>
-
-
                     </div>
                 </div>
-                <RangePicker onChange={this.onChange} value={startDate ? [moment(startDate), moment(endDate)] : []} />
-                <Button onClick={() => this.scan()}>Xem</Button>
+                <div>
+                    <RangePicker onChange={this.onChange} value={startDate ? [moment(startDate), moment(endDate)] : []} />
+                    <Button onClick={() => this.scan()}>Xem</Button>
+                </div>
+
+                <div>
+                    <Radio.Group value={importantIndexType} onChange={this.changeImporantIndex}>
+                        <Radio.Button value="KhaNangThanhToan">Kha nang thanh toan</Radio.Button>
+                        <Radio.Button value="CoCauTaiSan">Co cau tai san</Radio.Button>
+                        <Radio.Button value="HieuSuatHoatDong">Hieu suat hoat dong</Radio.Button>
+                        <Radio.Button value="default">Default</Radio.Button>
+                    </Radio.Group>
+                </div>
                 <div style={{ width: '100%', height: '100%' }}>
                     <div
                         id="myGrid"
