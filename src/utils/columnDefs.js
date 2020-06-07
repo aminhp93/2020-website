@@ -980,15 +980,27 @@ export const analysis5ColumnDefs = (that, importantIndexType = null) => {
         }
     }
 
+    const MarketCap = {
+        field: 'MarketCap',
+        headerName: 'MarketCap',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (params.data.MarketCap / BILLION_UNIT).toFixed(0)
+            return div
+        }
+    }
+
     switch (importantIndexType) {
         case 'KhaNangThanhToan':
-            return [Stock, PE, PS, PB, EPS, QuickRatio, CurrentRatio, TotalDebtOverEquity, TotalDebtOverAssets]
+            return [Stock, ICBCode, PE, PS, PB, EPS, QuickRatio, CurrentRatio, TotalDebtOverEquity, TotalDebtOverAssets, MarketCap]
         case 'CoCauTaiSan':
-            return [Stock, TotalAssetsTurnover, InventoryTurnover, ReceivablesTurnover, GrossMargin, OperatingMargin, EBITMargin, NetProfitMargin, ROA, ROE, ROIC]
+            return [Stock, ICBCode, TotalAssetsTurnover, InventoryTurnover, ReceivablesTurnover, GrossMargin, OperatingMargin, EBITMargin, NetProfitMargin, ROA, ROE, ROIC, MarketCap]
         case 'HieuSuatHoatDong':
-            return [Stock]
+            return [Stock, ICBCode, LowestPoint, LowestPointChange, LastRevenue, CurrentRevenue, RevenueChange, LastProfit, CurrentProfit, ProfitChange, MarketCap]
         default:
-            return [Stock, Actions, ICBCode, Price, DealVolume, TodayCapital, LastPrice, PriceChange, LowestPoint, LowestPointChange, LastRevenue, CurrentRevenue, RevenueChange, LastProfit, CurrentProfit, ProfitChange]
+            return [Stock, Actions, ICBCode, Price, DealVolume, TodayCapital, LastPrice, PriceChange, MarketCap]
     }
 
 }
