@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { get, cloneDeep } from 'lodash';
+import { get } from 'lodash';
 import { Tabs } from 'antd';
 import { AgGridReact } from '@ag-grid-community/react';
 import { AllCommunityModules } from '@ag-grid-community/all-modules';
@@ -18,11 +18,11 @@ import {
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-alpine.css';
 
-import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
-import { RowGroupingModule } from '@ag-grid-enterprise/row-grouping';
-import { MenuModule } from '@ag-grid-enterprise/menu';
-import { ColumnsToolPanelModule } from '@ag-grid-enterprise/column-tool-panel';
-import { SetFilterModule } from '@ag-grid-enterprise/set-filter';
+// import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
+// import { RowGroupingModule } from '@ag-grid-enterprise/row-grouping';
+// import { MenuModule } from '@ag-grid-enterprise/menu';
+// import { ColumnsToolPanelModule } from '@ag-grid-enterprise/column-tool-panel';
+// import { SetFilterModule } from '@ag-grid-enterprise/set-filter';
 
 const { TabPane } = Tabs;
 
@@ -269,14 +269,12 @@ class ImportantIndexes extends React.Component<IProps, IState> {
     // }
 
     render() {
-        const { modules, columnDefs, defaultColDef, rowData, LastestFinancialReportsArray } = this.state;
+        const { modules, columnDefs, defaultColDef, rowData } = this.state;
 
         return (
             <div>
                 <div>6 nhom chi so co Ban</div>
-                <Tabs defaultActiveKey='2'
-                // onChange={key => this.setState({ rowData: this.filter(rowData, key) })}
-                >
+                <Tabs defaultActiveKey='2'>
                     <TabPane tab="1. kha nang thanh toan" key="1">
                         <div>{`1. Ty le thanh toan hien hanh = Tai san ngan han / No ngan han`}</div>
                         <div>{`< 1 ==> kha nang thanh toan yeu`}</div>

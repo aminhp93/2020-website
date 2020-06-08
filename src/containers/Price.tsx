@@ -108,7 +108,7 @@ class Price extends React.Component<IProps, IState> {
         let listPromises = [];
         const arr = cloneDeep(Object.values(this.props.stocks));
         const arr1 = arr.slice(start, count)
-        arr1.map(item => {
+        arr1.forEach(item => {
             item.Symbol && listPromises.push(
                 new Promise(resolve => {
                     this.udpateHistoricalQuotes(item.Symbol, resolve, startDate, endDate);

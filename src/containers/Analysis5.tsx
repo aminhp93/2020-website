@@ -11,7 +11,7 @@ import {
 } from '../reducers/stocks';
 import ChartTV from './ChartTV/ChartTV';
 import Profile from './Profile';
-import { IStock, IImportantIndexType } from '../types'
+import { IStock } from '../types'
 import { analysis5ColumnDefs } from '../utils/columnDefs';
 
 import { AgGridReact } from '@ag-grid-community/react';

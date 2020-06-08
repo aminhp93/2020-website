@@ -272,7 +272,6 @@ class Analysis2 extends React.Component<IProps, IState> {
             modules, columnDefs, defaultColDef,
             rowData
         } = this.state;
-        const { stocks } = this.props;
         return (
             <div>
                 <div>

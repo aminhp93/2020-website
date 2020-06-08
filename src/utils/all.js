@@ -40,7 +40,7 @@ export function mapColorFinancialReportChange(data) {
 
 export function mapArrayToKeyValue(data) {
     let result = {}
-    data.map(item => {
+    data.forEach(item => {
         result[item.id] = item
     })
     return result
@@ -50,13 +50,13 @@ export function mapDataTwoDate(data1, data2, allStocks) {
     if (!data1 || !data2 || !allStocks) return []
     let data1Obj = {};
     let data2Obj = {};
-    data1.map(item => {
+    data1.forEach(item => {
         data1Obj[item.Stock] = item
     })
-    data2.map(item => {
+    data2.forEach(item => {
         data2Obj[item.Stock] = item
     })
-    console.log(allStocks, data1, data2, data1Obj, data2Obj)
+    // console.log(allStocks, data1, data2, data1Obj, data2Obj)
     for (let i = 0; i < data1.length; i++) {
         data1[i].TodayCapital = Number((data1[i].PriceClose * data1[i].DealVolume / 1000000000).toFixed(0))
         data1[i].MarketCap = Number((data1[i].MarketCap / 1000000000).toFixed(0))
@@ -70,8 +70,6 @@ export function mapDataTwoDate(data1, data2, allStocks) {
             data1[i].VolumeChange = Number(((data1[i].DealVolume - data2Item.DealVolume) * 100 / data2Item.DealVolume).toFixed(1))
         }
         data1[i].Stock = allStocks[data1[i].Stock].Symbol
-
-
     }
     return data1;
 }
@@ -84,9 +82,9 @@ export const mapDataImportantIndexes = (dataType1, dataType2, dataType3, dataTyp
     let result = []
 
     // GET INFO
-    const taiSanNganHan = dataType1.filter(i => i.ID === 101)[0]
+    // const taiSanNganHan = dataType1.filter(i => i.ID === 101)[0]
     const noNganHan = dataType1.filter(i => i.ID === 30101)[0]
-    const hangTonKho = dataType1.filter(i => i.ID === 10104)[0]
+    // const hangTonKho = dataType1.filter(i => i.ID === 10104)[0]
     const tienVsTuongDuongTien = dataType1.filter(i => i.ID === 10101)[0]
     const loiNhuanTruocThue = dataType2.filter(i => i.ID === 15)[0]
     const chiPhiLayVay = dataType2.filter(i => i.ID === 701)[0]
@@ -96,35 +94,35 @@ export const mapDataImportantIndexes = (dataType1, dataType2, dataType3, dataTyp
     const VCSH = dataType1.filter(i => i.ID === 302)[0]
     const tongCongNguonVon = dataType1.filter(i => i.ID === 4)[0]
     const doanhThuThuan = dataType2.filter(i => i.ID === 3)[0]
-    const phaiThuNganHanKhachHang = dataType1.filter(i => i.ID === 1010301)[0]
-    const phaiThuDaiHanKhachHang = dataType1.filter(i => i.ID === 1020101)[0]
+    // const phaiThuNganHanKhachHang = dataType1.filter(i => i.ID === 1010301)[0]
+    // const phaiThuDaiHanKhachHang = dataType1.filter(i => i.ID === 1020101)[0]
     const phaiTraNguoiBanNganHan = dataType1.filter(i => i.ID === 302)[0]
     const phaiTraNguoiBanDaiHan = dataType1.filter(i => i.ID === 302)[0]
-    const tongCongTaiSan = dataType2.filter(i => i.ID === 2)[0]
-    const loiNhuanGop = dataType1.filter(i => i.ID === 15)[0]
+    // const tongCongTaiSan = dataType2.filter(i => i.ID === 2)[0]
+    // const loiNhuanGop = dataType1.filter(i => i.ID === 15)[0]
     const LNST = dataType1.filter(i => i.ID === 19)[0]
-    const PriceClose = dataType4[0].PriceClose
+    // const PriceClose = dataType4[0].PriceClose
 
     // GET DIRECT INDEX
     const {
-        PE,
-        PS,
+        // PE,
+        // PS,
         PB,
-        EPS,
+        // EPS,
         QuickRatio,
         CurrentRatio,
         TotalDebtOverEquity,
-        TotalDebtOverAssets,
-        TotalAssetsTurnover,
+        // TotalDebtOverAssets,
+        // TotalAssetsTurnover,
         InventoryTurnover,
         ReceivablesTurnover,
         GrossMargin,
-        OperatingMargin,
-        EBITMargin,
-        NetProfitMargin,
+        // OperatingMargin,
+        // EBITMargin,
+        // NetProfitMargin,
         ROA,
         ROE,
-        ROIC,
+        // ROIC,
         DilutedEPS,
         DilutedPE
     } = dataType5
@@ -154,16 +152,16 @@ export const mapDataImportantIndexes = (dataType1, dataType2, dataType3, dataTyp
     let heSoDonBayTaiChinhValues = []
     let EPSValues = []
     // INDEX 5
-    let tyLeChiTraCoTucValues = []
-    let tySuatCoTucValues = []
+    // let tyLeChiTraCoTucValues = []
+    // let tySuatCoTucValues = []
     // INDEX 6
     let PEValues = []
     let PBValues = []
 
-    yearsArray.map(i => {
-        const taiSanNganHanValue = taiSanNganHan && taiSanNganHan.Values && taiSanNganHan.Values.filter(j => j.Year === i).length && taiSanNganHan.Values.filter(j => j.Year === i)[0].Value
+    yearsArray.forEach(i => {
+        // const taiSanNganHanValue = taiSanNganHan && taiSanNganHan.Values && taiSanNganHan.Values.filter(j => j.Year === i).length && taiSanNganHan.Values.filter(j => j.Year === i)[0].Value
         const noNganHanValue = noNganHan && noNganHan.Values && noNganHan.Values.filter(j => j.Year === i).length && noNganHan.Values.filter(j => j.Year === i)[0].Value
-        const hangTonKhoValue = hangTonKho && hangTonKho.Values && hangTonKho.Values.filter(j => j.Year === i).length && hangTonKho.Values.filter(j => j.Year === i)[0].Value
+        // const hangTonKhoValue = hangTonKho && hangTonKho.Values && hangTonKho.Values.filter(j => j.Year === i).length && hangTonKho.Values.filter(j => j.Year === i)[0].Value
         const tienVsTuongDuongTienValue = tienVsTuongDuongTien && tienVsTuongDuongTien.Values && tienVsTuongDuongTien.Values.filter(j => j.Year === i).length && tienVsTuongDuongTien.Values.filter(j => j.Year === i)[0].Value
         const loiNhuanTruocThueValue = loiNhuanTruocThue && loiNhuanTruocThue.Values && loiNhuanTruocThue.Values.filter(j => j.Year === i).length && loiNhuanTruocThue.Values.filter(j => j.Year === i)[0].Value
         const chiPhiLayVayValue = chiPhiLayVay && chiPhiLayVay.Values && chiPhiLayVay.Values.filter(j => j.Year === i).length && chiPhiLayVay.Values.filter(j => j.Year === i)[0].Value
@@ -173,12 +171,12 @@ export const mapDataImportantIndexes = (dataType1, dataType2, dataType3, dataTyp
         const VCSHValue = VCSH && VCSH.Values && VCSH.Values.filter(j => j.Year === i).length && VCSH.Values.filter(j => j.Year === i)[0].Value
         const tongCongNguonVonValue = tongCongNguonVon && tongCongNguonVon.Values && tongCongNguonVon.Values.filter(j => j.Year === i).length && tongCongNguonVon.Values.filter(j => j.Year === i)[0].Value
         const doanhThuThuanValue = doanhThuThuan && doanhThuThuan.Values && doanhThuThuan.Values.filter(j => j.Year === i).length && doanhThuThuan.Values.filter(j => j.Year === i)[0].Value
-        const phaiThuNganHanKhachHangValue = phaiThuNganHanKhachHang && phaiThuNganHanKhachHang.Values && phaiThuNganHanKhachHang.Values.filter(j => j.Year === i).length && phaiThuNganHanKhachHang.Values.filter(j => j.Year === i)[0].Value
-        const phaiThuDaiHanKhachHangValue = phaiThuDaiHanKhachHang && phaiThuDaiHanKhachHang.Values && phaiThuDaiHanKhachHang.Values.filter(j => j.Year === i).length && phaiThuDaiHanKhachHang.Values.filter(j => j.Year === i)[0].Value
+        // const phaiThuNganHanKhachHangValue = phaiThuNganHanKhachHang && phaiThuNganHanKhachHang.Values && phaiThuNganHanKhachHang.Values.filter(j => j.Year === i).length && phaiThuNganHanKhachHang.Values.filter(j => j.Year === i)[0].Value
+        // const phaiThuDaiHanKhachHangValue = phaiThuDaiHanKhachHang && phaiThuDaiHanKhachHang.Values && phaiThuDaiHanKhachHang.Values.filter(j => j.Year === i).length && phaiThuDaiHanKhachHang.Values.filter(j => j.Year === i)[0].Value
         const phaiTraNguoiBanNganHanValue = phaiTraNguoiBanNganHan && phaiTraNguoiBanNganHan.Values && phaiTraNguoiBanNganHan.Values.filter(j => j.Year === i).length && phaiTraNguoiBanNganHan.Values.filter(j => j.Year === i)[0].Value
         const phaiTraNguoiBanDaiHanValue = phaiTraNguoiBanDaiHan && phaiTraNguoiBanDaiHan.Values && phaiTraNguoiBanDaiHan.Values.filter(j => j.Year === i).length && phaiTraNguoiBanDaiHan.Values.filter(j => j.Year === i)[0].Value
-        const tongCongTaiSanValue = tongCongTaiSan && tongCongTaiSan.Values && phaiTraNguoiBanDaiHan.Values.filter(j => j.Year === i).length && phaiTraNguoiBanDaiHan.Values.filter(j => j.Year === i)[0].Value
-        const loiNhuanGopValue = loiNhuanGop && loiNhuanGop.Values && phaiTraNguoiBanDaiHan.Values.filter(j => j.Year === i).length && phaiTraNguoiBanDaiHan.Values.filter(j => j.Year === i)[0].Value
+        // const tongCongTaiSanValue = tongCongTaiSan && tongCongTaiSan.Values && phaiTraNguoiBanDaiHan.Values.filter(j => j.Year === i).length && phaiTraNguoiBanDaiHan.Values.filter(j => j.Year === i)[0].Value
+        // const loiNhuanGopValue = loiNhuanGop && loiNhuanGop.Values && phaiTraNguoiBanDaiHan.Values.filter(j => j.Year === i).length && phaiTraNguoiBanDaiHan.Values.filter(j => j.Year === i)[0].Value
         const LNSTValue = LNST && LNST.Values && LNST.Values.filter(j => j.Year === i).length && LNST.Values.filter(j => j.Year === i)[0].Value
 
         let dataType3Indexes = dataType3.filter(j => Number(j.Year) === i)
@@ -467,7 +465,7 @@ export const mapDataLatestFinancialReport = (data, period = null, type = null) =
         if (cloneData.length) {
 
 
-            cloneData[0].Values.map(i => {
+            cloneData[0].Values.forEach(i => {
                 let doanhThuThuan = cloneData.filter(j => j.ID === 3)[0].Values.filter(j => j.Year === i.Year)[0].Value
                 let doanhThuHoatDongTaiChinh = cloneData.filter(j => j.ID === 6)[0].Values.filter(j => j.Year === i.Year)[0].Value
                 let doanhThuKhac = cloneData.filter(j => j.ID === 12)[0].Values.filter(j => j.Year === i.Year)[0].Value
@@ -594,7 +592,7 @@ export const mapDataLatestFinancialReport = (data, period = null, type = null) =
             let yearArray = [2015, 2016, 2017, 2018, 2019]
             let tongCongTaiSan = data.filter(i => i.ID === 2)[0].Values
 
-            yearArray.map((year, index) => {
+            yearArray.forEach((year, index) => {
                 cloneData[i].Values.push(
                     {
                         Year: `%${yearArray[index]}`,
@@ -615,7 +613,7 @@ export const mapDataLatestFinancialReport = (data, period = null, type = null) =
         } else if (type === LATEST_FINANCIAL_REPORTS.TYPE_2) {
             let yearArray = [2015, 2016, 2017, 2018, 2019]
 
-            yearArray.map((year, index) => {
+            yearArray.forEach((year, index) => {
                 if ([3, 6, 12].includes(cloneData[i].ID)) {
                     cloneData[i].Values.push(
                         {

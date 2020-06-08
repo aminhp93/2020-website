@@ -35,13 +35,13 @@ import { IStock, IAnalysisType } from '../types'
 
 const { TabPane } = Tabs;
 
-let xxx = []
+// let xxx = []
 
-const TYPE_DEFAULT = []
-const TYPE_NGAN_HANG = ["ACB", "BAB", "BID", "CTG", "EIB", "EVF", "HDB", "KLB", "LPB", "MBB", "NVB", "SHB", "STB", "TCB", "TPB", "VBB", "VCB", "VIB", "VPB"]
-const TYPE_BAO_HIEM = ["ABI", "BIC", "BLI", "BMI", "BVH", "MIG", "PGI", "PTI", "VNR"]
-const TYPE_CHUNG_KHOAN = ["AGR", "APG", "APS", "ART", "BMS", "BSI", "BVS", "CSI", "CTS", "DSC", "EVS", "FTS", "HAC", "HBS", "HCM", "HFT", "IVS", "MBS", "ORS", "PHS", "PSI", "SBS", "SHS", "SSI", "TCI", "TVB", "TVS", "VCI", "VDS", "VIG", "VIX", "VND", "WSS"]
-const TYPE_QUY = ["E1VFVN30", "FUCVREIT", "FUCTVGF1"]
+// const TYPE_DEFAULT = []
+// const TYPE_NGAN_HANG = ["ACB", "BAB", "BID", "CTG", "EIB", "EVF", "HDB", "KLB", "LPB", "MBB", "NVB", "SHB", "STB", "TCB", "TPB", "VBB", "VCB", "VIB", "VPB"]
+// const TYPE_BAO_HIEM = ["ABI", "BIC", "BLI", "BMI", "BVH", "MIG", "PGI", "PTI", "VNR"]
+// const TYPE_CHUNG_KHOAN = ["AGR", "APG", "APS", "ART", "BMS", "BSI", "BVS", "CSI", "CTS", "DSC", "EVS", "FTS", "HAC", "HBS", "HCM", "HFT", "IVS", "MBS", "ORS", "PHS", "PSI", "SBS", "SHS", "SSI", "TCI", "TVB", "TVS", "VCI", "VDS", "VIG", "VIX", "VND", "WSS"]
+// const TYPE_QUY = ["E1VFVN30", "FUCVREIT", "FUCTVGF1"]
 
 // 0: "4. Giá vốn hàng bán"
 // 1: "ABC"
@@ -93,6 +93,7 @@ class Financial extends React.Component<IProps, IState> {
                 flex: 1,
                 filter: true,
                 sortable: true,
+                resizable: true
             },
             analysisType: null
         }
@@ -255,7 +256,7 @@ class Financial extends React.Component<IProps, IState> {
         let listPromises = [];
         const arr = cloneDeep(Object.values(this.props.stocks));
         arr.splice(start, count)
-        arr.map(item => {
+        arr.forEach(item => {
             item.Symbol && listPromises.push(
                 new Promise(resolve => {
                     this.updateLatestFinancialInfo(item.Symbol, resolve);
@@ -300,7 +301,7 @@ class Financial extends React.Component<IProps, IState> {
         let listPromises = [];
         const arr = cloneDeep(Object.values(this.props.stocks));
         arr.splice(start, count)
-        arr.map(item => {
+        arr.forEach(item => {
             item.Symbol && listPromises.push(
                 new Promise(resolve => {
                     this.updateYearlyFinancialInfo(item.Symbol, resolve);
@@ -345,7 +346,7 @@ class Financial extends React.Component<IProps, IState> {
         let listPromises = [];
         const arr = cloneDeep(Object.values(this.props.stocks));
         arr.splice(start, count)
-        arr.map(item => {
+        arr.forEach(item => {
             item.Symbol && listPromises.push(
                 new Promise(resolve => {
                     this.updateQuarterlyFinancialInfo(item.Symbol, resolve);
@@ -389,8 +390,8 @@ class Financial extends React.Component<IProps, IState> {
             'E1VFVN30',
             'FPT'
         ]
-        listSymbols.map(item => {
-            [1, 2, 3, 4].map(index => {
+        listSymbols.forEach(item => {
+            [1, 2, 3, 4].forEach(index => {
                 this.updateLastestFinancialReportsName(item, index)
             })
         })
@@ -468,7 +469,7 @@ class Financial extends React.Component<IProps, IState> {
         let listPromises = [];
         const arr = cloneDeep(Object.values(this.props.stocks));
         const arr1 = arr.slice(start, count)
-        arr1.map(item => {
+        arr1.forEach(item => {
             item.Symbol && listPromises.push(
                 new Promise(resolve => {
                     this.updateLastestFinancialReportsValue(item.Symbol, resolve);

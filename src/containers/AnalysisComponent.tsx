@@ -14,7 +14,6 @@ import {
     mapDataTwoDate
 } from '../utils/all';
 import {
-    getConfigGetCreateUrl,
     getStockFilter,
     getCompanyInfoUrl
 } from '../utils/request';

@@ -1,9 +1,8 @@
-import { keyBy } from 'lodash';
 import { createSlice } from '@reduxjs/toolkit';
 
 const selectedSymbolSlice = createSlice({
     name: 'selectedSymbol',
-    initialState: 'VNM',
+    initialState: 'NT2',
     reducers: {
         updateSelectedSymbolSuccess: (state, { payload }) => {
             return payload

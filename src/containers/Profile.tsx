@@ -200,7 +200,7 @@ class Profile extends React.Component<IProps, IState> {
         let listPromises = [];
         const arr = cloneDeep(Object.values(this.props.stocks));
         arr.splice(start, count)
-        arr.map(item => {
+        arr.forEach(item => {
             item.Symbol && listPromises.push(
                 new Promise(resolve => {
                     this.updateCompanyInfo(item.Symbol, resolve);
@@ -242,7 +242,7 @@ class Profile extends React.Component<IProps, IState> {
         let listPromises = [];
         const arr = cloneDeep(Object.values(this.props.stocks));
         arr.splice(start, count)
-        arr.map(item => {
+        arr.forEach(item => {
             item.Symbol && listPromises.push(
                 new Promise(resolve => {
                     this.updateSubCompanies(item.Symbol, resolve);
@@ -284,7 +284,7 @@ class Profile extends React.Component<IProps, IState> {
         let listPromises = [];
         const arr = cloneDeep(Object.values(this.props.stocks));
         arr.splice(start, count)
-        arr.map(item => {
+        arr.forEach(item => {
             item.Symbol && listPromises.push(
                 new Promise(resolve => {
                     this.updateCompanyOfficers(item.Symbol, resolve);
@@ -326,7 +326,7 @@ class Profile extends React.Component<IProps, IState> {
         let listPromises = [];
         const arr = cloneDeep(Object.values(this.props.stocks));
         arr.splice(start, count)
-        arr.map(item => {
+        arr.forEach(item => {
             item.Symbol && listPromises.push(
                 new Promise(resolve => {
                     this.updateCompanyTransactions(item.Symbol, resolve);

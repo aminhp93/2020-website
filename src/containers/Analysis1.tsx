@@ -16,15 +16,11 @@ import {
     mapDataTwoDate
 } from '../utils/all';
 import {
-    getConfigGetCreateUrl,
     getStockFilter,
     getCompanyInfoFilterUrl,
     getLastestFinancialInfoFilterUrl
 } from '../utils/request';
 
-// import {
-// setSymbol,
-// } from '../../actions/stock';
 import axios from 'axios';
 
 import { AgGridReact } from '@ag-grid-community/react';

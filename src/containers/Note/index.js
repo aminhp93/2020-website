@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { connect } from 'react-redux';
-import { List, Avatar, Input, Button } from 'antd';
+import { List, Input, Button } from 'antd';
 import { debounce } from 'lodash';
 import axios from 'axios';
 import moment from 'moment';

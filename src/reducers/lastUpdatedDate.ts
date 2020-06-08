@@ -1,4 +1,3 @@
-import { keyBy } from 'lodash';
 import { createSlice } from '@reduxjs/toolkit';
 
 import { ThunkActionType, DispatchType } from '../store';

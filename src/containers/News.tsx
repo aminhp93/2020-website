@@ -126,7 +126,7 @@ class News extends React.Component<IProps, IState> {
     render() {
         const {
             CompanyNewsCountString,
-            CompanyNewsArray,
+            // CompanyNewsArray,
             NewsContent
         } = this.state;
         const { dataSource } = this.props;
@@ -142,7 +142,7 @@ class News extends React.Component<IProps, IState> {
                                 <List.Item.Meta
                                     avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
                                     // title={<div onClick={() => this.showModal(item)}>{item.Title}</div>}
-                                    title={<a href={item.NewsUrl} target="_blank">{item.Title}</a>}
+                                    title={<a href={item.NewsUrl} target="_blank" rel="noopener noreferrer">{item.Title}</a>}
                                     description={item.Description}
                                 />
                             </List.Item>

@@ -2,7 +2,6 @@ import { keyBy } from 'lodash';
 import { createSlice } from '@reduxjs/toolkit';
 
 import { ThunkActionType } from '../store';
-import CompanyService from '../services/company';
 import StockService from '../services/stock';
 
 const stocksSlice = createSlice({

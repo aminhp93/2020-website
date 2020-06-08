@@ -114,7 +114,7 @@ export const scanStock = (data: any): ThunkActionType => async (
     const ALLOW_CONDITION_SEARCH = ['Symbol', 'TodayCapital', 'type', 'startDate', 'endDate']
     if (data) {
         const keys = Object.keys(data).filter(i => ALLOW_CONDITION_SEARCH.includes(i))
-        keys.map(key => {
+        keys.forEach(key => {
             dataRequest[key] = data[key]
         })
     }

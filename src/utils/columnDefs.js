@@ -449,7 +449,7 @@ export const getLastestFinancialReportsColumnDefs = (period, type, analysisType 
     year.push({
         field: 'Name'
     })
-    yearArray.map(yearItem => {
+    yearArray.forEach(yearItem => {
         year.push({
             headerName: yearItem,
             cellRenderer: (params) => {
@@ -465,7 +465,7 @@ export const getLastestFinancialReportsColumnDefs = (period, type, analysisType 
 
         if (analysisType === 'tyTrong') {
             let tyTrongArray = ['%2015', '%2016', '%2017', '%2018', '%2019']
-            tyTrongArray.map((yearItem, index) => {
+            tyTrongArray.forEach((yearItem, index) => {
                 year.push({
                     headerName: yearItem,
                     cellRenderer: (params) => {
@@ -483,7 +483,7 @@ export const getLastestFinancialReportsColumnDefs = (period, type, analysisType 
             })
         } else if (analysisType === 'chieuNgang') {
             let chieuNgangArray = ['2016-2015', '2017-2016', '2018-2017', '2019-2018']
-            chieuNgangArray.map((yearItem, index) => {
+            chieuNgangArray.forEach((yearItem, index) => {
                 year.push({
                     headerName: yearItem,
                     cellRenderer: (params) => {
@@ -508,7 +508,7 @@ export const getLastestFinancialReportsColumnDefs = (period, type, analysisType 
     if (type === LATEST_FINANCIAL_REPORTS.TYPE_2) {
         if (analysisType === 'tyTrong') {
             let tyTrongArray = ['%2015', '%2016', '%2017', '%2018', '%2019']
-            tyTrongArray.map((yearItem, index) => {
+            tyTrongArray.forEach((yearItem, index) => {
                 year.push({
                     headerName: yearItem,
                     cellRenderer: (params) => {
@@ -527,7 +527,7 @@ export const getLastestFinancialReportsColumnDefs = (period, type, analysisType 
             })
         } else if (analysisType === 'chieuNgang') {
             let chieuNgangArray = ['2016-2015', '2017-2016', '2018-2017', '2019-2018']
-            chieuNgangArray.map((yearItem, index) => {
+            chieuNgangArray.forEach((yearItem, index) => {
                 year.push({
                     headerName: yearItem,
                     cellRenderer: (params) => {

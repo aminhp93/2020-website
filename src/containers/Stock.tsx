@@ -126,7 +126,6 @@ class Stock extends React.Component<IProps, IState> {
         return (
             <div className="App">
                 <div className="App-header">
-
                     <div className="App-search">
                         <Select
                             mode="multiple"
@@ -148,14 +147,12 @@ class Stock extends React.Component<IProps, IState> {
                         {selectedSymbol || 'No symbol selected'} |
                         Last udpated: {moment(lastUpdatedDate.value).format('YYYY-MM-DD')}
                     </div>
-
                 </div>
                 <div className="App-container">
                     <div className="App-navigation">
-
                         <div>
                             <Tabs defaultActiveKey="2" tabPosition="left">
-                                <TabPane tab="OverallMarket1" key="1">
+                                <TabPane tab="Stock" key="1">
                                     <div className="App-content">
                                         <div>
                                             <Tabs defaultActiveKey="7">
@@ -196,11 +193,9 @@ class Stock extends React.Component<IProps, IState> {
                                 <TabPane tab="News" key="3">
                                     <MarketNews />
                                 </TabPane>
-
                             </Tabs>
                         </div>
                     </div>
-
                 </div>
             </div>
         );
@@ -214,7 +209,6 @@ const mapStateToProps = state => {
         stocks: get(state, 'stocks'),
         lastUpdatedDate: get(state, 'lastUpdatedDate')
     }
-
 }
 
 const mapDispatchToProps = {
