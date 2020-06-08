@@ -8,6 +8,7 @@ import Analysis3 from './Analysis3';
 import Analysis4 from './Analysis4';
 import Analysis5 from './Analysis5';
 import MarketNews from './MarketNews';
+import FinancialReportAnalysis from './FinancialReportAnalysis';
 
 
 const { TabPane } = Tabs;
@@ -41,6 +42,9 @@ class Analysis extends React.Component<IProps, IState> {
                     </TabPane>
                     <TabPane tab="MarketNews" key="7">
                         <MarketNews />
+                    </TabPane>
+                    <TabPane tab="Financial Report" key="8">
+                        <FinancialReportAnalysis />
                     </TabPane>
                 </Tabs>
             </div>
