@@ -49,6 +49,8 @@ interface IState {
     data?: any,
     fetching?: boolean,
     importantIndexType: any,
+    TodayCapital: number,
+    MinPrice: number,
 }
 
 class Analysis5 extends React.Component<IProps, IState> {
@@ -78,7 +80,9 @@ class Analysis5 extends React.Component<IProps, IState> {
             visibleChart: false,
             visibleInfo: false,
             addVN30Stock: [],
-            data: []
+            data: [],
+            TodayCapital: 5000000000,
+            MinPrice: 5000
         }
         this.scan = debounce(this.scan, 300);
     }
@@ -86,7 +90,9 @@ class Analysis5 extends React.Component<IProps, IState> {
     onGridReady = params => {
         this.gridApi = params.api;
         this.gridColumnApi = params.columnApi;
-        this.scan();
+        this.scan({
+            IsVN30: true,
+        });
     };
 
     mapData = (data) => {
@@ -147,24 +153,17 @@ class Analysis5 extends React.Component<IProps, IState> {
         const data = {};
         if (index === 'Symbol') {
             data[index] = e.target.value.toUpperCase();
-        } else if (index === 'TodayCapital' || index === 'MinPrice') {
+        } else if (index === 'TodayCapital' || index === 'MinPrice' || index === 'ICBCode') {
             if (e.target.value.match(/\D/)) return
             data[index] = Number(e.target.value);
         } else {
             data[index] = e.target.value
         }
-
-        const dataRequest = { ...this.state, ...data }
-        this.scan(dataRequest)
         this.setState(data)
     }
 
     scan = async (data = null) => {
-        let defaultFilter = {
-            TodayCapital: 5000000000,
-            MinPrice: 5000
-        }
-        data = { ...this.state, ...defaultFilter, ...data }
+        data = { ...this.state, ...data }
         this.gridApi.showLoadingOverlay();
         const res = await this.props.scanStock(data);
         this.gridApi.hideOverlay()
@@ -174,7 +173,8 @@ class Analysis5 extends React.Component<IProps, IState> {
     }
 
     changeType = async (e) => {
-        const data = { type: e.target.value };
+        const data = {};
+        data[e.target.value] = true
         const dataRequest = { ...this.state, ...data }
         this.scan(dataRequest)
         this.setState({
@@ -193,7 +193,7 @@ class Analysis5 extends React.Component<IProps, IState> {
         const { startDate, endDate, rowData,
             modules, columnDefs, defaultColDef,
             visibleChart, visibleInfo, type,
-            importantIndexType
+            importantIndexType, TodayCapital, MinPrice
         } = this.state;
         return (
             <div>
@@ -211,9 +211,9 @@ class Analysis5 extends React.Component<IProps, IState> {
                         <div className="flex">
                             <Input addonBefore="Symbol" onChange={(e) => this.changeInput(e, 'Symbol')} />
                             <Input addonBefore="ICBCode" onChange={(e) => this.changeInput(e, 'ICBCode')} />
-                            <Input addonBefore="Min Price" onChange={(e) => this.changeInput(e, 'MinPrice')} defaultValue={5000} />
+                            <Input addonBefore="Min Price" onChange={(e) => this.changeInput(e, 'MinPrice')} value={MinPrice} />
                             <Input addonBefore="%ChangePrice" onChange={(e) => this.changeInput(e, 'ChangePrice')} />
-                            <Input addonBefore="TodayCapital" onChange={(e) => this.changeInput(e, 'TodayCapital')} defaultValue={5000000000} />
+                            <Input addonBefore="TodayCapital" onChange={(e) => this.changeInput(e, 'TodayCapital')} value={TodayCapital} />
                         </div>
                         <div className="flex">
                             <Input addonBefore="%Volume" onChange={(e) => this.changeInput(e, 'ChangeVolume')} />
