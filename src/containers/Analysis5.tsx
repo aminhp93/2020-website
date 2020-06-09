@@ -147,7 +147,7 @@ class Analysis5 extends React.Component<IProps, IState> {
         const data = {};
         if (index === 'Symbol') {
             data[index] = e.target.value.toUpperCase();
-        } else if (index === 'TodayCapital') {
+        } else if (index === 'TodayCapital' || index === 'MinPrice') {
             if (e.target.value.match(/\D/)) return
             data[index] = Number(e.target.value);
         } else {
@@ -162,6 +162,7 @@ class Analysis5 extends React.Component<IProps, IState> {
     scan = async (data = null) => {
         let defaultFilter = {
             TodayCapital: 5000000000,
+            MinPrice: 5000
         }
         data = { ...this.state, ...defaultFilter, ...data }
         this.gridApi.showLoadingOverlay();
@@ -210,7 +211,7 @@ class Analysis5 extends React.Component<IProps, IState> {
                         <div className="flex">
                             <Input addonBefore="Symbol" onChange={(e) => this.changeInput(e, 'Symbol')} />
                             <Input addonBefore="ICBCode" onChange={(e) => this.changeInput(e, 'ICBCode')} />
-                            <Input addonBefore="Price" onChange={(e) => this.changeInput(e, 'Price')} />
+                            <Input addonBefore="Min Price" onChange={(e) => this.changeInput(e, 'MinPrice')} defaultValue={5000} />
                             <Input addonBefore="%ChangePrice" onChange={(e) => this.changeInput(e, 'ChangePrice')} />
                             <Input addonBefore="TodayCapital" onChange={(e) => this.changeInput(e, 'TodayCapital')} defaultValue={5000000000} />
                         </div>

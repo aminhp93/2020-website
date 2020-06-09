@@ -252,7 +252,6 @@ class Financial extends React.Component<IProps, IState> {
 
     render() {
         const { period, analysisType } = this.state;
-        const { selectedSymbol } = this.props;
         return (
             <div className="Financial bg-white">
                 <div style={{ width: '100%' }}>
