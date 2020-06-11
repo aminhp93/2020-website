@@ -157,7 +157,7 @@ class Analysis5 extends React.Component<IProps, IState> {
         const data = {};
         if (index === 'Symbol') {
             data[index] = e.target.value.toUpperCase();
-        } else if (['TodayCapital', 'MinPrice', 'ICBCode', 'ChangePrice'].includes(index)) {
+        } else if (['TodayCapital', 'MinPrice', 'ICBCode'].includes(index)) {
             if (e.target.value.match(/\D/)) return
             data[index] = Number(e.target.value);
         } else {
@@ -169,9 +169,10 @@ class Analysis5 extends React.Component<IProps, IState> {
     scan = async () => {
         if (this.scanning) return;
         try {
-            const { type } = this.state;
+            const { type, ChangePrice } = this.state;
             let data = { ...this.state }
             data[type] = true
+            data['ChangePrice'] = Number(ChangePrice)
             this.gridApi.showLoadingOverlay();
             this.scanning = true
             const res = await this.props.scanStock(data);
