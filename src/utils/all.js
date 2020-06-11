@@ -1,4 +1,6 @@
 import { cloneDeep } from 'lodash';
+import moment from 'moment';
+
 
 export const LATEST_FINANCIAL_REPORTS = {
     TYPE_1: 'Can doi ke toan',
@@ -697,4 +699,14 @@ export const mapDataLatestFinancialReport = (data, period = null, type = null) =
     }
     console.log(cloneData)
     return cloneData
+}
+
+export const getPreviousDate = (date) => {
+    let count = -1
+    if (moment(date).format('ddd') === 'Mon') {
+        count = -3
+    } else if (moment(date).format('ddd') === 'Sun') {
+        count = -2
+    }
+    return moment(date).add(count, 'days').format('YYYY-MM-DD') + 'T00:00:00Z'
 }

@@ -19,6 +19,8 @@ import { AllModules } from '@ag-grid-enterprise/all-modules';
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-alpine.css';
 
+import { getPreviousDate } from '../utils/all'
+
 const { RangePicker } = DatePicker;
 
 
@@ -75,8 +77,8 @@ class Analysis5 extends React.Component<IProps, IState> {
                 enablePivot: true,
             },
             rowData: [],
-            startDate: moment().format('YYYY-MM-DD') + 'T00:00:00Z',
-            endDate: moment().format('YYYY-MM-DD') + 'T00:00:00Z',
+            startDate: getPreviousDate(this.props.lastUpdatedDate.value),
+            endDate: moment(this.props.lastUpdatedDate.value).format('YYYY-MM-DD') + 'T00:00:00Z',
             visibleChart: false,
             visibleInfo: false,
             addVN30Stock: [],
@@ -169,6 +171,8 @@ class Analysis5 extends React.Component<IProps, IState> {
         this.gridApi.hideOverlay()
         this.setState({
             rowData: this.mapData(res.data)
+        }, () => {
+            console.log(this.gridApi.getDisplayedRowCount())
         })
     }
 
