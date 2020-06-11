@@ -994,11 +994,11 @@ export const analysis5ColumnDefs = (that, importantIndexType = null) => {
 
     switch (importantIndexType) {
         case 'KhaNangThanhToan':
-            return [Stock, ICBCode, PE, PS, PB, EPS, QuickRatio, CurrentRatio, TotalDebtOverEquity, TotalDebtOverAssets, MarketCap]
+            return [Stock, Actions, ICBCode, PE, PS, PB, EPS, QuickRatio, CurrentRatio, TotalDebtOverEquity, TotalDebtOverAssets, MarketCap]
         case 'CoCauTaiSan':
-            return [Stock, ICBCode, TotalAssetsTurnover, InventoryTurnover, ReceivablesTurnover, GrossMargin, OperatingMargin, EBITMargin, NetProfitMargin, ROA, ROE, ROIC, MarketCap]
+            return [Stock, Actions, ICBCode, TotalAssetsTurnover, InventoryTurnover, ReceivablesTurnover, GrossMargin, OperatingMargin, EBITMargin, NetProfitMargin, ROA, ROE, ROIC, MarketCap]
         case 'HieuSuatHoatDong':
-            return [Stock, ICBCode, LowestPoint, LowestPointChange, LastRevenue, CurrentRevenue, RevenueChange, LastProfit, CurrentProfit, ProfitChange, MarketCap]
+            return [Stock, Actions, ICBCode, LowestPoint, LowestPointChange, LastRevenue, CurrentRevenue, RevenueChange, LastProfit, CurrentProfit, ProfitChange, MarketCap]
         default:
             return [Stock, Actions, ICBCode, Price, DealVolume, TodayCapital, LastPrice, PriceChange, MarketCap]
     }
