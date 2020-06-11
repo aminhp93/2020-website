@@ -56,6 +56,7 @@ interface IState {
 class Analysis5 extends React.Component<IProps, IState> {
     gridApi: any;
     gridColumnApi: any;
+    scanning: boolean;
 
     constructor(props) {
         super(props);
@@ -85,6 +86,7 @@ class Analysis5 extends React.Component<IProps, IState> {
             MinPrice: 5000
         }
         this.scan = debounce(this.scan, 300);
+        this.scanning = false;
     }
 
     onGridReady = params => {
@@ -163,13 +165,21 @@ class Analysis5 extends React.Component<IProps, IState> {
     }
 
     scan = async (data = null) => {
-        data = { ...this.state, ...data }
-        this.gridApi.showLoadingOverlay();
-        const res = await this.props.scanStock(data);
-        this.gridApi.hideOverlay()
-        this.setState({
-            rowData: this.mapData(res.data)
-        })
+        if (this.scanning) return;
+        try {
+            data = { ...this.state, ...data }
+            this.gridApi.showLoadingOverlay();
+            this.scanning = true
+            const res = await this.props.scanStock(data);
+            this.scanning = false
+            this.gridApi.hideOverlay()
+            this.setState({
+                rowData: this.mapData(res.data)
+            })
+        } catch (error) {
+            this.scanning = false
+        }
+
     }
 
     changeType = async (e) => {
