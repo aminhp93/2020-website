@@ -155,7 +155,7 @@ class Analysis5 extends React.Component<IProps, IState> {
         const data = {};
         if (index === 'Symbol') {
             data[index] = e.target.value.toUpperCase();
-        } else if (index === 'TodayCapital' || index === 'MinPrice' || index === 'ICBCode') {
+        } else if (['TodayCapital', 'MinPrice', 'ICBCode', 'ChangePrice'].includes(index)) {
             if (e.target.value.match(/\D/)) return
             data[index] = Number(e.target.value);
         } else {

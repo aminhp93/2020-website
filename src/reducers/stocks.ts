@@ -111,7 +111,7 @@ export const scanStock = (data: any): ThunkActionType => async (
 ) => {
     const dataRequest = {}
     console.log(data);
-    const ALLOW_CONDITION_SEARCH = ['Symbol', 'TodayCapital', 'startDate', 'endDate', 'MinPrice', 'IsVN30', 'IsFavorite', 'IsBlackList', 'ICBCode']
+    const ALLOW_CONDITION_SEARCH = ['Symbol', 'TodayCapital', 'startDate', 'endDate', 'MinPrice', 'IsVN30', 'IsFavorite', 'IsBlackList', 'ICBCode', 'ChangePrice']
     if (data) {
         const keys = Object.keys(data).filter(i => ALLOW_CONDITION_SEARCH.includes(i))
         keys.forEach(key => {
