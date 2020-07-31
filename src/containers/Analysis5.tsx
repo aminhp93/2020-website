@@ -11,6 +11,7 @@ import {
 } from '../reducers/stocks';
 import ChartTV from './ChartTV/ChartTV';
 import Profile from './Profile';
+import FinalAnalysis from './FinalAnalysis';
 import { IStock } from '../types'
 import { analysis5ColumnDefs } from '../utils/columnDefs';
 
@@ -293,11 +294,14 @@ class Analysis5 extends React.Component<IProps, IState> {
                 {visibleInfo
                     ? <Modal
                         title="Basic Modal"
+                        wrapClassName="final-analysis-container"
                         visible={visibleInfo}
                         onOk={this.handleOk}
                         onCancel={this.handleCancel}
+                        footer={null}
+                    // header={null}
                     >
-                        <Profile />
+                        <FinalAnalysis symbol={this.state.symbol} />
                     </Modal>
                     : null}
             </div>

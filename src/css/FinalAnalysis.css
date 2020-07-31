@@ -1,0 +1,58 @@
+.ant-modal-wrap.final-analysis-container {
+    /* margin: 20px; */
+    display: block;
+    justify-content: center;
+    align-items: center;
+    /* width: 100% !important; */
+    height: 100%;
+}
+
+.ant-modal-wrap.final-analysis-container .ant-modal {
+    width: 100%!important;
+    position: unset;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    padding: 50px;
+    height: 100%;
+}
+
+.ant-modal-wrap.final-analysis-container .ant-modal-content {
+    width: 100%;
+}
+
+.ant-modal-wrap.final-analysis-container .ant-modal-body {
+    height: calc(100% - 56px);
+}
+
+.FinalAnalysis {
+    height: 100%;
+    display: flex;
+    width: 100%;
+}
+
+.FinalAnalysis-note {
+    flex: 1;
+    overflow: auto;
+}
+
+.FinalAnalysis-note img {
+    height: 400px;
+    width: 700px;
+}
+
+.FinalAnalysis-note pre {
+    background: lightgrey;
+    border: 1px solid gray;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.FinalAnalysis-note pre code {
+    color: black;
+}
+
+.FinalAnalysis-note code {
+    color: red;
+}

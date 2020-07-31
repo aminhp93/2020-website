@@ -64,9 +64,10 @@ code {
   justify-content: space-between;
 }
 
-.ant-modal-body {
+.ant-modal.chartTVModal .ant-modal-body{
   height: 750px;
 }
+
 
 .chartTV-container,
 .chartTV-container .chartTV,

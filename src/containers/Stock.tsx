@@ -20,6 +20,7 @@ import '../css/Transaction.css';
 import '../css/OverviewAnalysis.css';
 import '../css/MarketNews.css';
 import '../css/Note.css';
+import '../css/FinalAnalysis.css';
 
 import EquityAndDividends from './EquityAndDividends';
 import Financial from './Financial';

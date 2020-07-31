@@ -99,9 +99,11 @@ export const updateStock = (data: any): ThunkActionType => async (
     dispatch,
     getStoreValue
 ) => {
-    const { stocks } = getStoreValue();
-    console.log(data)
-    const response = await StockService.updateStock(stocks[data[0].key].id, { IsVN30: true })
+
+    const response = await StockService.updateStock(data)
+    let updatedData = {}
+    updatedData[response.data.id] = response.data
+    dispatch(fetchListStocksSuccess(updatedData))
     return response
 }
 

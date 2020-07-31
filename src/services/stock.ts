@@ -52,11 +52,11 @@ const StockService = {
             url: StockUrls.filterStocks()
         })
     },
-    updateStock(id, data) {
+    updateStock(data) {
         return request({
             method: 'PATCH',
             data,
-            url: StockUrls.updateStock(id)
+            url: StockUrls.updateStock(data.id)
         })
     },
     scanStock(data) {
