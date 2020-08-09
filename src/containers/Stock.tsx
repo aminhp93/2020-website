@@ -21,6 +21,7 @@ import '../css/OverviewAnalysis.css';
 import '../css/MarketNews.css';
 import '../css/Note.css';
 import '../css/FinalAnalysis.css';
+import '../css/ChartTV.css';
 
 import EquityAndDividends from './EquityAndDividends';
 import Financial from './Financial';

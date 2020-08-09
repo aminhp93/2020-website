@@ -10,7 +10,6 @@ import {
     scanStock
 } from '../reducers/stocks';
 import ChartTV from './ChartTV/ChartTV';
-import Profile from './Profile';
 import FinalAnalysis from './FinalAnalysis';
 import { IStock } from '../types'
 import { analysis5ColumnDefs } from '../utils/columnDefs';
@@ -227,20 +226,20 @@ class Analysis5 extends React.Component<IProps, IState> {
                             <Input addonBefore="%ChangePrice" onChange={(e) => this.changeInput(e, 'ChangePrice')} value={ChangePrice} />
                             <Input addonBefore="TodayCapital" onChange={(e) => this.changeInput(e, 'TodayCapital')} value={TodayCapital} />
                         </div>
-                        <div className="flex">
+                        {/* <div className="flex">
                             <Input addonBefore="%Volume" onChange={(e) => this.changeInput(e, 'ChangeVolume')} />
                             <Input addonBefore="ROE" onChange={(e) => this.changeInput(e, 'ROE')} />
                             <Input addonBefore="EPS" onChange={(e) => this.changeInput(e, 'EPS')} />
                             <Input addonBefore="TT EPS" onChange={(e) => this.changeInput(e, 'ChangeEPS')} />
                             <Input addonBefore="TT LNST nam" onChange={(e) => this.changeInput(e, 'ChangeYearlyProfit')} />
-                        </div>
-                        <div className="flex">
+                        </div> */}
+                        {/* <div className="flex">
                             <Input addonBefore="Buy Foreigner" onChange={(e) => this.changeInput(e, 'BuyForeigner')} />
                             <Input addonBefore="Sell Foreigner" onChange={(e) => this.changeInput(e, 'SellForeinger')} />
                             <Input addonBefore="None" onChange={(e) => this.changeInput(e, 'None')} />
                             <Input addonBefore="None" onChange={(e) => this.changeInput(e, 'None')} />
                             <Input addonBefore="None" onChange={(e) => this.changeInput(e, 'None')} />
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                 <div>
@@ -278,13 +277,12 @@ class Analysis5 extends React.Component<IProps, IState> {
 
                 {visibleChart ?
                     <Modal
-                        className="chartTVModal"
+                        wrapClassName="customed-modal-wrap"
                         title="Basic Modal"
                         visible={visibleChart}
                         onOk={this.handleOk}
                         onCancel={this.handleCancel}
                         footer={null}
-                        width={1500}
                     >
                         <div className="chartTV-container">
                             <ChartTV symbol={this.state.symbol} />
@@ -294,12 +292,11 @@ class Analysis5 extends React.Component<IProps, IState> {
                 {visibleInfo
                     ? <Modal
                         title="Basic Modal"
-                        wrapClassName="final-analysis-container"
+                        wrapClassName="customed-modal-wrap"
                         visible={visibleInfo}
                         onOk={this.handleOk}
                         onCancel={this.handleCancel}
                         footer={null}
-                    // header={null}
                     >
                         <FinalAnalysis symbol={this.state.symbol} />
                     </Modal>
