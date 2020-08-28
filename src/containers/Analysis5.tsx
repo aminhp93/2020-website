@@ -215,6 +215,7 @@ class Analysis5 extends React.Component<IProps, IState> {
                         <Radio.Group value={type} onChange={this.changeType}>
                             <Radio.Button value="IsVN30">VN30</Radio.Button>
                             <Radio.Button value="IsFavorite">Favorite</Radio.Button>
+                            <Radio.Button value="IsBlackList">BlackList</Radio.Button>
                             <Radio.Button value="default">Default</Radio.Button>
                         </Radio.Group>
                     </div>
