@@ -164,7 +164,7 @@ export function getLastestFinancialReportsValueUpdateUrl(symbol, type = 1, year 
 
 export function getDataHistoryUrl(symbol, resolution, fromDate, toDate) {
     return (
-        "https://dchart-api.vndirect.com.vn/dchart/history?symbol=" +
+        "https://cors-anywhere.herokuapp.com/https://dchart-api.vndirect.com.vn/dchart/history?symbol=" +
         symbol +
         "&resolution=" +
         resolution +

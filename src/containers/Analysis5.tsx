@@ -54,6 +54,7 @@ interface IState {
     TodayCapital: number,
     MinPrice: number,
     ChangePrice: number,
+    show: boolean,
 }
 
 class Analysis5 extends React.Component<IProps, IState> {
@@ -88,6 +89,7 @@ class Analysis5 extends React.Component<IProps, IState> {
             visibleInfo: false,
             addVN30Stock: [],
             data: [],
+            show: false,
         }
         this.scan = debounce(this.scan, 300);
         this.scanning = false;
@@ -204,7 +206,7 @@ class Analysis5 extends React.Component<IProps, IState> {
             modules, columnDefs, defaultColDef,
             visibleChart, visibleInfo, type,
             importantIndexType, TodayCapital, MinPrice,
-            ChangePrice
+            ChangePrice, show
         } = this.state;
         return (
             <div>
@@ -279,14 +281,20 @@ class Analysis5 extends React.Component<IProps, IState> {
                 {visibleChart ?
                     <Modal
                         wrapClassName="customed-modal-wrap"
-                        title="Basic Modal"
+                        title={<div onClick={() => this.setState({ show: !show })}>Show</div>}
                         visible={visibleChart}
                         onOk={this.handleOk}
                         onCancel={this.handleCancel}
                         footer={null}
                     >
-                        <div className="chartTV-container">
+
+                        <div className="chartTV-container flex">
                             <ChartTV symbol={this.state.symbol} />
+                            {show &&
+                                <div className="stock-info">
+                                    <div>Stock info</div>
+                                </div>
+                            }
                         </div>
                     </Modal>
                     : null}
