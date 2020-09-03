@@ -6,20 +6,18 @@ import {
   Link
 } from "react-router-dom";
 
-import Stock from './containers/Stock/Stock'
-import TodoMVC from './containers/TodoMVC/TodoMVC';
+import Stock from './containers/Stock'
 import Note from './containers/Note';
 
 class App extends React.Component {
   render() {
-    return (
+    return (<>
       <Router>
         <Switch>
           <Route path="/stock">
             <Stock />
           </Route>
           <Route path="/note">
-            {/* <TodoMVC /> */}
             <Note />
           </Route>
           <Route path="/">
@@ -37,6 +35,8 @@ class App extends React.Component {
           </Route>
         </Switch>
       </Router>
+
+    </>
     );
   }
 }

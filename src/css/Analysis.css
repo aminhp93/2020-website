@@ -1,3 +1,7 @@
-.Analysis {
-    
+.customed-modal-wrap .chartTV {
+    flex: 1;
+}
+
+.customed-modal-wrap .stock-info {
+    width: 200px;
 }

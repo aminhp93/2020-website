@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { connect } from 'react-redux';
-import { List, Avatar, Input, Button } from 'antd';
+import { List, Input, Button } from 'antd';
 import { debounce } from 'lodash';
 import axios from 'axios';
 import moment from 'moment';
@@ -165,6 +165,11 @@ class Note extends React.Component {
                     <Button className='Note-allow-button' onClick={() => this.setState({ allowEdit: !allowEdit })}>{allowEdit ? 'Disable edit' : 'Allow edit'}</Button>
 
                 </div>
+                <h1>Pusher Test</h1>
+                <p>
+                    Try publishing an event to channel <code>my-channel</code>
+                    with event name <code>my-event</code>.
+                </p>
 
             </div>
         )
