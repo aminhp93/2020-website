@@ -397,7 +397,7 @@ class Analysis1 extends React.Component<IProps, IState> {
             <div>
                 <div>
                     <h1>
-                        Danh sach nhung co phieu trong ngay MarketCap > 5 ty, ChangePrice > 1%
+                        {`Danh sach nhung co phieu trong ngay MarketCap > 5 ty, ChangePrice > 1%`}
                     </h1>
                     <h2>TONG CP: {rowData.length}</h2>
                 </div>
