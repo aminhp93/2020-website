@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { cloneDeep, get } from 'lodash';
+import { cloneDeep, get, uniqBy } from 'lodash';
 import { Table, Button, Tabs, Radio, List } from 'antd';
 import { AgGridReact } from '@ag-grid-community/react';
 import {
@@ -168,10 +168,12 @@ class Financial extends React.Component<IProps, IState> {
     }
 
     mapDataRevenueTable = (data, data2, isProfit) => {
+        console.log(data, data2)
         if (!data || !data2) return []
         let result = [];
-        let keys = [2016, 2017, 2018, 2019]
-        for (let j = 1; j < 5; j++) {
+
+        let keys = uniqBy(data.map(i => i.Year)).sort((a, b) => a - b)
+        for (let j = 1; j < keys.length + 1; j++) {
             let itemObj = {}
             for (let i = 0; i < data.length; i++) {
                 let item = data[i]
@@ -191,14 +193,11 @@ class Financial extends React.Component<IProps, IState> {
             }
             result.push(itemObj)
         }
-        const indexTotal = isProfit ? 'ProfitAfterTax' : 'Sales'
-        result.push({
-            'Quarter': 'total',
-            '2016': data2.filter(item => item.Year === 2016).length && (data2.filter(item => item.Year === 2016)[0][indexTotal] / BILLION_UNIT).toFixed(2),
-            '2017': data2.filter(item => item.Year === 2017).length && (data2.filter(item => item.Year === 2017)[0][indexTotal] / BILLION_UNIT).toFixed(2),
-            '2018': data2.filter(item => item.Year === 2018).length && (data2.filter(item => item.Year === 2018)[0][indexTotal] / BILLION_UNIT).toFixed(2),
-            '2019': data2.filter(item => item.Year === 2019).length && (data2.filter(item => item.Year === 2019)[0][indexTotal] / BILLION_UNIT).toFixed(2),
-        })
+        const indexTotal = isProfit ? 'ProfitAfterTax' : 'Sales';
+        const obj: any = { 'Quarter': 'total' };
+        keys.map(i => obj[i] = data2.filter(item => item.Year === i).length && (data2.filter(item => item.Year === i)[0][indexTotal] / BILLION_UNIT).toFixed(2))
+        result.push(obj)
+        console.log(result)
         return result
     }
 
@@ -527,36 +526,23 @@ class Financial extends React.Component<IProps, IState> {
                 render: (params) => {
                     return 'Quy ' + params.Quarter
                 }
-            },
-            {
-                title: '2016',
-                render: (params) => {
-                    return formatNumber((Number(params['2016']) || 0).toFixed(0))
-                }
-            },
-            {
-                title: '2017',
-                render: (params) => {
-                    return formatNumber((Number(params['2017']) || 0).toFixed(0))
-                }
-            },
-            {
-                title: '2018',
-                render: (params) => {
-                    return formatNumber((Number(params['2018']) || 0).toFixed(0))
-                }
-            },
-            {
-                title: '2019',
-                render: (params) => {
-                    return formatNumber((Number(params['2019']) || 0).toFixed(0))
-                }
-            },
+            }
         ];
 
         const { QuarterlyFinancialInfoArray, YearlyFinancialInfoArray } = this.state;
-        const mappeddata = this.mapDataRevenueTable(QuarterlyFinancialInfoArray, YearlyFinancialInfoArray, isProfit);
-        return <Table dataSource={mappeddata} columns={columns} pagination={false} />
+        const mappedData = this.mapDataRevenueTable(QuarterlyFinancialInfoArray, YearlyFinancialInfoArray, isProfit);
+        let keys = uniqBy(QuarterlyFinancialInfoArray.map(i => i.Year)).sort((a, b) => a - b)
+        keys.map(i => {
+            const pushObj = {
+                title: String(i),
+                render: (params) => {
+                    return formatNumber((Number(params[i]) || 0).toFixed(0))
+                }
+            }
+            columns.push(pushObj)
+        })
+        console.log(mappedData)
+        return <Table dataSource={mappedData} columns={columns} pagination={false} />
     }
 
     renderRevenueQuarterChart = (isProfit = false) => {
@@ -866,7 +852,7 @@ class Financial extends React.Component<IProps, IState> {
                                 <Button disabled={true} onClick={this.updateLastestFinancialReportsNameAll}>LastestFinancialReportsName</Button>
                             </div>
                             <div>
-                                <Button disabled={true} onClick={() => this.updateLastestFinancialReportsValue(selectedSymbol)}>LastestFinancialReportsValue</Button>
+                                <Button disabled={false} onClick={() => this.updateLastestFinancialReportsValue(selectedSymbol)}>LastestFinancialReportsValue</Button>
                                 <Button disabled={false} onClick={this.updateLastestFinancialReportsValueAll}>Update all</Button>
                                 {/* <Button onClick={() => this.updateLastestFinancialReportsValue('AAV')}>Update all</Button> */}
                             </div>

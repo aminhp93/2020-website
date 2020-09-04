@@ -616,25 +616,26 @@ export const mapDataLatestFinancialReport = (data, period = null, type = null) =
             let yearArray = [2015, 2016, 2017, 2018, 2019]
 
             yearArray.forEach((year, index) => {
+                console.log(cloneData[i])
                 if ([3, 6, 12].includes(cloneData[i].ID)) {
                     cloneData[i].Values.push(
                         {
                             Year: `%${yearArray[index]}`,
-                            Value: cloneData[i].Values.filter(j => j.Year === year)[0].Value / tongDoanhThuValues.filter(j => j.Year === year)[0].Value
+                            Value: (cloneData[i].Values.filter(j => j.Year === year)[0] || {}).Value / (tongDoanhThuValues.filter(j => j.Year === year)[0] || {}).Value
                         }
                     )
                 } else if ([4, 7, 9, 13].includes(cloneData[i].ID)) {
                     cloneData[i].Values.push(
                         {
                             Year: `%${yearArray[index]}`,
-                            Value: cloneData[i].Values.filter(j => j.Year === year)[0].Value / tongChiPhiValues.filter(j => j.Year === year)[0].Value
+                            Value: (cloneData[i].Values.filter(j => j.Year === year)[0] || {}).Value / (tongChiPhiValues.filter(j => j.Year === year)[0] || {}).Value
                         }
                     )
                 }
 
                 if (index > 0) {
-                    let newValue = cloneData[i].Values.filter(j => j.Year === year)[0].Value
-                    let oldValue = cloneData[i].Values.filter(j => j.Year === yearArray[index - 1])[0].Value
+                    let newValue = (cloneData[i].Values.filter(j => j.Year === year)[0] || {}).Value
+                    let oldValue = (cloneData[i].Values.filter(j => j.Year === yearArray[index - 1])[0] || {}).Value
                     cloneData[i].Values.push(
                         {
                             Year: `${year}-${yearArray[index - 1]}`,

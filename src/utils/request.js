@@ -139,11 +139,11 @@ export function getYearlyFinancialInfoFilterUrl() {
 }
 
 export function getQuarterlyFinancialInfoUrl(symbol) {
-    return `${hostName}/api/Data/Finance/QuarterlyFinancialInfo${hostName === hostName1 ? '' : '/'}?symbol=${symbol}&fromYear=2016&fromQuarter=1&toYear=2019&toQuarter=4`
+    return `${hostName}/api/Data/Finance/QuarterlyFinancialInfo${hostName === hostName1 ? '' : '/'}?symbol=${symbol}&fromYear=2016&fromQuarter=3&toYear=2020&toQuarter=2`
 }
 
 export function getQuarterlyFinancialInfoUpdateUrl(symbol) {
-    return `${hostName}/api/Data/Finance/QuarterlyFinancialInfo/update${hostName === hostName1 ? '' : '/'}?symbol=${symbol}&fromYear=2016&fromQuarter=1&toYear=2019&toQuarter=4`
+    return `${hostName}/api/Data/Finance/QuarterlyFinancialInfo/update${hostName === hostName1 ? '' : '/'}?symbol=${symbol}&fromYear=2016&fromQuarter=3&toYear=2020&toQuarter=2`
 }
 
 export function getQuarterlyFinancialInfoFilterUrl() {
