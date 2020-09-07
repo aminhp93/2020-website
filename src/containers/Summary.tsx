@@ -39,6 +39,12 @@ class Summary extends React.Component<IProps, IState> {
         this.crawlData();
     }
 
+    componentDidUpdate(preProps) {
+        if (this.props.selectedSymbol !== preProps.selectedSymbol) {
+            this.crawlData();
+        }
+    }
+
     crawlData = async () => {
         try {
             const res1 = await this.props.getYearlyFinancialInfo()
@@ -73,13 +79,11 @@ class Summary extends React.Component<IProps, IState> {
         const mappedData = this.mapDataRevenueTable(QuarterlyFinancialInfoArray, YearlyFinancialInfoArray, isProfit);
         let keys = uniqBy(QuarterlyFinancialInfoArray.map(i => i.Year)).sort((a, b) => a - b)
         keys.map((i, index) => {
-            console.log(index)
             const pushObj = {
                 title: String(i),
                 render: (params) => {
                     if (index === keys.length - 1) {
                         let className = '';
-                        console.log(Number(params[i]), Number(params[keys[index - 1]]))
                         if (Number(params[i]) > Number(params[keys[index - 1]])) {
                             className = 'green';
                         } else if (Number(params[i]) < Number(params[keys[index - 1]])) {

@@ -3,12 +3,16 @@ import ReactDOM from "react-dom";
 import uuidv4 from "uuid/v4";
 import Datafeeds from "./datafeeds";
 import axios from "axios";
+import { connect } from 'react-redux';
 import chartTV_constants from "../../constants/chartTV_constants";
 import {
   getSaveLayoutChartUrl,
   getAllLayoutsUrl
 } from "../../utils/request";
 // import FormData from "form-data";
+
+import { updateSelectedSymbolSuccess } from '../../reducers/selectedSymbol';
+
 
 class ChartTV extends React.Component {
   constructor(props) {
@@ -154,6 +158,7 @@ class ChartTV extends React.Component {
   cbSymbol(response) {
     console.log(response);
     const that = this;
+    this.props.updateSelectedSymbolSuccess(response.symbol)
     this.setState({
       symbol: response.symbol
     }, () => that.loadLayoutChart());
@@ -256,4 +261,8 @@ class ChartTV extends React.Component {
   }
 }
 
-export default ChartTV;
+const mapDispatchToProps = {
+  updateSelectedSymbolSuccess
+}
+
+export default connect(null, mapDispatchToProps)(ChartTV);
