@@ -266,7 +266,7 @@ Datafeeds.UDFCompatibleDatafeed.prototype.searchSymbols = function (
 
   if (this._configuration.supports_search) {
     let url =
-      "https://cors-anywhere.herokuapp.com/https://dchart-api.vndirect.com.vn/dchart/search?limit=30&query=" +
+      "https://dchart-api.vndirect.com.vn/dchart/search?limit=30&query=" +
       searchString +
       "&type=&exchange=";
     axios

@@ -1,0 +1,8 @@
+.Summary {
+    width: 500px;
+}
+
+.Summary .ant-table-tbody > tr > td,
+.Summary .ant-table-thead > tr > th {
+    padding: 0;
+}

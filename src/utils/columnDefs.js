@@ -588,8 +588,14 @@ export const analysis5ColumnDefs = (that, importantIndexType = null) => {
             ReactDOM.render(
                 <>
                     <div className="flex">
-                        <div onClick={() => { that.setState({ visibleChart: true, symbol: params.data.Symbol }) }}><BarChartOutlined style={{ fontSize: '16px' }} /></div>
-                        <div onClick={() => { that.setState({ visibleInfo: true, symbol: params.data.Symbol }) }}><InfoCircleOutlined style={{ fontSize: '16px' }} /></div>
+                        <div onClick={() => {
+                            that.setState({
+                                visibleChart: true,
+                                Symbol: params.data.Symbol
+                            })
+                            that.props.updateSelectedSymbolSuccess(params.data.Symbol)
+                        }}><BarChartOutlined style={{ fontSize: '16px' }} /></div>
+                        <div onClick={() => { that.setState({ visibleInfo: true, Symbol: params.data.Symbol }) }}><InfoCircleOutlined style={{ fontSize: '16px' }} /></div>
                     </div>
                 </>,
                 div

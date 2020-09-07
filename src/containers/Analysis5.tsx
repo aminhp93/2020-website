@@ -11,8 +11,10 @@ import {
 } from '../reducers/stocks';
 import ChartTV from './ChartTV/ChartTV';
 import FinalAnalysis from './FinalAnalysis';
+import Summary from './Summary';
 import { IStock } from '../types'
 import { analysis5ColumnDefs } from '../utils/columnDefs';
+import { updateSelectedSymbolSuccess } from '../reducers/selectedSymbol';
 
 import { AgGridReact } from '@ag-grid-community/react';
 import { AllModules } from '@ag-grid-enterprise/all-modules';
@@ -33,6 +35,7 @@ interface IProps {
     scanStock: any,
     companies: any,
     decisiveIndexes: any,
+    updateSelectedSymbolSuccess: any
 }
 
 interface IState {
@@ -42,7 +45,7 @@ interface IState {
     rowData: any,
     visibleChart: boolean,
     visibleInfo: boolean,
-    symbol: string,
+    Symbol: string,
     startDate: string,
     endDate: string,
     type: string,
@@ -65,12 +68,12 @@ class Analysis5 extends React.Component<IProps, IState> {
     constructor(props) {
         super(props);
         this.state = {
-            type: 'IsVN30',
+            type: 'default',
             importantIndexType: 'default',
             ChangePrice: 1,
             TodayCapital: 5000000000,
             MinPrice: 5000,
-            symbol: '',
+            Symbol: '',
             modules: AllModules,
             columnDefs: analysis5ColumnDefs(this),
             defaultColDef: {
@@ -156,9 +159,12 @@ class Analysis5 extends React.Component<IProps, IState> {
     };
 
     changeInput = (e, index) => {
-        const data = {};
+        const data: any = {};
         if (index === 'Symbol') {
             data[index] = e.target.value.toUpperCase();
+            data.MinPrice = 0;
+            data.TodayCapital = 0;
+            data.ChangePrice = -100;
         } else if (['TodayCapital', 'MinPrice', 'ICBCode'].includes(index)) {
             if (e.target.value.match(/\D/)) return
             data[index] = Number(e.target.value);
@@ -188,10 +194,14 @@ class Analysis5 extends React.Component<IProps, IState> {
         }
     }
 
-    changeType = async (e) => {
+    changeType = (e) => {
         this.setState({
-            type: e.target.value
-        })
+            type: e.target.value,
+            Symbol: '',
+            MinPrice: 0,
+            TodayCapital: 0,
+            ChangePrice: -100
+        }, () => this.scan())
     }
 
     changeImporantIndex = (e) => {
@@ -206,8 +216,9 @@ class Analysis5 extends React.Component<IProps, IState> {
             modules, columnDefs, defaultColDef,
             visibleChart, visibleInfo, type,
             importantIndexType, TodayCapital, MinPrice,
-            ChangePrice, show
+            ChangePrice, show, Symbol: symbol
         } = this.state;
+        console.log(221, symbol)
         return (
             <div>
                 <div>
@@ -223,7 +234,10 @@ class Analysis5 extends React.Component<IProps, IState> {
                     </div>
                     <div>
                         <div className="flex">
-                            <Input addonBefore="Symbol" onChange={(e) => this.changeInput(e, 'Symbol')} />
+                            <Input addonBefore="Symbol" onChange={(e) => this.changeInput(e, 'Symbol')} onPressEnter={() => {
+                                this.scan();
+                                this.props.updateSelectedSymbolSuccess(symbol)
+                            }} />
                             <Input addonBefore="ICBCode" onChange={(e) => this.changeInput(e, 'ICBCode')} />
                             <Input addonBefore="Min Price" onChange={(e) => this.changeInput(e, 'MinPrice')} value={MinPrice} />
                             <Input addonBefore="%ChangePrice" onChange={(e) => this.changeInput(e, 'ChangePrice')} value={ChangePrice} />
@@ -289,12 +303,8 @@ class Analysis5 extends React.Component<IProps, IState> {
                     >
 
                         <div className="chartTV-container flex">
-                            <ChartTV symbol={this.state.symbol} />
-                            {show &&
-                                <div className="stock-info">
-                                    <div>Stock info</div>
-                                </div>
-                            }
+                            <ChartTV symbol={symbol} />
+                            {show && <Summary />}
                         </div>
                     </Modal>
                     : null}
@@ -307,7 +317,7 @@ class Analysis5 extends React.Component<IProps, IState> {
                         onCancel={this.handleCancel}
                         footer={null}
                     >
-                        <FinalAnalysis symbol={this.state.symbol} />
+                        <FinalAnalysis symbol={symbol} />
                     </Modal>
                     : null}
             </div>
@@ -328,8 +338,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
     filterStocks,
     updateStock,
-    scanStock
-
+    scanStock,
+    updateSelectedSymbolSuccess
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Analysis5);
