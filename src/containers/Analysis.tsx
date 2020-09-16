@@ -6,7 +6,7 @@ import Analysis1 from './Analysis1';
 import Analysis2 from './Analysis2';
 import Analysis3 from './Analysis3';
 import Analysis4 from './Analysis4';
-import Analysis5 from './Analysis5';
+import AnalysisDaily from './AnalysisDaily';
 import MarketNews from './MarketNews';
 import FinancialReportAnalysis from './FinancialReportAnalysis';
 
@@ -38,7 +38,7 @@ class Analysis extends React.Component<IProps, IState> {
                         <Analysis4 />
                     </TabPane>
                     <TabPane tab="Testing" key="6">
-                        <Analysis5 />
+                        <AnalysisDaily />
                     </TabPane>
                     <TabPane tab="MarketNews" key="7">
                         <MarketNews />

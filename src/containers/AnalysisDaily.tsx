@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { DatePicker, Button, Modal, Input, Radio } from 'antd';
+import { DatePicker, Button, Modal, Input, Radio, Switch } from 'antd';
 import { debounce, get, each } from 'lodash';
 import moment from 'moment'
 
@@ -13,7 +13,7 @@ import ChartTV from './ChartTV/ChartTV';
 import FinalAnalysis from './FinalAnalysis';
 import Summary from './Summary';
 import { IStock } from '../types'
-import { analysis5ColumnDefs } from '../utils/columnDefs';
+import { analysisDailyColumnDefs } from '../utils/columnDefs';
 import { updateSelectedSymbolSuccess } from '../reducers/selectedSymbol';
 
 import { AgGridReact } from '@ag-grid-community/react';
@@ -22,6 +22,8 @@ import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-alpine.css';
 
 import { getPreviousDate } from '../utils/all'
+import { BILLION_UNIT } from '../utils/unit';
+import { STOCK_GROUP } from '../utils/constant';
 
 const { RangePicker } = DatePicker;
 
@@ -58,9 +60,11 @@ interface IState {
     MinPrice: number,
     ChangePrice: number,
     show: boolean,
+    checkBlackList: boolean,
+    checkStrong: boolean,
 }
 
-class Analysis5 extends React.Component<IProps, IState> {
+class AnalysisDaily extends React.Component<IProps, IState> {
     gridApi: any;
     gridColumnApi: any;
     scanning: boolean;
@@ -68,14 +72,14 @@ class Analysis5 extends React.Component<IProps, IState> {
     constructor(props) {
         super(props);
         this.state = {
-            type: 'default',
+            type: STOCK_GROUP.CANSLIM,
             importantIndexType: 'default',
             ChangePrice: 1,
-            TodayCapital: 5000000000,
+            TodayCapital: 5,
             MinPrice: 5000,
             Symbol: '',
             modules: AllModules,
-            columnDefs: analysis5ColumnDefs(this),
+            columnDefs: analysisDailyColumnDefs(this),
             defaultColDef: {
                 flex: 1,
                 filter: true,
@@ -93,6 +97,8 @@ class Analysis5 extends React.Component<IProps, IState> {
             addVN30Stock: [],
             data: [],
             show: false,
+            checkBlackList: true,
+            checkStrong: true
         }
         this.scan = debounce(this.scan, 300);
         this.scanning = false;
@@ -166,7 +172,7 @@ class Analysis5 extends React.Component<IProps, IState> {
             data.TodayCapital = 0;
             data.ChangePrice = -100;
         } else if (['TodayCapital', 'MinPrice', 'ICBCode'].includes(index)) {
-            if (e.target.value.match(/\D/)) return
+            // if (e.target.value.match(/\D/)) return
             data[index] = Number(e.target.value);
         } else {
             data[index] = e.target.value
@@ -177,10 +183,11 @@ class Analysis5 extends React.Component<IProps, IState> {
     scan = async () => {
         if (this.scanning) return;
         try {
-            const { type, ChangePrice } = this.state;
+            const { type, ChangePrice, TodayCapital } = this.state;
             let data = { ...this.state }
             data[type] = true
             data['ChangePrice'] = Number(ChangePrice)
+            data['TodayCapital'] = Number(TodayCapital) * BILLION_UNIT
             this.gridApi.showLoadingOverlay();
             this.scanning = true
             const res = await this.props.scanStock(data);
@@ -195,19 +202,31 @@ class Analysis5 extends React.Component<IProps, IState> {
     }
 
     changeType = (e) => {
-        this.setState({
-            type: e.target.value,
-            Symbol: '',
-            MinPrice: 0,
-            TodayCapital: 0,
-            ChangePrice: -100
-        }, () => this.scan())
+        console.log(e.target.value)
+        if (e.target.value === STOCK_GROUP.CANSLIM) {
+            this.setState({
+                type: e.target.value,
+                Symbol: '',
+                MinPrice: 5000,
+                TodayCapital: 5,
+                ChangePrice: 1
+            }, () => this.scan())
+        } else {
+            this.setState({
+                type: e.target.value,
+                Symbol: '',
+                MinPrice: -1,
+                TodayCapital: -1,
+                ChangePrice: -100
+            }, () => this.scan())
+        }
+
     }
 
     changeImporantIndex = (e) => {
         this.setState({
             importantIndexType: e.target.value,
-            columnDefs: analysis5ColumnDefs(this, e.target.value)
+            columnDefs: analysisDailyColumnDefs(this, e.target.value)
         })
     }
 
@@ -216,24 +235,24 @@ class Analysis5 extends React.Component<IProps, IState> {
             modules, columnDefs, defaultColDef,
             visibleChart, visibleInfo, type,
             importantIndexType, TodayCapital, MinPrice,
-            ChangePrice, show, Symbol: symbol
+            ChangePrice, show, Symbol: symbol,
+            checkStrong, checkBlackList
         } = this.state;
-        console.log(221, symbol)
         return (
-            <div>
+            <div className="AnalysisDaily">
                 <div>
                     <div>Count: {rowData.length}</div>
                     <div>
 
                         <Radio.Group value={type} onChange={this.changeType}>
-                            <Radio.Button value="IsVN30">VN30</Radio.Button>
-                            <Radio.Button value="IsFavorite">Favorite</Radio.Button>
-                            <Radio.Button value="IsBlackList">BlackList</Radio.Button>
-                            <Radio.Button value="default">Default</Radio.Button>
+                            <Radio.Button value={STOCK_GROUP.CANSLIM}>Canslim</Radio.Button>
+                            <Radio.Button value={STOCK_GROUP.VN30}>VN30</Radio.Button>
+                            <Radio.Button value={STOCK_GROUP.FAVORITE}>Favorite</Radio.Button>
+                            <Radio.Button value={STOCK_GROUP.BLACKLIST}>BlackList</Radio.Button>
                         </Radio.Group>
                     </div>
                     <div>
-                        <div className="flex">
+                        <div className="flex AnalysisDaily-Filter">
                             <Input addonBefore="Symbol" onChange={(e) => this.changeInput(e, 'Symbol')} onPressEnter={() => {
                                 this.scan();
                                 this.props.updateSelectedSymbolSuccess(symbol)
@@ -242,6 +261,20 @@ class Analysis5 extends React.Component<IProps, IState> {
                             <Input addonBefore="Min Price" onChange={(e) => this.changeInput(e, 'MinPrice')} value={MinPrice} />
                             <Input addonBefore="%ChangePrice" onChange={(e) => this.changeInput(e, 'ChangePrice')} value={ChangePrice} />
                             <Input addonBefore="TodayCapital" onChange={(e) => this.changeInput(e, 'TodayCapital')} value={TodayCapital} />
+                            <Switch
+                                checkedChildren="STR"
+                                unCheckedChildren="STR"
+                                defaultChecked
+                                checked={checkStrong}
+                                onChange={() => this.setState({ checkStrong: !checkStrong })}
+                            />
+                            <Switch
+                                checkedChildren="BLL"
+                                unCheckedChildren="BLL"
+                                defaultChecked
+                                checked={checkBlackList}
+                                onChange={() => this.setState({ checkBlackList: !checkBlackList })}
+                            />
                         </div>
                         {/* <div className="flex">
                             <Input addonBefore="%Volume" onChange={(e) => this.changeInput(e, 'ChangeVolume')} />
@@ -342,6 +375,6 @@ const mapDispatchToProps = {
     updateSelectedSymbolSuccess
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Analysis5);
+export default connect(mapStateToProps, mapDispatchToProps)(AnalysisDaily);
 
 

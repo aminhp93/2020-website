@@ -24,6 +24,7 @@ import '../css/FinalAnalysis.css';
 import '../css/ChartTV.css';
 import '../css/Analysis.css';
 import '../css/Summary.css';
+import '../css/AnalysisDaily.css';
 
 import EquityAndDividends from './EquityAndDividends';
 import Financial from './Financial';

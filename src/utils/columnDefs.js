@@ -567,7 +567,7 @@ export const getLastestFinancialReportsColumnDefs = (period, type, analysisType 
     return period === 'yearly' ? year : quarter
 }
 
-export const analysis5ColumnDefs = (that, importantIndexType = null) => {
+export const analysisDailyColumnDefs = (that, importantIndexType = null) => {
     const Stock = {
         headerName: 'Stock',
         align: 'left',
