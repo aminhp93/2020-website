@@ -4,4 +4,5 @@ export const STOCK_GROUP = {
     BLACKLIST: "IsBlackList",
     CANSLIM: "CANSLIM",
     STRONG: "IsStrong",
+    ONSTUDY: "IsOnStudy"
 }

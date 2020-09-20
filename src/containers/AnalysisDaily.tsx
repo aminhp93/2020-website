@@ -202,7 +202,6 @@ class AnalysisDaily extends React.Component<IProps, IState> {
     }
 
     changeType = (e) => {
-        console.log(e.target.value)
         if (e.target.value === STOCK_GROUP.CANSLIM) {
             this.setState({
                 type: e.target.value,
@@ -220,7 +219,6 @@ class AnalysisDaily extends React.Component<IProps, IState> {
                 ChangePrice: -100
             }, () => this.scan())
         }
-
     }
 
     changeImporantIndex = (e) => {
@@ -248,6 +246,7 @@ class AnalysisDaily extends React.Component<IProps, IState> {
                             <Radio.Button value={STOCK_GROUP.CANSLIM}>Canslim</Radio.Button>
                             <Radio.Button value={STOCK_GROUP.VN30}>VN30</Radio.Button>
                             <Radio.Button value={STOCK_GROUP.FAVORITE}>Favorite</Radio.Button>
+                            <Radio.Button value={STOCK_GROUP.ONSTUDY}>Study</Radio.Button>
                             <Radio.Button value={STOCK_GROUP.BLACKLIST}>BlackList</Radio.Button>
                         </Radio.Group>
                     </div>
