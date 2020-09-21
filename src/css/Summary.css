@@ -1,5 +1,6 @@
 .Summary {
-    width: 500px;
+    /* width: 500px; */
+    background: white;
 }
 
 .Summary .ant-table-tbody > tr > td,

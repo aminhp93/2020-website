@@ -96,7 +96,7 @@ class AnalysisDaily extends React.Component<IProps, IState> {
             visibleInfo: false,
             addVN30Stock: [],
             data: [],
-            show: false,
+            show: true,
             checkBlackList: true,
             checkStrong: true
         }
@@ -158,6 +158,8 @@ class AnalysisDaily extends React.Component<IProps, IState> {
     };
 
     handleCancel = e => {
+        console.log(this.state);
+        debugger
         this.setState({
             visibleChart: false,
             visibleInfo: false,
@@ -177,6 +179,7 @@ class AnalysisDaily extends React.Component<IProps, IState> {
         } else {
             data[index] = e.target.value
         }
+        console.log(data);
         this.setState(data)
     }
 
@@ -236,6 +239,7 @@ class AnalysisDaily extends React.Component<IProps, IState> {
             ChangePrice, show, Symbol: symbol,
             checkStrong, checkBlackList
         } = this.state;
+        console.log(this.state);
         return (
             <div className="AnalysisDaily">
                 <div>
@@ -252,7 +256,7 @@ class AnalysisDaily extends React.Component<IProps, IState> {
                     </div>
                     <div>
                         <div className="flex AnalysisDaily-Filter">
-                            <Input addonBefore="Symbol" onChange={(e) => this.changeInput(e, 'Symbol')} onPressEnter={() => {
+                            <Input addonBefore="Symbol" value={symbol} onChange={(e) => this.changeInput(e, 'Symbol')} onPressEnter={() => {
                                 this.scan();
                                 this.props.updateSelectedSymbolSuccess(symbol)
                             }} />
@@ -334,9 +338,9 @@ class AnalysisDaily extends React.Component<IProps, IState> {
                         footer={null}
                     >
 
-                        <div className="chartTV-container flex">
+                        <div className="chartTV-container">
                             <ChartTV symbol={symbol} />
-                            {show && <Summary />}
+                            {show && <Summary data={this.state} />}
                         </div>
                     </Modal>
                     : null}

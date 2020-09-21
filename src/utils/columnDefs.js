@@ -567,7 +567,8 @@ export const getLastestFinancialReportsColumnDefs = (period, type, analysisType 
     return period === 'yearly' ? year : quarter
 }
 
-export const analysisDailyColumnDefs = (that, importantIndexType = null) => {
+export const analysisDailyColumnDefs = (that, importantIndexType = null, allowICBCode = false) => {
+    console.log(that);
     const Stock = {
         headerName: 'Stock',
         align: 'left',
@@ -998,15 +999,32 @@ export const analysisDailyColumnDefs = (that, importantIndexType = null) => {
         }
     }
 
-    switch (importantIndexType) {
-        case 'KhaNangThanhToan':
-            return [Stock, Actions, ICBCode, PE, PS, PB, EPS, QuickRatio, CurrentRatio, TotalDebtOverEquity, TotalDebtOverAssets, MarketCap]
-        case 'CoCauTaiSan':
-            return [Stock, Actions, ICBCode, TotalAssetsTurnover, InventoryTurnover, ReceivablesTurnover, GrossMargin, OperatingMargin, EBITMargin, NetProfitMargin, ROA, ROE, ROIC, MarketCap]
-        case 'HieuSuatHoatDong':
-            return [Stock, Actions, ICBCode, LowestPoint, LowestPointChange, LastRevenue, CurrentRevenue, RevenueChange, LastProfit, CurrentProfit, ProfitChange, MarketCap]
-        default:
-            return [Stock, Actions, ICBCode, Price, DealVolume, TodayCapital, LastPrice, PriceChange, MarketCap]
+    const { selectedSymbol, stocks, companies } = that.props;
+    const stock = Object.values(stocks).filter(i => i.Symbol === selectedSymbol)[0]
+    const ICBCodeIndex = Number((companies[stock.id] || {}).ICBCode)
+    if (allowICBCode) {
+        switch (ICBCodeIndex) {
+            case 8355:
+                return [Stock, PE, PS, PB, EPS, MarketCap, TotalAssetsTurnover, ReceivablesTurnover, OperatingMargin, EBITMargin, NetProfitMargin, ROE, LowestPoint, LowestPointChange, LastRevenue, CurrentRevenue, RevenueChange, LastProfit, CurrentProfit, ProfitChange, DealVolume, TodayCapital, PriceChange]
+            // QuickRatio, CurrentRatio, TotalDebtOverEquity, TotalDebtOverAssets, InventoryTurnover, GrossMargin, ROIC, LastPrice, Price, ROA
+            default:
+                return [Stock, PE, PS, PB, EPS, MarketCap, TotalAssetsTurnover, ReceivablesTurnover, OperatingMargin, EBITMargin, NetProfitMargin, ROA, ROE, LowestPoint, LowestPointChange, LastRevenue, CurrentRevenue, RevenueChange, LastProfit, CurrentProfit, ProfitChange, DealVolume, TodayCapital, PriceChange, QuickRatio, CurrentRatio, TotalDebtOverEquity, TotalDebtOverAssets, InventoryTurnover, GrossMargin, ROIC]
+            // Price, LastPrice
+        }
+    } else {
+        switch (importantIndexType) {
+            case 'KhaNangThanhToan':
+                return [Stock, Actions, ICBCode, PE, PS, PB, EPS, QuickRatio, CurrentRatio, TotalDebtOverEquity, TotalDebtOverAssets, MarketCap]
+            case 'CoCauTaiSan':
+                return [Stock, Actions, ICBCode, TotalAssetsTurnover, InventoryTurnover, ReceivablesTurnover, GrossMargin, OperatingMargin, EBITMargin, NetProfitMargin, ROA, ROE, ROIC, MarketCap]
+            case 'HieuSuatHoatDong':
+                return [Stock, Actions, ICBCode, LowestPoint, LowestPointChange, LastRevenue, CurrentRevenue, RevenueChange, LastProfit, CurrentProfit, ProfitChange, MarketCap]
+            default:
+                return [Stock, Actions, ICBCode, DealVolume, TodayCapital, PriceChange, MarketCap]
+            // Price, LastPrice
+        }
     }
+
+
 
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { get, uniqBy } from 'lodash';
+import { get, uniqBy, each } from 'lodash';
 import { connect } from 'react-redux';
 import { Table } from 'antd';
 
@@ -7,9 +7,13 @@ import {
     getYearlyFinancialInfo,
     getQuarterlyFinancialInfo,
     getLastestFinancialInfo,
+    scanStock
 } from '../reducers/stocks';
 import { BILLION_UNIT } from '../utils/unit';
 import { formatNumber, } from '../utils/all'
+import { AgGridReact } from '@ag-grid-community/react';
+import { AllModules } from '@ag-grid-enterprise/all-modules';
+import { analysisDailyColumnDefs } from '../utils/columnDefs';
 
 
 interface IProps {
@@ -17,21 +21,46 @@ interface IProps {
     getYearlyFinancialInfo: any,
     getQuarterlyFinancialInfo: any,
     getLastestFinancialInfo: any,
+    scanStock: any,
+    data: any,
+    companies: any,
+    stocks: any,
+    decisiveIndexes: any,
 }
 
 interface IState {
     QuarterlyFinancialInfoArray: any,
     YearlyFinancialInfoArray: any,
     LastestFinancialInfoObj: any,
+    modules: any,
+    rowData: any,
+    columnDefs: any,
+    defaultColDef: any,
 }
 
 class Summary extends React.Component<IProps, IState> {
+    scanning: boolean;
+    gridApi: any;
+    gridColumnApi: any;
+
     constructor(props) {
         super(props);
         this.state = {
             QuarterlyFinancialInfoArray: [],
             YearlyFinancialInfoArray: [],
-            LastestFinancialInfoObj: {}
+            LastestFinancialInfoObj: {},
+            modules: AllModules,
+            rowData: [],
+            columnDefs: analysisDailyColumnDefs(this, "SoSanhCungNganh", true),
+            defaultColDef: {
+                flex: 1,
+                filter: true,
+                sortable: true,
+                minWidth: 100,
+                enableValue: true,
+                enableRowGroup: true,
+                enablePivot: true,
+            },
         }
     }
 
@@ -133,13 +162,96 @@ class Summary extends React.Component<IProps, IState> {
         return result
     }
 
+    onGridReady = (params) => {
+        this.gridApi = params.api;
+        this.gridColumnApi = params.columnApi;
+        this.scan();
+    }
+
+    scan = async () => {
+        if (this.scanning) return;
+        try {
+            let data: any = { ...this.state }
+            data.endDate = this.props.data.endDate;
+            data.startDate = this.props.data.startDate;
+            const stock: any = Object.values(this.props.stocks).filter((i: any) => i.Symbol === this.props.selectedSymbol)[0]
+            data.ICBCode = Number((this.props.companies[stock.id] || {}).ICBCode)
+            data.ChangePrice = -100
+            data.MinPrice = 5000
+            data.Symbol = ""
+            data.TodayCapital = 1000000000
+            data.checkBlackList = true
+            data.checkStrong = true
+            this.gridApi.showLoadingOverlay();
+            this.scanning = true
+            const res = await this.props.scanStock(data);
+            this.scanning = false
+            this.gridApi.hideOverlay()
+            this.setState({
+                rowData: this.mapData(res.data)
+            })
+        } catch (error) {
+            this.scanning = false
+        }
+    }
+
+    mapData = (data) => {
+        const { companies, stocks, decisiveIndexes } = this.props;
+
+        each(data, i => {
+            i.ICBCode = Number((companies[i.Stock] || {}).ICBCode)
+            i.Symbol = (stocks[i.Stock] || {}).Symbol
+            i.LowestPoint = (decisiveIndexes[i.Stock] || {}).LowestPoint
+            i.LowestPointChange = (i.PriceClose - (decisiveIndexes[i.Stock] || {}).LowestPoint) / (decisiveIndexes[i.Stock] || {}).LowestPoint * 100
+            i.PE = Number(i.PE)
+            i.PS = Number(i.PS)
+            i.PB = Number(i.PB)
+            i.EPS = Number(i.EPS)
+            i.QuickRatio = Number(i.QuickRatio)
+            i.CurrentRatio = Number(i.CurrentRatio)
+            i.TotalDebtOverEquity = Number(i.TotalDebtOverEquity)
+            i.TotalDebtOverAssets = Number(i.TotalDebtOverAssets)
+            i.TotalAssetsTurnover = Number(i.TotalAssetsTurnover)
+            i.InventoryTurnover = Number(i.InventoryTurnover)
+            i.ReceivablesTurnover = Number(i.ReceivablesTurnover)
+            i.GrossMargin = Number(i.GrossMargin)
+            i.OperatingMargin = Number(i.OperatingMargin)
+            i.EBITMargin = Number(i.EBITMargin)
+            i.NetProfitMargin = Number(i.NetProfitMargin)
+            i.ROA = Number(i.ROA)
+            i.ROE = Number(i.ROE)
+            i.ROIC = Number(i.ROIC)
+            return i
+        })
+        return data
+    }
+
     render() {
+        const { modules, rowData, columnDefs, defaultColDef } = this.state;
         return <div className="Summary">
             <div>Doanh thu</div>
             {this.renderRevenueTable()}
             <div>Loi nhuan</div>
             {this.renderRevenueTable(true)}
-
+            <div>Compare same ICBCode</div>
+            <div style={{ width: '100%', height: '100%' }}>
+                <div
+                    id="myGrid"
+                    style={{
+                        height: '500px',
+                    }}
+                    className="ag-theme-alpine"
+                >
+                    <AgGridReact
+                        modules={modules}
+                        columnDefs={columnDefs}
+                        defaultColDef={defaultColDef}
+                        onGridReady={this.onGridReady}
+                        rowData={rowData}
+                        onFirstDataRendered={params => params.api.sizeColumnsToFit()}
+                    />
+                </div>
+            </div>
         </div>
     }
 }
@@ -147,6 +259,10 @@ class Summary extends React.Component<IProps, IState> {
 const mapStateToProps = state => {
     return {
         selectedSymbol: get(state, 'selectedSymbol'),
+        companies: get(state, 'companies'),
+        stocks: get(state, 'stocks'),
+        decisiveIndexes: get(state, 'decisiveIndexes')
+
     }
 }
 
@@ -154,6 +270,7 @@ const mapDispatchToProps = {
     getYearlyFinancialInfo,
     getQuarterlyFinancialInfo,
     getLastestFinancialInfo,
+    scanStock
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Summary);
