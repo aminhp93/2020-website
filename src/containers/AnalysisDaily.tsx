@@ -158,8 +158,6 @@ class AnalysisDaily extends React.Component<IProps, IState> {
     };
 
     handleCancel = e => {
-        console.log(this.state);
-        debugger
         this.setState({
             visibleChart: false,
             visibleInfo: false,
@@ -179,7 +177,6 @@ class AnalysisDaily extends React.Component<IProps, IState> {
         } else {
             data[index] = e.target.value
         }
-        console.log(data);
         this.setState(data)
     }
 
