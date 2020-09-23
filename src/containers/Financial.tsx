@@ -618,14 +618,14 @@ class Financial extends React.Component<IProps, IState> {
                 className="ag-theme-alpine"
             >
                 <AgGridReact
-                    modules={[
-                        ClientSideRowModelModule,
-                        RowGroupingModule,
-                        MenuModule,
-                        ColumnsToolPanelModule,
-                        SetFilterModule,
+                    // modules={[
+                    //     ClientSideRowModelModule,
+                    //     RowGroupingModule,
+                    //     MenuModule,
+                    //     ColumnsToolPanelModule,
+                    //     SetFilterModule,
 
-                    ]}
+                    // ]}
                     columnDefs={getLastestFinancialReportsColumnDefs(period, lastestFinancialReportsType, analysisType)}
                     enableRangeSelection={true}
                     animateRows={true}
