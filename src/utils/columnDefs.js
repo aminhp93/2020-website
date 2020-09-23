@@ -999,6 +999,64 @@ export const analysisDailyColumnDefs = (that, importantIndexType = null, allowIC
         }
     }
 
+    const LastQuarterRev = {
+        field: 'LastQuarterRev',
+        headerName: 'LastQuarterRev',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (params.data.LastQuarterRev / BILLION_UNIT).toFixed(0)
+            return div
+        }
+    }
+
+    const LastQuarterProfit = {
+        field: 'LastQuarterProfit',
+        headerName: 'LastQuarterProfit',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (params.data.LastQuarterProfit / BILLION_UNIT).toFixed(0)
+            return div
+        }
+    }
+
+    const CurrentQuarterRev = {
+        field: 'CurrentQuarterRev',
+        headerName: 'CurrentQuarterRev',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (params.data.CurrentQuarterRev / BILLION_UNIT).toFixed(0)
+            if (params.data.LastQuarterRev < params.data.CurrentQuarterRev) {
+                div.className = 'green'
+            } else if (params.data.LastQuarterRev > params.data.CurrentQuarterRev) {
+                div.className = 'red'
+            }
+            return div
+        }
+    }
+
+    const CurrentQuarterProfit = {
+        field: 'CurrentQuarterProfit',
+        headerName: 'CurrentQuarterProfit',
+        align: 'right',
+        filter: 'agNumberColumnFilter',
+        cellRenderer: params => {
+            const div = document.createElement("div");
+            div.innerText = (params.data.CurrentQuarterProfit / BILLION_UNIT).toFixed(0)
+            if (params.data.LastQuarterProfit < params.data.CurrentQuarterProfit) {
+                div.className = 'green'
+            } else if (params.data.LastQuarterProfit > params.data.CurrentQuarterProfit) {
+                div.className = 'red'
+            }
+            return div
+        }
+    }
+
     const { selectedSymbol, stocks, companies } = that.props;
     const stock = Object.values(stocks).filter(i => i.Symbol === selectedSymbol)[0]
     const ICBCodeIndex = Number((companies[stock.id] || {}).ICBCode)
@@ -1008,8 +1066,8 @@ export const analysisDailyColumnDefs = (that, importantIndexType = null, allowIC
                 return [Stock, PE, PS, PB, EPS, MarketCap, TotalAssetsTurnover, ReceivablesTurnover, OperatingMargin, EBITMargin, NetProfitMargin, ROE, LowestPoint, LowestPointChange, LastRevenue, CurrentRevenue, RevenueChange, LastProfit, CurrentProfit, ProfitChange, DealVolume, TodayCapital, PriceChange]
             // QuickRatio, CurrentRatio, TotalDebtOverEquity, TotalDebtOverAssets, InventoryTurnover, GrossMargin, ROIC, LastPrice, Price, ROA
             default:
-                return [Stock, PE, PS, PB, EPS, MarketCap, TotalAssetsTurnover, ReceivablesTurnover, OperatingMargin, EBITMargin, NetProfitMargin, ROA, ROE, LowestPoint, LowestPointChange, LastRevenue, CurrentRevenue, RevenueChange, LastProfit, CurrentProfit, ProfitChange, DealVolume, TodayCapital, PriceChange, QuickRatio, CurrentRatio, TotalDebtOverEquity, TotalDebtOverAssets, InventoryTurnover, GrossMargin, ROIC]
-            // Price, LastPrice
+                return [Stock, MarketCap, PriceChange, LastQuarterRev, CurrentQuarterRev, LastQuarterProfit, CurrentQuarterProfit]
+            // Price, LastPrice, PE, PS, PB, EPS, MarketCap, TotalAssetsTurnover, ReceivablesTurnover, OperatingMargin, EBITMargin, NetProfitMargin, ROA, ROE, LowestPoint, LowestPointChange, LastRevenue, CurrentRevenue, RevenueChange, LastProfit, CurrentProfit, ProfitChange, DealVolume, TodayCapital, QuickRatio, CurrentRatio, TotalDebtOverEquity, TotalDebtOverAssets, InventoryTurnover, GrossMargin, ROIC
         }
     } else {
         switch (importantIndexType) {

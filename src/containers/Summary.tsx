@@ -221,6 +221,10 @@ class Summary extends React.Component<IProps, IState> {
             i.ROA = Number(i.ROA)
             i.ROE = Number(i.ROE)
             i.ROIC = Number(i.ROIC)
+            i.LastQuarterRev = Number(i.LastQuarterRev)
+            i.LastQuarterProfit = Number(i.LastQuarterProfit)
+            i.CurrentQuarterRev = Number(i.CurrentQuarterRev)
+            i.CurrentQuarterProfit = Number(i.CurrentQuarterProfit)
             return i
         })
         return data
