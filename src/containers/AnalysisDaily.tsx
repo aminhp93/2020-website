@@ -16,8 +16,8 @@ import { IStock } from '../types'
 import { analysisDailyColumnDefs } from '../utils/columnDefs';
 import { updateSelectedSymbolSuccess } from '../reducers/selectedSymbol';
 
-import { AgGridReact } from '@ag-grid-community/react';
-import { AllModules } from '@ag-grid-enterprise/all-modules';
+import { AgGridReact } from 'ag-grid-react';
+// import { AllModules } from '@ag-grid-enterprise/all-modules';
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-alpine.css';
 
@@ -41,7 +41,7 @@ interface IProps {
 }
 
 interface IState {
-    modules: any,
+    // modules: any,
     columnDefs: any,
     defaultColDef: any,
     rowData: any,
@@ -78,7 +78,7 @@ class AnalysisDaily extends React.Component<IProps, IState> {
             TodayCapital: 5,
             MinPrice: 5000,
             Symbol: '',
-            modules: AllModules,
+            // modules: AllModules,
             columnDefs: analysisDailyColumnDefs(this),
             defaultColDef: {
                 flex: 1,
@@ -230,7 +230,8 @@ class AnalysisDaily extends React.Component<IProps, IState> {
 
     render() {
         const { startDate, endDate, rowData,
-            modules, columnDefs, defaultColDef,
+            // modules,
+            columnDefs, defaultColDef,
             visibleChart, visibleInfo, type,
             importantIndexType, TodayCapital, MinPrice,
             ChangePrice, show, Symbol: symbol,
@@ -314,7 +315,7 @@ class AnalysisDaily extends React.Component<IProps, IState> {
                         className="ag-theme-alpine"
                     >
                         <AgGridReact
-                            modules={modules}
+                            // modules={modules}
                             columnDefs={columnDefs}
                             defaultColDef={defaultColDef}
                             onGridReady={this.onGridReady}

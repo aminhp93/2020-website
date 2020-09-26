@@ -11,8 +11,8 @@ import {
 } from '../reducers/stocks';
 import { BILLION_UNIT } from '../utils/unit';
 import { formatNumber, } from '../utils/all'
-import { AgGridReact } from '@ag-grid-community/react';
-import { AllModules } from '@ag-grid-enterprise/all-modules';
+import { AgGridReact } from 'ag-grid-react';
+// import { AllModules } from '@ag-grid-enterprise/all-modules';
 import { analysisDailyColumnDefs } from '../utils/columnDefs';
 
 
@@ -32,7 +32,7 @@ interface IState {
     QuarterlyFinancialInfoArray: any,
     YearlyFinancialInfoArray: any,
     LastestFinancialInfoObj: any,
-    modules: any,
+    // modules: any,
     rowData: any,
     columnDefs: any,
     defaultColDef: any,
@@ -49,7 +49,7 @@ class Summary extends React.Component<IProps, IState> {
             QuarterlyFinancialInfoArray: [],
             YearlyFinancialInfoArray: [],
             LastestFinancialInfoObj: {},
-            modules: AllModules,
+            // modules: AllModules,
             rowData: [],
             columnDefs: analysisDailyColumnDefs(this, "SoSanhCungNganh", true),
             defaultColDef: {
@@ -231,7 +231,9 @@ class Summary extends React.Component<IProps, IState> {
     }
 
     render() {
-        const { modules, rowData, columnDefs, defaultColDef } = this.state;
+        const {
+            //  modules, 
+            rowData, columnDefs, defaultColDef } = this.state;
         return <div className="Summary">
             <div>Doanh thu</div>
             {this.renderRevenueTable()}
@@ -247,7 +249,7 @@ class Summary extends React.Component<IProps, IState> {
                     className="ag-theme-alpine"
                 >
                     <AgGridReact
-                        modules={modules}
+                        // modules={modules}
                         columnDefs={columnDefs}
                         defaultColDef={defaultColDef}
                         onGridReady={this.onGridReady}
